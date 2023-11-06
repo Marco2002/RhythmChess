@@ -11,7 +11,7 @@ public class Controller : MonoBehaviour {
     [SerializeField] private SwipeDetection swipeDetection;
     [SerializeField] private CsvLevelReader levelReader;
     [SerializeField] private FenUtil fenUtil;
-    [SerializeField] private float cycleLength = 2f;
+    [SerializeField] private float cycleLength = 1.5f;
     
 
     private Dictionary<string, ((int x, int y) from, (int x, int y) to)> moveMatrix;
@@ -30,12 +30,12 @@ public class Controller : MonoBehaviour {
 
     private void Update() {
         time = (time + Time.deltaTime) % cycleLength; // repeat every game cycle
-        if (time <= 1f) {
+        if (time <= cycleLength/2f) {
             // On Beat - Wait for input
             if(firstFireInOnBeat) {
                 waitingForMove = true;
                 game.ShowPossibleMoves();
-                Camera.main.backgroundColor = Color.white;
+                Camera.main.backgroundColor = ColorScheme.primary;
                 firstFireInOffBeat = true;
                 firstFireInOnBeat = false;
             }
@@ -53,7 +53,7 @@ public class Controller : MonoBehaviour {
                 ((int x, int y) from, (int x, int y) to) bestMove = moveMatrix.GetValueOrDefault(currentFen);
                 game.MoveEnemy(bestMove.from, bestMove.to);
 
-                Camera.main.backgroundColor = Color.black;
+                Camera.main.backgroundColor = ColorScheme.secondary;
                 board.RemoveMoveIndicators();
                 nextMove = Direction.None;
                 swipeDetection.enabled = false;
