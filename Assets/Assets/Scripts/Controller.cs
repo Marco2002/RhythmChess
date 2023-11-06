@@ -12,13 +12,19 @@ public class Controller : MonoBehaviour {
     [SerializeField] private CsvLevelReader levelReader;
     [SerializeField] private FenUtil fenUtil;
     [SerializeField] private float cycleLength = 1.5f;
-    
+
+    [SerializeField] private AudioSource audioCountIn;
+    [SerializeField] private AudioSource audioTrack;
+
 
     private Dictionary<string, ((int x, int y) from, (int x, int y) to)> moveMatrix;
     private float time = 0f;
     private bool waitingForMove = false;
     private bool firstFireInOnBeat = true;
     private bool firstFireInOffBeat = true;
+    private bool firstTimeCountIn = true;
+    private bool countInDone = false;
+    private bool pastFirstUpdate = false;// for some reason the first update is off the time for the rest of the game and needs to be skipped
     private Direction nextMove = Direction.None;
 
     void Start() {
@@ -26,46 +32,64 @@ public class Controller : MonoBehaviour {
         this.moveMatrix = levelReader.GetMoveMatrix();
         game.Init(fenUtil.FenToPosition(levelReader.GetFen(), levelReader.GetMaxFile()), levelReader.GetMaxFile(), levelReader.GetMaxRank(), levelReader.GetDisabledFields(), levelReader.GetFlagRegion());
         waitingForMove = true;
+
+
     }
 
     private void Update() {
-        time = (time + Time.deltaTime) % cycleLength; // repeat every game cycle
-        if (time <= cycleLength/2f) {
-            // On Beat - Wait for input
-            if(firstFireInOnBeat) {
-                waitingForMove = true;
-                game.ShowPossibleMoves();
-                Camera.main.backgroundColor = ColorScheme.primary;
-                firstFireInOffBeat = true;
-                firstFireInOnBeat = false;
-            }
-            if(waitingForMove) { // user has not input move yet
-                swipeDetection.enabled = true;
-            }
-            
-        } else {
-            // Off Beat - Show moves
-            if (firstFireInOffBeat) { // first time firing Off Beat
-                if(nextMove != Direction.None) {
-                    game.Move(nextMove);
-                }
-                string currentFen = fenUtil.PositionToFen(game.GetPosition());
-                ((int x, int y) from, (int x, int y) to) bestMove = moveMatrix.GetValueOrDefault(currentFen);
-                game.MoveEnemy(bestMove.from, bestMove.to);
 
-                Camera.main.backgroundColor = ColorScheme.secondary;
-                board.RemoveMoveIndicators();
-                nextMove = Direction.None;
-                swipeDetection.enabled = false;
-                firstFireInOnBeat = true;
-                firstFireInOffBeat = false;
-            }
-            
-            
+        if(!pastFirstUpdate) {
+            pastFirstUpdate = true;
+            return;
         }
-    }
+        if (!countInDone) {
+            if(firstTimeCountIn) {
+                // count in
+                audioCountIn.Play();
+                Invoke(nameof(StartGame), 2f * cycleLength);
+                firstTimeCountIn = false;
+            }
+        } else {
+            time = (time + Time.deltaTime) % cycleLength;
+            // game loop
+            if (time <= cycleLength / 2f) {
+                // On Beat - Wait for input
+                if (firstFireInOnBeat) {
+                    Debug.Log("onBeat at time " + time);
+                    waitingForMove = true;
+                    game.ShowPossibleMoves();
+                    Camera.main.backgroundColor = ColorScheme.primary;
+                    firstFireInOffBeat = true;
+                    firstFireInOnBeat = false;
+                }
+                if (waitingForMove) { // user has not input move yet
+                    swipeDetection.enabled = true;
+                }
 
-    
+            } else {
+                // Off Beat - Show moves
+                if (firstFireInOffBeat) { // first time firing Off Beat
+                    Debug.Log("OffBeat at time " + time);
+                    if (nextMove != Direction.None) {
+                        game.Move(nextMove);
+                    }
+                    string currentFen = fenUtil.PositionToFen(game.GetPosition());
+                    ((int x, int y) from, (int x, int y) to) bestMove = moveMatrix.GetValueOrDefault(currentFen);
+                    game.MoveEnemy(bestMove.from, bestMove.to);
+
+                    Camera.main.backgroundColor = ColorScheme.secondary;
+                    board.RemoveMoveIndicators();
+                    nextMove = Direction.None;
+                    swipeDetection.enabled = false;
+                    firstFireInOnBeat = true;
+                    firstFireInOffBeat = false;
+                }
+
+
+            }
+        }
+
+    }
 
     public void RecordMove(Vector2 direction) {
         Debug.Log("Direction " + direction);
@@ -73,7 +97,7 @@ public class Controller : MonoBehaviour {
         if (Vector2.Dot(new Vector2(1, 1).normalized, direction) > .92 && possibleDirections.Contains(Direction.UpRight)) {
             Debug.Log("Swipe Up Right");
             nextMove = Direction.UpRight;
-            
+
         }
         else if (Vector2.Dot(new Vector2(1, -1).normalized, direction) > .92 && possibleDirections.Contains(Direction.DownRight)) {
             Debug.Log("Swipe Down Right");
@@ -106,6 +130,11 @@ public class Controller : MonoBehaviour {
         board.RemoveMoveIndicators();
         waitingForMove = false;
         swipeDetection.enabled = false;
+    }
+
+    private void StartGame() {
+        audioTrack.Play();
+        countInDone = true;
     }
 
 }
