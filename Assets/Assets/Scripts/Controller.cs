@@ -24,16 +24,15 @@ public class Controller : MonoBehaviour {
     private bool firstFireInOffBeat = true;
     private bool firstTimeCountIn = true;
     private bool countInDone = false;
+    private bool gameEnded = false;
     private bool pastFirstUpdate = false;// for some reason the first update is off the time for the rest of the game and needs to be skipped
     private Direction nextMove = Direction.None;
 
     void Start() {
         levelReader.ReadLevelCsv("level1");
         this.moveMatrix = levelReader.GetMoveMatrix();
+        PrepareGame();
         game.Init(fenUtil.FenToPosition(levelReader.GetFen(), levelReader.GetMaxFile()), levelReader.GetMaxFile(), levelReader.GetMaxRank(), levelReader.GetDisabledFields(), levelReader.GetFlagRegion());
-        waitingForMove = true;
-
-
     }
 
     private void Update() {
@@ -54,33 +53,46 @@ public class Controller : MonoBehaviour {
             // game loop
             if (time <= cycleLength / 2f) {
                 // On Beat - Wait for input
-                if (firstFireInOnBeat) {
-                    Debug.Log("onBeat at time " + time);
-                    waitingForMove = true;
-                    game.ShowPossibleMoves();
-                    Camera.main.backgroundColor = ColorScheme.primary;
-                    firstFireInOffBeat = true;
-                    firstFireInOnBeat = false;
+                if (gameEnded) {
+                    bool playerWon = game.GetWinningSatus();
+                    if (playerWon) {
+                        Debug.Log("Congratulations, you won!");
+                        ResetLevel();
+                    }
+                    else {
+                        ResetLevel();
+                    }
                 }
-                if (waitingForMove) { // user has not input move yet
-                    swipeDetection.enabled = true;
+                else {
+                    if (firstFireInOnBeat) {
+                        waitingForMove = true;
+                        game.ShowPossibleMoves();
+                        Camera.main.backgroundColor = ColorScheme.primary;
+                        firstFireInOffBeat = true;
+                        firstFireInOnBeat = false;
+                    }
+                    if (waitingForMove) { // user has not input move yet
+                        swipeDetection.enabled = true;
+                    }
                 }
-
-            } else {
+            } else if(!gameEnded) {
+                
                 // Off Beat - Show moves
                 if (firstFireInOffBeat) { // first time firing Off Beat
-                    Debug.Log("OffBeat at time " + time);
                     if (nextMove != Direction.None) {
-                        game.Move(nextMove);
+                        gameEnded = game.Move(nextMove);
                     }
-                    string currentFen = fenUtil.PositionToFen(game.GetPosition());
-                    ((int x, int y) from, (int x, int y) to) bestMove = moveMatrix.GetValueOrDefault(currentFen);
-                    game.MoveEnemy(bestMove.from, bestMove.to);
-
+                    if (!gameEnded) {
+                        string currentFen = fenUtil.PositionToFen(game.GetPosition());
+                        ((int x, int y) from, (int x, int y) to) bestMove = moveMatrix.GetValueOrDefault(currentFen);
+                        gameEnded = game.MoveEnemy(bestMove.from, bestMove.to) | gameEnded;
+                    }
                     Camera.main.backgroundColor = ColorScheme.secondary;
                     board.RemoveMoveIndicators();
                     nextMove = Direction.None;
                     swipeDetection.enabled = false;
+
+                    
                     firstFireInOnBeat = true;
                     firstFireInOffBeat = false;
                 }
@@ -92,39 +104,30 @@ public class Controller : MonoBehaviour {
     }
 
     public void RecordMove(Vector2 direction) {
-        Debug.Log("Direction " + direction);
         List<Direction> possibleDirections = game.GetPossibleMoveDirections();
         if (Vector2.Dot(new Vector2(1, 1).normalized, direction) > .92 && possibleDirections.Contains(Direction.UpRight)) {
-            Debug.Log("Swipe Up Right");
             nextMove = Direction.UpRight;
 
         }
         else if (Vector2.Dot(new Vector2(1, -1).normalized, direction) > .92 && possibleDirections.Contains(Direction.DownRight)) {
-            Debug.Log("Swipe Down Right");
             nextMove = Direction.DownRight;
         }
         else if (Vector2.Dot(new Vector2(-1, 1).normalized, direction) > .92 && possibleDirections.Contains(Direction.UpLeft)) {
-            Debug.Log("Swipe Up Left");
             nextMove = Direction.UpLeft;
         }
         else if (Vector2.Dot(new Vector2(-1, -1).normalized, direction) > .92 && possibleDirections.Contains(Direction.DownLeft)) {
-            Debug.Log("Swipe Down Left");
             nextMove = Direction.DownLeft;
         }
         else if (Vector2.Dot(Vector2.up, direction) > .7 && possibleDirections.Contains(Direction.Up)) {
-            Debug.Log("Swipe Up");
             nextMove = Direction.Up;
         }
         else if (Vector2.Dot(Vector2.down, direction) > .7 && possibleDirections.Contains(Direction.Down)) {
-            Debug.Log("Swipe Down");
             nextMove = Direction.Down;
         }
         else if (Vector2.Dot(Vector2.left, direction) > .7 && possibleDirections.Contains(Direction.Left)) {
-            Debug.Log("Swipe Left");
             nextMove = Direction.Left;
         }
         else if (Vector2.Dot(Vector2.right, direction) > .7 && possibleDirections.Contains(Direction.Right)) {
-            Debug.Log("Swipe Right");
             nextMove = Direction.Right;
         }
         board.RemoveMoveIndicators();
@@ -132,9 +135,25 @@ public class Controller : MonoBehaviour {
         swipeDetection.enabled = false;
     }
 
+    private void PrepareGame() {
+        time = 0f;
+        firstFireInOnBeat = true;
+        firstFireInOffBeat = true;
+        firstTimeCountIn = true;
+        countInDone = false;
+        waitingForMove = true;
+
+    }
     private void StartGame() {
         audioTrack.Play();
         countInDone = true;
+    }
+
+    private void ResetLevel() {
+        gameEnded = false;
+        audioTrack.Stop();
+        game.SetupLevel();
+        PrepareGame();
     }
 
 }

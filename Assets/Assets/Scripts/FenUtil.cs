@@ -15,7 +15,6 @@ public class FenUtil : MonoBehaviour {
                 if (char.IsNumber(files[y][i])) {
                     x -= int.Parse(files[y][i].ToString());
                 } else {
-                    Debug.Log("position (x, y): " + x + " " + y);
                     switch (files[y][i]) {
                         case 'a': position.Add(("player", x, y)); break;
                         case 'P': position.Add(("pawn", x, y)); break;

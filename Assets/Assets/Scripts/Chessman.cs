@@ -16,10 +16,10 @@ public class Chessman : MonoBehaviour {
     public int GetY() { return y; }
     public void SetY(int y) { this.y = y; }
 
-    public void Activate() {
+    public void Init() {
         controller = GameObject.FindGameObjectWithTag("GameController");
 
-        switch (this.name) {
+        switch (name) {
             case "pawn": this.GetComponent<SpriteRenderer>().sprite = pawn; break;
             case "knight": this.GetComponent<SpriteRenderer>().sprite = knight; break;
             case "bishop": this.GetComponent<SpriteRenderer>().sprite = bishop; break;
@@ -27,6 +27,7 @@ public class Chessman : MonoBehaviour {
             case "queen": this.GetComponent<SpriteRenderer>().sprite = queen; break;
             case "king": this.GetComponent<SpriteRenderer>().sprite = king; break;
             case "player": this.GetComponent<SpriteRenderer>().sprite = player; break;
+            default: Debug.LogError("invalid name for the chessman: " + name); break;
         }
     }
 }

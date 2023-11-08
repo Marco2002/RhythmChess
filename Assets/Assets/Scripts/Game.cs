@@ -1,19 +1,24 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using System.Net.NetworkInformation;
 using UnityEditor.Search;
 using UnityEngine;
 
 public class Game : MonoBehaviour {
     [SerializeField] private Chessman chesspiece;
-    [SerializeField] private Chessman playerPrefab;
 
     private int width, height;
     private List<(int x, int y)> disabledFields, flagRegion;
+    List<(string pieceName, int x, int y)> initPosition;
+    bool piecesCreated = false;
+    bool ended = false;
+    bool won = false;
     private Chessman[,] position;
-    private Player player;
+    private Chessman player;
 
-    private List<Chessman> pieces = new List<Chessman>();
+    private List<Chessman> pieces;
     [SerializeField] private Board board;
 
     public void Init(List<(string pieceName, int x, int y)> initPosition, int width, int height, List<(int x, int y)> disabledFields, List<(int x, int y)> flagRegion) {
@@ -21,28 +26,41 @@ public class Game : MonoBehaviour {
         this.height = height;
         this.disabledFields = disabledFields;
         this.flagRegion = flagRegion;
+        this.initPosition = initPosition;
 
+        pieces = new();
         board.Init(width, height, disabledFields, flagRegion);
+        SetupLevel();
+    }
+
+    public void SetupLevel() {
+        ended = false;
+
         position = new Chessman[width, height];
         // Init pieces
-        foreach(var piece in initPosition) {
-            if(piece.pieceName == "player") {
-                // Init Player
-                player = Instantiate(playerPrefab, new Vector3(0, 0, -1), Quaternion.identity).GetComponent<Player>();
-                player.name = "player";
-                MovePiece(player, (int)piece.x, (int)piece.y);
-                player.Activate();
+        for (int i = 0; i < initPosition.Count(); i++) {
+            var (pieceName, x, y) = initPosition[i];
+            // Init Pieces
+            if (!piecesCreated) {
+                var piece = CreatePiece(pieceName, (int)x, (int)y);
+                pieces.Add(piece);
+                if (pieceName == "player") {
+                    player = piece;
+                }
             } else {
-                pieces.Add(CreatePiece(piece.pieceName, (int)piece.x, (int)piece.y));
+                // if pieces are already created just move them
+                MovePiece(pieces[i], x, y);
             }
-            
+           
+
         }
+        piecesCreated = true;
     }
 
     public List<Direction> GetPossibleMoveDirections() {
         int x = player.GetX();
         int y = player.GetY();
-        List<Direction> possibleMoves = new List<Direction>();
+        List<Direction> possibleMoves = new();
         // straight moves if no piece is on position
         if (IsPositionOnBoard(x - 1, y) && position[x - 1, y] == null && !disabledFields.Contains((x - 1, y))) possibleMoves.Add(Direction.Left);
         if (IsPositionOnBoard(x, y - 1) && position[x, y - 1] == null && !disabledFields.Contains((x, y - 1))) possibleMoves.Add(Direction.Down);
@@ -64,41 +82,64 @@ public class Game : MonoBehaviour {
 
     }
 
-    public void Move(Direction direction) {
+    // moves the player in the given direction and return true if move finished game
+    public bool Move(Direction direction) {
         switch (direction) {
-            case Direction.Up: MovePiece(player, player.GetX(), player.GetY() + 1); break;
-            case Direction.Down: MovePiece(player, player.GetX(), player.GetY() - 1); break;
-            case Direction.Left: MovePiece(player, player.GetX() - 1, player.GetY()); break;
-            case Direction.Right: MovePiece(player, player.GetX() + 1, player.GetY()); break;
-            case Direction.UpRight: MovePiece(player, player.GetX() + 1, player.GetY() + 1); break;
-            case Direction.DownRight: MovePiece(player, player.GetX() + 1, player.GetY() - 1); break;
-            case Direction.UpLeft: MovePiece(player, player.GetX() - 1, player.GetY() + 1); break;
-            case Direction.DownLeft: MovePiece(player, player.GetX() - 1, player.GetY() - 1); break;
+            case Direction.Up: return MovePiece(player, player.GetX(), player.GetY() + 1);
+            case Direction.Down: return MovePiece(player, player.GetX(), player.GetY() - 1);
+            case Direction.Left: return MovePiece(player, player.GetX() - 1, player.GetY());
+            case Direction.Right: return MovePiece(player, player.GetX() + 1, player.GetY());
+            case Direction.UpRight: return MovePiece(player, player.GetX() + 1, player.GetY() + 1);
+            case Direction.DownRight: return MovePiece(player, player.GetX() + 1, player.GetY() - 1);
+            case Direction.UpLeft: return MovePiece(player, player.GetX() - 1, player.GetY() + 1);
+            case Direction.DownLeft: return MovePiece(player, player.GetX() - 1, player.GetY() - 1);
+            case Direction.None:
+                return false ;
         }
+        Debug.LogError("invalid move direction for the method Move in the Game component");
+        return false;
     }
-    public void MoveEnemy((int x, int y) from, (int x, int y) to) {
-        MovePiece(position[from.x, from.y], to.x, to.y);
+
+    // moves enemy piece from from.(x,y) to to.(x,y) and returns true if move ended the game
+    public bool MoveEnemy((int x, int y) from, (int x, int y) to) {
+        return MovePiece(position[from.x, from.y], to.x, to.y);
     }
 
     public Chessman[,] GetPosition() {
         return position;
     }
 
+    public bool GetWinningSatus() {
+        if (!ended) Debug.LogWarning("called GetWinningStatus before game ended");
+        return won;
+    }
+
     private Chessman CreatePiece(string name, int x, int y) {
         Chessman cm = Instantiate(chesspiece, new Vector3(0, 0, -1), Quaternion.identity);
         cm.name = name;
         MovePiece(cm, x, y);
-        cm.Activate();
+        cm.Init();
         return cm;
     }
 
 
-    private void MovePiece(Chessman cm, int x, int y) {
+    // moves piece cm to (x,y) and returns true if the move ended the game
+    private bool MovePiece(Chessman cm, int x, int y) {
+        // check for win
+        if (flagRegion.Contains((x, y)) && cm.name == "player") {
+            ended = true;
+            won = true;
+        } else if (position[x, y] != null && position[x, y].name == "player") { // check for lose
+            ended = true;
+            won = false;
+        }
+
         if (IsPositionOnBoard(cm.GetX(), cm.GetY())) SetPositionEmpty(cm.GetX(), cm.GetY());
         position[x, y] = cm;
         cm.SetX(x);
         cm.SetY(y);
         board.SetPiece(cm, cm.GetX(), cm.GetY());
+        return ended;
     }
 
     private void SetPositionEmpty(int x, int y) {
