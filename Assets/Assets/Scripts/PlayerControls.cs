@@ -15,9 +15,11 @@ using System.Collections.Generic;
 using UnityEngine.InputSystem;
 using UnityEngine.InputSystem.Utilities;
 
-public partial class @PlayerControls : IInputActionCollection2, IDisposable {
+public partial class @PlayerControls: IInputActionCollection2, IDisposable
+{
     public InputActionAsset asset { get; }
-    public @PlayerControls() {
+    public @PlayerControls()
+    {
         asset = InputActionAsset.FromJson(@"{
     ""name"": ""PlayerControls"",
     ""maps"": [
@@ -78,49 +80,59 @@ public partial class @PlayerControls : IInputActionCollection2, IDisposable {
         m_Touch_PrimaryPosition = m_Touch.FindAction("PrimaryPosition", throwIfNotFound: true);
     }
 
-    public void Dispose() {
+    public void Dispose()
+    {
         UnityEngine.Object.Destroy(asset);
     }
 
-    public InputBinding? bindingMask {
+    public InputBinding? bindingMask
+    {
         get => asset.bindingMask;
         set => asset.bindingMask = value;
     }
 
-    public ReadOnlyArray<InputDevice>? devices {
+    public ReadOnlyArray<InputDevice>? devices
+    {
         get => asset.devices;
         set => asset.devices = value;
     }
 
     public ReadOnlyArray<InputControlScheme> controlSchemes => asset.controlSchemes;
 
-    public bool Contains(InputAction action) {
+    public bool Contains(InputAction action)
+    {
         return asset.Contains(action);
     }
 
-    public IEnumerator<InputAction> GetEnumerator() {
+    public IEnumerator<InputAction> GetEnumerator()
+    {
         return asset.GetEnumerator();
     }
 
-    IEnumerator IEnumerable.GetEnumerator() {
+    IEnumerator IEnumerable.GetEnumerator()
+    {
         return GetEnumerator();
     }
 
-    public void Enable() {
+    public void Enable()
+    {
         asset.Enable();
     }
 
-    public void Disable() {
+    public void Disable()
+    {
         asset.Disable();
     }
 
     public IEnumerable<InputBinding> bindings => asset.bindings;
 
-    public InputAction FindAction(string actionNameOrId, bool throwIfNotFound = false) {
+    public InputAction FindAction(string actionNameOrId, bool throwIfNotFound = false)
+    {
         return asset.FindAction(actionNameOrId, throwIfNotFound);
     }
 
-    public int FindBinding(InputBinding bindingMask, out InputAction action) {
+    public int FindBinding(InputBinding bindingMask, out InputAction action)
+    {
         return asset.FindBinding(bindingMask, out action);
     }
 
@@ -129,7 +141,8 @@ public partial class @PlayerControls : IInputActionCollection2, IDisposable {
     private List<ITouchActions> m_TouchActionsCallbackInterfaces = new List<ITouchActions>();
     private readonly InputAction m_Touch_PrimaryContact;
     private readonly InputAction m_Touch_PrimaryPosition;
-    public struct TouchActions {
+    public struct TouchActions
+    {
         private @PlayerControls m_Wrapper;
         public TouchActions(@PlayerControls wrapper) { m_Wrapper = wrapper; }
         public InputAction @PrimaryContact => m_Wrapper.m_Touch_PrimaryContact;
@@ -139,7 +152,8 @@ public partial class @PlayerControls : IInputActionCollection2, IDisposable {
         public void Disable() { Get().Disable(); }
         public bool enabled => Get().enabled;
         public static implicit operator InputActionMap(TouchActions set) { return set.Get(); }
-        public void AddCallbacks(ITouchActions instance) {
+        public void AddCallbacks(ITouchActions instance)
+        {
             if (instance == null || m_Wrapper.m_TouchActionsCallbackInterfaces.Contains(instance)) return;
             m_Wrapper.m_TouchActionsCallbackInterfaces.Add(instance);
             @PrimaryContact.started += instance.OnPrimaryContact;
@@ -150,7 +164,8 @@ public partial class @PlayerControls : IInputActionCollection2, IDisposable {
             @PrimaryPosition.canceled += instance.OnPrimaryPosition;
         }
 
-        private void UnregisterCallbacks(ITouchActions instance) {
+        private void UnregisterCallbacks(ITouchActions instance)
+        {
             @PrimaryContact.started -= instance.OnPrimaryContact;
             @PrimaryContact.performed -= instance.OnPrimaryContact;
             @PrimaryContact.canceled -= instance.OnPrimaryContact;
@@ -159,12 +174,14 @@ public partial class @PlayerControls : IInputActionCollection2, IDisposable {
             @PrimaryPosition.canceled -= instance.OnPrimaryPosition;
         }
 
-        public void RemoveCallbacks(ITouchActions instance) {
+        public void RemoveCallbacks(ITouchActions instance)
+        {
             if (m_Wrapper.m_TouchActionsCallbackInterfaces.Remove(instance))
                 UnregisterCallbacks(instance);
         }
 
-        public void SetCallbacks(ITouchActions instance) {
+        public void SetCallbacks(ITouchActions instance)
+        {
             foreach (var item in m_Wrapper.m_TouchActionsCallbackInterfaces)
                 UnregisterCallbacks(item);
             m_Wrapper.m_TouchActionsCallbackInterfaces.Clear();
@@ -172,7 +189,8 @@ public partial class @PlayerControls : IInputActionCollection2, IDisposable {
         }
     }
     public TouchActions @Touch => new TouchActions(this);
-    public interface ITouchActions {
+    public interface ITouchActions
+    {
         void OnPrimaryContact(InputAction.CallbackContext context);
         void OnPrimaryPosition(InputAction.CallbackContext context);
     }

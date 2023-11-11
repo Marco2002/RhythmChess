@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.InputSystem.XR;
 
 public class SwipeDetection : MonoBehaviour
 {
@@ -11,6 +12,8 @@ public class SwipeDetection : MonoBehaviour
     private float startTime;
     private Vector2 endPos;
     private float endTime;
+    private bool inTouch;
+
     public void OnEnable() {
         inputManager.OnStartTouch += SwipeStart;
         inputManager.OnEndTouch += SwipeEnd;
@@ -24,12 +27,14 @@ public class SwipeDetection : MonoBehaviour
     private void SwipeStart(Vector2 position, float time) {
         startPos = position;
         startTime = time;
+        inTouch = true;
     }
 
     private void SwipeEnd(Vector2 position, float time) {
         endPos = position;
         endTime = time;
         DetectSwipe();
+        inTouch = false;
     }
 
     private void DetectSwipe() {
@@ -39,5 +44,19 @@ public class SwipeDetection : MonoBehaviour
             Vector2 direction2D = new Vector2(direction.x, direction.y).normalized;
             gameObject.GetComponent<Controller>().RecordMove(direction2D);
         }
+
     }
+ 
+
+    public void DetectSwipeForCurrentTouch() {
+        if (!inTouch) return;
+        Vector2 currentPosition = inputManager.PrimaryPosition();
+        if (Vector3.Distance(startPos, currentPosition) >= minimumDistance) {
+            Vector3 direction = currentPosition - startPos;
+            Vector2 direction2D = new Vector2(direction.x, direction.y).normalized;
+            gameObject.GetComponent<Controller>().RecordMove(direction2D);
+        }
+        inTouch = false;
+    }
+
 }
