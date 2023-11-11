@@ -1,6 +1,6 @@
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+
 
 public class Board : MonoBehaviour {
 
@@ -11,16 +11,22 @@ public class Board : MonoBehaviour {
     private new Camera camera;
     private float halfWidth;
     private float tileWidth;
+    private List<Field> fields;
 
     private List<GameObject> moveIndicators = new List<GameObject>();
 
     public void Init(int width, int height, List<(int x, int y)> disabledFields, List<(int x, int y)> flagRegion) {
+        if(fields != null) {
+            foreach(var field in fields) {
+                Destroy(field.gameObject);
+            }
+        }
         _width = width;
         _height = height;
         camera = Camera.main;
         halfWidth = 0.8f * camera.aspect * camera.orthographicSize;
         tileWidth = (halfWidth * 2) / _width;
-
+        fields = new();
 
         for (int x = 0; x < _width; x++) {
             for (int y = 0; y < _height; y++) {
@@ -30,6 +36,7 @@ public class Board : MonoBehaviour {
 
                 var isOffset = (x + y) % 2 == 1;
                 spawnedField.Init(isOffset, disabledFields.Contains((x, y)), flagRegion.Contains((x, y)));
+                fields.Add(spawnedField);
             }
         }
     }

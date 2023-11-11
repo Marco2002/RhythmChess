@@ -1,9 +1,5 @@
-using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using System.Net.NetworkInformation;
-using UnityEditor.Search;
 using UnityEngine;
 
 public class Game : MonoBehaviour {
@@ -22,11 +18,17 @@ public class Game : MonoBehaviour {
     [SerializeField] private Board board;
 
     public void Init(List<(string pieceName, int x, int y)> initPosition, int width, int height, List<(int x, int y)> disabledFields, List<(int x, int y)> flagRegion) {
+        if(pieces != null) {
+            foreach(var piece in pieces) {
+                Destroy(piece.gameObject);
+            }
+        }
         this.width = width;
         this.height = height;
         this.disabledFields = disabledFields;
         this.flagRegion = flagRegion;
         this.initPosition = initPosition;
+        this.piecesCreated = false;
 
         pieces = new();
         board.Init(width, height, disabledFields, flagRegion);
@@ -133,7 +135,6 @@ public class Game : MonoBehaviour {
             ended = true;
             won = false;
         }
-
         if (IsPositionOnBoard(cm.GetX(), cm.GetY())) SetPositionEmpty(cm.GetX(), cm.GetY());
         position[x, y] = cm;
         cm.SetX(x);

@@ -1,8 +1,4 @@
-using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
-using System.Net.NetworkInformation;
-using UnityEditor.Search;
 using UnityEngine;
 
 public class FenUtil : MonoBehaviour {
@@ -24,6 +20,7 @@ public class FenUtil : MonoBehaviour {
                         case 'Q': position.Add(("queen", x, y)); break;
                         case 'K': position.Add(("king", x, y)); break;
                     }
+                    x--;
                 }
             }
 

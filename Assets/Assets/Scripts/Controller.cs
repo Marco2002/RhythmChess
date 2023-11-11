@@ -1,8 +1,5 @@
-using System.Collections;
 using System.Collections.Generic;
-using Unity.Mathematics;
 using UnityEngine;
-using UnityEngine.EventSystems;
 
 public class Controller : MonoBehaviour {
     // Start is called before the first frame update
@@ -12,10 +9,11 @@ public class Controller : MonoBehaviour {
     [SerializeField] private CsvLevelReader levelReader;
     [SerializeField] private FenUtil fenUtil;
     [SerializeField] private float cycleLength = 1.5f;
+    [SerializeField] private int level = 1;
 
     [SerializeField] private AudioSource audioCountIn;
     [SerializeField] private AudioSource audioTrack;
-
+    
 
     private Dictionary<string, ((int x, int y) from, (int x, int y) to)> moveMatrix;
     private float time = 0f;
@@ -29,7 +27,7 @@ public class Controller : MonoBehaviour {
     private Direction nextMove = Direction.None;
 
     void Start() {
-        levelReader.ReadLevelCsv("level1");
+        levelReader.ReadLevelCsv("level"+level);
         this.moveMatrix = levelReader.GetMoveMatrix();
         PrepareGame();
         game.Init(fenUtil.FenToPosition(levelReader.GetFen(), levelReader.GetMaxFile()), levelReader.GetMaxFile(), levelReader.GetMaxRank(), levelReader.GetDisabledFields(), levelReader.GetFlagRegion());
@@ -57,7 +55,7 @@ public class Controller : MonoBehaviour {
                     bool playerWon = game.GetWinningSatus();
                     if (playerWon) {
                         Debug.Log("Congratulations, you won!");
-                        ResetLevel();
+                        LoadNextLevel();
                     }
                     else {
                         ResetLevel();
@@ -142,6 +140,8 @@ public class Controller : MonoBehaviour {
         firstTimeCountIn = true;
         countInDone = false;
         waitingForMove = true;
+        gameEnded = false;
+        audioTrack.Stop();
 
     }
     private void StartGame() {
@@ -150,10 +150,16 @@ public class Controller : MonoBehaviour {
     }
 
     private void ResetLevel() {
-        gameEnded = false;
-        audioTrack.Stop();
         game.SetupLevel();
         PrepareGame();
+    }
+
+    private void LoadNextLevel() {
+        level++;
+        levelReader.ReadLevelCsv("level" + level);
+        this.moveMatrix = levelReader.GetMoveMatrix();
+        PrepareGame();
+        game.Init(fenUtil.FenToPosition(levelReader.GetFen(), levelReader.GetMaxFile()), levelReader.GetMaxFile(), levelReader.GetMaxRank(), levelReader.GetDisabledFields(), levelReader.GetFlagRegion());
     }
 
 }
