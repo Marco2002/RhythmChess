@@ -11,7 +11,9 @@ public class CsvLevelReader : MonoBehaviour {
     private Dictionary<string, ((int x, int y) from, (int x, int y) to)> moveMatrix;
     
     public void ReadLevelCsv(string levelName) {
-        string fileData = System.IO.File.ReadAllText(Application.dataPath+"/Assets/Levels/"+levelName+".csv");
+        
+        TextAsset file = Resources.Load<TextAsset>("LevelData/"+levelName);
+        string fileData = file.text;
         string[] lines = fileData.Split('\n');
         string[] levelData = lines[0].Split(",");
         string[] moveData = lines.Skip(1).ToArray();

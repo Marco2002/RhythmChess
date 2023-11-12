@@ -129,7 +129,6 @@ public class Controller : MonoBehaviour {
         else if (Vector2.Dot(Vector2.right, direction) > .7 && possibleDirections.Contains(Direction.Right)) {
             nextMove = Direction.Right;
         }
-        Debug.Log("Next move updated: " + nextMove);
         board.RemoveMoveIndicators();
         waitingForMove = false;
         swipeDetection.enabled = false;
