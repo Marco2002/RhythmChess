@@ -84,7 +84,9 @@ public class Controller : MonoBehaviour {
                     if (!gameEnded) {
                         string currentFen = fenUtil.PositionToFen(game.GetPosition());
                         ((int x, int y) from, (int x, int y) to) bestMove = moveMatrix.GetValueOrDefault(currentFen);
-                        gameEnded = game.MoveEnemy(bestMove.from, bestMove.to) | gameEnded;
+                        if(bestMove.from != bestMove.to) {
+                            gameEnded = game.MoveEnemy(bestMove.from, bestMove.to) | gameEnded;
+                        }
                     }
                     Camera.main.backgroundColor = ColorScheme.secondary;
                     board.RemoveMoveIndicators();

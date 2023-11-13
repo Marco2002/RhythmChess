@@ -2,6 +2,8 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class FenUtil : MonoBehaviour {
+
+    public static readonly ((int x, int y) from, (int x, int y) to) invalidMove = ((0, 0), (0, 0));
     public List<(string pieceName, int x, int y)> FenToPosition(string fen, int maxFile) {
         List<(string pieceName, int x, int y)> position = new List<(string pieceName, int x, int y)>();
         string[] files = fen.Split('/');

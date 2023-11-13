@@ -104,6 +104,7 @@ public class Game : MonoBehaviour {
 
     // moves enemy piece from from.(x,y) to to.(x,y) and returns true if move ended the game
     public bool MoveEnemy((int x, int y) from, (int x, int y) to) {
+        Debug.Log("move enemy from " + from + " to " + to);
         return MovePiece(position[from.x, from.y], to.x, to.y);
     }
 
@@ -131,9 +132,13 @@ public class Game : MonoBehaviour {
         if (flagRegion.Contains((x, y)) && cm.name == "player") {
             ended = true;
             won = true;
-        } else if (position[x, y] != null && position[x, y].name == "player") { // check for lose
-            ended = true;
-            won = false;
+        } else if (position[x, y] != null) {
+            if(position[x, y].name == "player") { // check for loose
+                ended = true;
+                won = false;
+            } else { // check for player taking othe piece
+                position[x, y].transform.localScale = new Vector3(0,0,0);
+            }
         }
         if (IsPositionOnBoard(cm.GetX(), cm.GetY())) SetPositionEmpty(cm.GetX(), cm.GetY());
         position[x, y] = cm;
