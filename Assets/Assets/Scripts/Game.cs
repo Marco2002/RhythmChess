@@ -104,7 +104,6 @@ public class Game : MonoBehaviour {
 
     // moves enemy piece from from.(x,y) to to.(x,y) and returns true if move ended the game
     public bool MoveEnemy((int x, int y) from, (int x, int y) to) {
-        Debug.Log("move enemy from " + from + " to " + to);
         return MovePiece(position[from.x, from.y], to.x, to.y);
     }
 

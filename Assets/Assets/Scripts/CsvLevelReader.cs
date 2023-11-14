@@ -30,7 +30,7 @@ public class CsvLevelReader : MonoBehaviour {
         disabledFields = new List<(int x, int y)>();
         string disabledFieldsString = levelData[3];
         foreach (string field in disabledFieldsString.Split(' ')) {
-            disabledFields.Add(FieldStringToVector2(field));
+            if (field != "") disabledFields.Add(FieldStringToVector2(field));
         }
 
         // flagRegion
