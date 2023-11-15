@@ -11,17 +11,19 @@ public class Controller : MonoBehaviour {
     [SerializeField] private float cycleLength = 1.5f;
     [SerializeField] private int level = 1;
 
-    [SerializeField] private AudioSource audioCountIn;
-    [SerializeField] private AudioSource audioTrack;
-    
+    [SerializeField] private AudioSource audioCountInBeat;
+    [SerializeField] private AudioSource audioSnare;
+    [SerializeField] private AudioSource audioRide;
+    [SerializeField] private AudioSource audioHihat;
+
 
     private Dictionary<string, ((int x, int y) from, (int x, int y) to)> moveMatrix;
     private float time = 0f;
+    private int numOfCountInBeats = 0;
     private bool waitingForMove = false;
-    private bool firstFireInOnBeat = true;
-    private bool firstFireInOffBeat = true;
-    private bool firstTimeCountIn = true;
-    private bool countInDone = false;
+    private bool onBeatHandled = false;
+    private bool playerMoveHandled = false;
+    private bool enemyMoveHandled = false;
     private bool gameEnded = false;
     private bool pastFirstUpdate = false;// for some reason the first update is off the time for the rest of the game and needs to be skipped
     private Direction nextMove = Direction.None;
@@ -39,12 +41,14 @@ public class Controller : MonoBehaviour {
             pastFirstUpdate = true;
             return;
         }
-        if (!countInDone) {
-            if(firstTimeCountIn) {
-                // count in
-                audioCountIn.Play();
-                Invoke(nameof(StartGame), 2f * cycleLength);
-                firstTimeCountIn = false;
+        if (numOfCountInBeats <= 4) {
+            
+            time = (time + Time.deltaTime);
+            if(time > cycleLength/2f) {
+                if (numOfCountInBeats < 4) audioCountInBeat.Play();
+                numOfCountInBeats++;
+                time = time % (cycleLength / 2f);
+
             }
         } else {
             time = (time + Time.deltaTime) % cycleLength;
@@ -60,45 +64,52 @@ public class Controller : MonoBehaviour {
                     else {
                         ResetLevel();
                     }
-                }
-                else {
-                    if (firstFireInOnBeat) {
+                } else {
+                    if (!onBeatHandled) {
+                        audioRide.Play();
                         waitingForMove = true;
                         game.ShowPossibleMoves();
                         Camera.main.backgroundColor = ColorScheme.primary;
-                        firstFireInOffBeat = true;
-                        firstFireInOnBeat = false;
+                        playerMoveHandled = false;
+                        enemyMoveHandled = false;
+                        onBeatHandled = true;
                     }
                     if (waitingForMove) { // user has not input move yet
                         swipeDetection.enabled = true;
                     }
                 }
-            } else if(!gameEnded) {
-                
+            } else if (!gameEnded) {
                 // Off Beat - Show moves
-                if (firstFireInOffBeat) { // first time firing Off Beat
-                    swipeDetection.DetectSwipeForCurrentTouch();
-                    if (nextMove != Direction.None) {
-                        gameEnded = game.Move(nextMove);
-                    }
-                    if (!gameEnded) {
-                        string currentFen = fenUtil.PositionToFen(game.GetPosition());
-                        ((int x, int y) from, (int x, int y) to) bestMove = moveMatrix.GetValueOrDefault(currentFen);
-                        if(bestMove.from != bestMove.to) {
-                            gameEnded = game.MoveEnemy(bestMove.from, bestMove.to) | gameEnded;
+                if (time <= cycleLength * .75f) { 
+                    // show player move
+                    if (!playerMoveHandled) {
+                        swipeDetection.DetectSwipeForCurrentTouch();
+                        if (nextMove != Direction.None) {
+                            audioSnare.Play();
+                            gameEnded = game.Move(nextMove);
+                        } else {
+                            audioHihat.Play();
                         }
+                        Camera.main.backgroundColor = ColorScheme.secondary;
+                        board.RemoveMoveIndicators();
+                        nextMove = Direction.None;
+                        swipeDetection.enabled = false;
                     }
-                    Camera.main.backgroundColor = ColorScheme.secondary;
-                    board.RemoveMoveIndicators();
-                    nextMove = Direction.None;
-                    swipeDetection.enabled = false;
-
+                    playerMoveHandled = true;
+                } else if (!enemyMoveHandled) {
+                    // showEnemyMove
+                    string currentFen = fenUtil.PositionToFen(game.GetPosition());
+                    ((int x, int y) from, (int x, int y) to) bestMove = moveMatrix.GetValueOrDefault(currentFen);
+                    if(bestMove.from != bestMove.to) {
+                        audioSnare.Play();
+                        gameEnded = game.MoveEnemy(bestMove.from, bestMove.to) | gameEnded;
+                    } else {
+                        audioHihat.Play();
+                    }
+                    enemyMoveHandled = true;
+                    onBeatHandled = false;
                     
-                    firstFireInOnBeat = true;
-                    firstFireInOffBeat = false;
                 }
-
-
             }
         }
 
@@ -138,18 +149,12 @@ public class Controller : MonoBehaviour {
 
     private void PrepareGame() {
         time = 0f;
-        firstFireInOnBeat = true;
-        firstFireInOffBeat = true;
-        firstTimeCountIn = true;
-        countInDone = false;
+        numOfCountInBeats = 0;
+        onBeatHandled = false;
+        playerMoveHandled = false;
+        enemyMoveHandled = false;
         waitingForMove = true;
         gameEnded = false;
-        audioTrack.Stop();
-
-    }
-    private void StartGame() {
-        audioTrack.Play();
-        countInDone = true;
     }
 
     private void ResetLevel() {
