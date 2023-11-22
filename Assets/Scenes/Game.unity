@@ -158,7 +158,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cbfcfd1b269ba704f985d366b9b5056c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  chesspiece: {fileID: 681249026358007228, guid: 2679f95875ceb5842b7bcbc4abac6848, type: 3}
   board: {fileID: 1712004155}
 --- !u!4 &228030537
 Transform:
@@ -772,6 +771,7 @@ MonoBehaviour:
   _width: 8
   _height: 8
   _fieldPrefab: {fileID: 6262806570859804230, guid: 45931ce9a0568f948bde5dbb55a73e29, type: 3}
+  _chesspiecePrefab: {fileID: 681249026358007228, guid: 2679f95875ceb5842b7bcbc4abac6848, type: 3}
   _moveIndicatorPrefab: {fileID: 5275631995502244248, guid: 4222c7f4b5804a44bbe78a957eedfb0d, type: 3}
 --- !u!1660057539 &9223372036854775807
 SceneRoots:

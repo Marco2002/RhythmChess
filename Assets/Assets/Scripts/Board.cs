@@ -6,6 +6,7 @@ public class Board : MonoBehaviour {
 
     [SerializeField] private int _width, _height;
     [SerializeField] private Field _fieldPrefab;
+    [SerializeField] private Chessman _chesspiecePrefab;
     [SerializeField] private GameObject _moveIndicatorPrefab;
 
     private new Camera camera;
@@ -33,6 +34,7 @@ public class Board : MonoBehaviour {
                 var spawnedField = Instantiate(_fieldPrefab, GetWorldspacePosition(x, y, 1), Quaternion.identity);
                 spawnedField.transform.localScale = new Vector3(tileWidth, tileWidth);
                 spawnedField.name = $"Field {x} {y}";
+                spawnedField.transform.parent = transform;
 
                 var isOffset = (x + y) % 2 == 1;
                 spawnedField.Init(isOffset, disabledFields.Contains((x, y)), flagRegion.Contains((x, y)));
@@ -57,11 +59,20 @@ public class Board : MonoBehaviour {
 
     public void ShowMoveIndicator(int x, int y) {
         GameObject moveIndicator = Instantiate(_moveIndicatorPrefab, GetWorldspacePosition(x, y), Quaternion.identity);
+        moveIndicator.transform.parent = transform;
         moveIndicator.transform.localScale = new Vector3(tileWidth * 0.5f, tileWidth * 0.5f);
         moveIndicators.Add(moveIndicator);
     }
 
     public void RemoveMoveIndicators() {
         moveIndicators.RemoveAll(i => { Destroy(i); return true; }); // destory all move indicators and remove from list
+    }
+
+    public Chessman CreatePiece(string name, int x, int y) {
+        Chessman cm = Instantiate(_chesspiecePrefab, new Vector3(0, 0, -1), Quaternion.identity);
+        cm.name = name;
+        cm.transform.parent = transform;
+        cm.Init();
+        return cm;
     }
 }

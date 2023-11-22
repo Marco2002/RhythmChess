@@ -3,7 +3,6 @@ using System.Linq;
 using UnityEngine;
 
 public class Game : MonoBehaviour {
-    [SerializeField] private Chessman chesspiece;
 
     private int width, height;
     private List<(int x, int y)> disabledFields, flagRegion;
@@ -44,7 +43,8 @@ public class Game : MonoBehaviour {
             var (pieceName, x, y) = initPosition[i];
             // Init Pieces
             if (!piecesCreated) {
-                var piece = CreatePiece(pieceName, (int)x, (int)y);
+                var piece = board.CreatePiece(pieceName, (int)x, (int)y);
+                MovePiece(piece, x, y);
                 pieces.Add(piece);
                 if (pieceName == "player") {
                     player = piece;
@@ -116,13 +116,7 @@ public class Game : MonoBehaviour {
         return won;
     }
 
-    private Chessman CreatePiece(string name, int x, int y) {
-        Chessman cm = Instantiate(chesspiece, new Vector3(0, 0, -1), Quaternion.identity);
-        cm.name = name;
-        MovePiece(cm, x, y);
-        cm.Init();
-        return cm;
-    }
+    
 
 
     // moves piece cm to (x,y) and returns true if the move ended the game
@@ -136,9 +130,8 @@ public class Game : MonoBehaviour {
             if(position[x, y].name == "player") { // check for loose
                 ended = true;
                 won = false;
-            } else { // check for player taking othe piece
-                position[x, y].transform.localScale = new Vector3(0,0,0);
             }
+            position[x, y].transform.localScale = new Vector3(0,0,0);
         }
         if (IsPositionOnBoard(cm.GetX(), cm.GetY())) SetPositionEmpty(cm.GetX(), cm.GetY());
         position[x, y] = cm;

@@ -97,8 +97,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7a90f8aff62b0ae4aa9eac4b89165f7e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _white: {r: 1, g: 1, b: 1, a: 1}
-  _black: {r: 0, g: 0, b: 0, a: 1}
-  _disabled: {r: 0.3490566, g: 0.3490566, b: 0.3490566, a: 1}
-  _flag: {r: 0.23151669, g: 0.6792453, b: 0.22748311, a: 1}
   _renderer: {fileID: 2374099944444663494}
