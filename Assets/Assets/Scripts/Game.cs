@@ -64,10 +64,10 @@ public class Game : MonoBehaviour {
         int y = player.GetY();
         List<Direction> possibleMoves = new();
         // straight moves if no piece is on position
-        if (IsPositionOnBoard(x - 1, y) && position[x - 1, y] == null && !disabledFields.Contains((x - 1, y))) possibleMoves.Add(Direction.Left);
-        if (IsPositionOnBoard(x, y - 1) && position[x, y - 1] == null && !disabledFields.Contains((x, y - 1))) possibleMoves.Add(Direction.Down);
-        if (IsPositionOnBoard(x + 1, y) && position[x + 1, y] == null && !disabledFields.Contains((x + 1, y)))  possibleMoves.Add(Direction.Right);
-        if (IsPositionOnBoard(x, y + 1) && position[x, y + 1] == null && !disabledFields.Contains((x, y + 1))) possibleMoves.Add(Direction.Up);
+        if (IsPositionOnBoard(x - 1, y) && !disabledFields.Contains((x - 1, y))) possibleMoves.Add(Direction.Left);
+        if (IsPositionOnBoard(x, y - 1) && !disabledFields.Contains((x, y - 1))) possibleMoves.Add(Direction.Down);
+        if (IsPositionOnBoard(x + 1, y) && !disabledFields.Contains((x + 1, y)))  possibleMoves.Add(Direction.Right);
+        if (IsPositionOnBoard(x, y + 1) && !disabledFields.Contains((x, y + 1))) possibleMoves.Add(Direction.Up);
         // diagonal moves if a piece is on position
         if (IsPositionOnBoard(x - 1, y - 1) && position[x - 1, y - 1] != null) possibleMoves.Add(Direction.DownLeft);
         if (IsPositionOnBoard(x - 1, y + 1) && position[x - 1, y + 1] != null) possibleMoves.Add(Direction.UpLeft);
@@ -131,7 +131,8 @@ public class Game : MonoBehaviour {
         if (flagRegion.Contains((x, y)) && cm.name == "player") {
             ended = true;
             won = true;
-        } else if (position[x, y] != null) {
+        }
+        if (position[x, y] != null) {
             if(position[x, y].name == "player") { // check for loose
                 ended = true;
                 won = false;
@@ -156,19 +157,23 @@ public class Game : MonoBehaviour {
     }
 
     private List<Vector2> GetPossibleMoves() {
+        List<Direction> possibleMoveDirections = GetPossibleMoveDirections();
+
         int x = player.GetX();
         int y = player.GetY();
         List<Vector2> possibleMoves = new List<Vector2>();
-        // straight moves if no piece is on position
-        if (IsPositionOnBoard(x - 1, y) && position[x - 1, y] == null && !disabledFields.Contains((x - 1, y))) possibleMoves.Add(new Vector2(x - 1, y));
-        if (IsPositionOnBoard(x, y - 1) && position[x, y - 1] == null && !disabledFields.Contains((x, y - 1))) possibleMoves.Add(new Vector2(x, y - 1));
-        if (IsPositionOnBoard(x + 1, y) && position[x + 1, y] == null && !disabledFields.Contains((x + 1, y))) possibleMoves.Add(new Vector2(x + 1, y));
-        if (IsPositionOnBoard(x, y + 1) && position[x, y + 1] == null && !disabledFields.Contains((x, y + 1))) possibleMoves.Add(new Vector2(x, y + 1));
-        // diagonal moves if a piece is on position
-        if (IsPositionOnBoard(x - 1, y - 1) && position[x - 1, y - 1] != null) possibleMoves.Add(new Vector2(x - 1, y - 1));
-        if (IsPositionOnBoard(x - 1, y + 1) && position[x - 1, y + 1] != null) possibleMoves.Add(new Vector2(x - 1, y + 1));
-        if (IsPositionOnBoard(x + 1, y - 1) && position[x + 1, y - 1] != null) possibleMoves.Add(new Vector2(x + 1, y - 1));
-        if (IsPositionOnBoard(x + 1, y + 1) && position[x + 1, y + 1] != null) possibleMoves.Add(new Vector2(x + 1, y + 1));
+        foreach (Direction moveDirection in possibleMoveDirections) {
+            switch(moveDirection) {
+                case Direction.Left: possibleMoves.Add(new Vector2(x - 1, y)); break;
+                case Direction.Right: possibleMoves.Add(new Vector2(x + 1, y)); break;
+                case Direction.Up: possibleMoves.Add(new Vector2(x, y +1 )); break;
+                case Direction.Down: possibleMoves.Add(new Vector2(x, y - 1)); break;
+                case Direction.UpLeft: possibleMoves.Add(new Vector2(x - 1, y + 1)); break;
+                case Direction.UpRight: possibleMoves.Add(new Vector2(x + 1, y + 1)); break;
+                case Direction.DownLeft: possibleMoves.Add(new Vector2(x - 1, y - 1)); break;
+                case Direction.DownRight: possibleMoves.Add(new Vector2(x + 1, y - 1)); break;
+            }
+        }
         return possibleMoves;
     }
 }
