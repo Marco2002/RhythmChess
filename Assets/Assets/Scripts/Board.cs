@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Net.NetworkInformation;
 using UnityEngine;
 
 
@@ -6,8 +7,9 @@ public class Board : MonoBehaviour {
 
     [SerializeField] private int _width, _height;
     [SerializeField] private Field _fieldPrefab;
-    [SerializeField] private Chessman _chesspiecePrefab;
     [SerializeField] private GameObject _moveIndicatorPrefab;
+
+    [SerializeField] private Chessman _knightPrefab, _bishopPrefab, _pawnPrefab, _rookPrefab, _playerPrefab, _queenPrefab, _kingPrefab;
 
     private new Camera camera;
     private float halfWidth;
@@ -31,34 +33,35 @@ public class Board : MonoBehaviour {
 
         for (int x = 0; x < _width; x++) {
             for (int y = 0; y < _height; y++) {
-                var spawnedField = Instantiate(_fieldPrefab, GetWorldspacePosition(x, y, 1), Quaternion.identity);
-                spawnedField.transform.localScale = new Vector3(tileWidth, tileWidth);
+                if (disabledFields.Contains((x, y))) continue;
+                var spawnedField = Instantiate(_fieldPrefab, GetWorldspacePosition(x, y, -tileWidth*0.15f - 0.1f), Quaternion.identity);
+                spawnedField.transform.localScale = new Vector3(tileWidth, tileWidth*0.3f, tileWidth);
                 spawnedField.name = $"Field {x} {y}";
                 spawnedField.transform.parent = transform;
 
                 var isOffset = (x + y) % 2 == 1;
-                spawnedField.Init(isOffset, disabledFields.Contains((x, y)), flagRegion.Contains((x, y)));
+                spawnedField.Init(isOffset, flagRegion.Contains((x, y)));
                 fields.Add(spawnedField);
             }
         }
     }
 
-    private Vector3 GetWorldspacePosition(int x, int y, int z = 0) {
-        return new Vector3(-halfWidth + x * 2 * halfWidth / _width + tileWidth / 2, -(tileWidth * _height / 2) + y * 2 * halfWidth / _width + tileWidth / 2, z);
+    private Vector3 GetWorldspacePosition(int x, int y, float z = 0) {
+        return new Vector3(-halfWidth + x * 2 * halfWidth / _width + tileWidth / 2, z, -(tileWidth * _height / 2) + y * 2 * halfWidth / _width + tileWidth / 2);
     }
 
-    private Vector3 GetWorldspaceScale(int width, int height) {
+    private Vector3 GetWorldspaceScale() {
 
-        return new Vector3(.4f * tileWidth * width, .4f * tileWidth * height);
+        return new Vector3(.4f * tileWidth, .4f * tileWidth, .4f * tileWidth);
     }
 
     public void SetPiece(Chessman piece, int x, int y) {
-        piece.transform.position = GetWorldspacePosition(x, y, -1);
-        piece.transform.localScale = GetWorldspaceScale(1, 1);
+        piece.transform.position = GetWorldspacePosition(x, y);
+        piece.transform.localScale = GetWorldspaceScale();
     }
 
     public void ShowMoveIndicator(int x, int y) {
-        GameObject moveIndicator = Instantiate(_moveIndicatorPrefab, GetWorldspacePosition(x, y), Quaternion.identity);
+        GameObject moveIndicator = Instantiate(_moveIndicatorPrefab, GetWorldspacePosition(x, y), _moveIndicatorPrefab.transform.rotation);
         moveIndicator.transform.parent = transform;
         moveIndicator.transform.localScale = new Vector3(tileWidth * 0.5f, tileWidth * 0.5f);
         moveIndicators.Add(moveIndicator);
@@ -69,10 +72,20 @@ public class Board : MonoBehaviour {
     }
 
     public Chessman CreatePiece(string name, int x, int y) {
-        Chessman cm = Instantiate(_chesspiecePrefab, new Vector3(0, 0, -1), Quaternion.identity);
+        Chessman prefab;
+        switch(name) {
+            case "pawn": prefab = _pawnPrefab; break;
+            case "knight": prefab = _knightPrefab; break;
+            case "bishop": prefab = _bishopPrefab; break;
+            case "rook": prefab = _rookPrefab; break;
+            case "queen": prefab = _queenPrefab; break;
+            case "king": prefab = _kingPrefab; break;
+            case "player": prefab = _playerPrefab; break;
+            default: Debug.LogError("invalid name for the chessman: " + name); return null;
+        }
+        Chessman cm = Instantiate(prefab, new Vector3(0, 0, 0), prefab.transform.rotation);
         cm.name = name;
         cm.transform.parent = transform;
-        cm.Init();
         return cm;
     }
 }
