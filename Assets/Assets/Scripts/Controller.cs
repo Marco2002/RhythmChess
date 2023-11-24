@@ -1,10 +1,12 @@
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UIElements;
 
 public class Controller : MonoBehaviour {
     // Start is called before the first frame update
     [SerializeField] private Game game;
     [SerializeField] private Board board;
+    [SerializeField] private UI UI;
     [SerializeField] private SwipeDetection swipeDetection;
     [SerializeField] private CsvLevelReader levelReader;
     [SerializeField] private FenUtil fenUtil;
@@ -30,6 +32,7 @@ public class Controller : MonoBehaviour {
 
     void Start() {
         levelReader.ReadLevelCsv("level"+level);
+        UI.setLevel("Level " + level);
         this.moveMatrix = levelReader.GetMoveMatrix();
         PrepareGame();
         game.Init(fenUtil.FenToPosition(levelReader.GetFen(), levelReader.GetMaxFile()), levelReader.GetMaxFile(), levelReader.GetMaxRank(), levelReader.GetDisabledFields(), levelReader.GetFlagRegion());
@@ -165,6 +168,7 @@ public class Controller : MonoBehaviour {
     private void LoadNextLevel() {
         level++;
         levelReader.ReadLevelCsv("level" + level);
+        UI.setLevel("Level " + level);
         this.moveMatrix = levelReader.GetMoveMatrix();
         PrepareGame();
         game.Init(fenUtil.FenToPosition(levelReader.GetFen(), levelReader.GetMaxFile()), levelReader.GetMaxFile(), levelReader.GetMaxRank(), levelReader.GetDisabledFields(), levelReader.GetFlagRegion());

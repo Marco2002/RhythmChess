@@ -1,0 +1,11 @@
+* {
+    -unity-font-definition: url('project://database/Assets/UI/Fonts/FiraSans-Medium.ttf?fileID=12800000&guid=cb95beb073877084e9574d71b2e46af6&type=3#FiraSans-Medium');
+}
+
+#LabelLevel {
+    font-size: 30px;
+    -unity-font-style: bold;
+    color: rgb(255, 255, 255);
+    -unity-text-align: upper-center;
+    margin-top: 16px;
+}
