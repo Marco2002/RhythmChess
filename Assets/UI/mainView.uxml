@@ -1,8 +1,8 @@
 <ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" editor-extension-mode="False">
     <Style src="project://database/Assets/UI/Stylesheets/base.uss?fileID=7433441132597879392&amp;guid=11961881b49d4ba4fba53d07001d5c3c&amp;type=3#base" />
-    <ui:VisualElement style="flex-grow: 1;">
-        <ui:VisualElement name="Header" style="flex-grow: 0; height: 484px; width: 350px; flex-basis: 50px; flex-shrink: 0; align-items: stretch; align-self: center; justify-content: flex-start;">
-            <ui:Label tabindex="-1" text="Label" display-tooltip-when-elided="true" name="LabelLevel" focusable="false" enable-rich-text="false" style="height: 42px;" />
+    <ui:VisualElement name="VisualElement" style="flex-grow: 1;">
+        <ui:VisualElement name="Header" style="height: 10%; width: 100%;">
+            <ui:Label tabindex="-1" text="Label" display-tooltip-when-elided="true" name="LabelLevel" focusable="false" enable-rich-text="false" style="height: 42px; justify-content: flex-start;" />
         </ui:VisualElement>
     </ui:VisualElement>
 </ui:UXML>

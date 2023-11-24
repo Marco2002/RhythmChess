@@ -3,14 +3,13 @@ using UnityEngine;
 
 
 public class Board : MonoBehaviour {
-
     [SerializeField] private int _width, _height;
     [SerializeField] private Field _fieldPrefab;
     [SerializeField] private Chessman _chesspiecePrefab;
     [SerializeField] private GameObject _moveIndicatorPrefab;
 
     private new Camera camera;
-    private float halfWidth;
+    private (float zeroReferenceX, float zeroReferenceY ) boardZeroReference;
     private float tileWidth;
     private List<Field> fields;
 
@@ -25,8 +24,14 @@ public class Board : MonoBehaviour {
         _width = width;
         _height = height;
         camera = Camera.main;
-        halfWidth = 0.8f * camera.aspect * camera.orthographicSize;
-        tileWidth = (halfWidth * 2) / _width;
+        float boardWidth = 2 * 0.8f * camera.aspect * camera.orthographicSize;
+        tileWidth = boardWidth / _width;
+        float uiHeaderHeight = 0.1f * camera.orthographicSize;
+        if(_height * tileWidth > camera.orthographicSize*0.8*2) {
+            // board is too tall -> tileWidth needs to be set based on the screen height and not screen width;
+            tileWidth = 2 * 0.8f * camera.orthographicSize / _height;
+        }
+        boardZeroReference = (-(tileWidth * _width / 2) + tileWidth / 2, -(tileWidth * _height / 2) + tileWidth / 2 - uiHeaderHeight); // the coordinates of the (0, 0) file in unity units
         fields = new();
 
         for (int x = 0; x < _width; x++) {
@@ -44,7 +49,11 @@ public class Board : MonoBehaviour {
     }
 
     private Vector3 GetWorldspacePosition(int x, int y, int z = 0) {
-        return new Vector3(-halfWidth + x * 2 * halfWidth / _width + tileWidth / 2, -(tileWidth * _height / 2) + y * 2 * halfWidth / _width + tileWidth / 2, z);
+        
+        float _x = boardZeroReference.zeroReferenceX + x * tileWidth;
+        float _y = boardZeroReference.zeroReferenceY + y * tileWidth;
+
+        return new Vector3(_x, _y, z);
     }
 
     private Vector3 GetWorldspaceScale(int width, int height) {

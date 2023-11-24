@@ -830,6 +830,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7d93d023b7b5578409c7f9c65b60b82f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  UI: {fileID: 995705299}
   _width: 8
   _height: 8
   _fieldPrefab: {fileID: 6262806570859804230, guid: 45931ce9a0568f948bde5dbb55a73e29, type: 3}
