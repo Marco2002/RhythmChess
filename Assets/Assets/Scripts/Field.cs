@@ -2,14 +2,17 @@ using UnityEngine;
 
 public class Field : MonoBehaviour {
     [SerializeField] private SpriteRenderer _renderer;
+    [SerializeField] private SpriteRenderer _sideRenderer;
 
-    public void Init(bool isOffset, bool isDisabled, bool isFlagRegion) {
-        if(isDisabled) {
-            _renderer.color = ColorScheme.fieldDisabled;
-        } else if(isFlagRegion) {
-            _renderer.color = isOffset ? ColorScheme.fieldFlagOffset : ColorScheme.fieldFlag;
+    public void Init(bool isOffset, bool isFlagRegion) {
+        Color color;
+        if(isFlagRegion) {
+            color = isOffset ? ColorScheme.fieldFlagOffset : ColorScheme.fieldFlag;
         } else { 
-            _renderer.color = isOffset ? ColorScheme.fieldOffset : ColorScheme.field;
+            color = isOffset ? ColorScheme.fieldOffset : ColorScheme.field;
         }
+        Color sideColor = new Color(color.r * .8f, color.g * .8f, color.b * .8f);
+        _renderer.color = color;
+        _sideRenderer.color = sideColor;
     }
 }

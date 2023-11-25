@@ -26,23 +26,31 @@ public class Board : MonoBehaviour {
         camera = Camera.main;
         float boardWidth = 2 * 0.8f * camera.aspect * camera.orthographicSize;
         tileWidth = boardWidth / _width;
-        float uiHeaderHeight = 0.1f * camera.orthographicSize;
-        if(_height * tileWidth > camera.orthographicSize*0.8*2) {
-            // board is too tall -> tileWidth needs to be set based on the screen height and not screen width;
-            tileWidth = 2 * 0.8f * camera.orthographicSize / _height;
+        float uiHeaderHeight = 2*0.1f * camera.orthographicSize;
+        float tileSideHeight = .3f * tileWidth;
+        if(_height * tileWidth + tileSideHeight > camera.orthographicSize*0.7*2) {
+            // board is too tall -> tileWidth needs to be set based on the screen height and not screen width
+            tileWidth = 2 * 0.75f * camera.orthographicSize / (_height + 0.3f);
+            //                                                             ^ added .3f to account for tile side
+            tileSideHeight = .3f * tileWidth;
+            
         }
-        boardZeroReference = (-(tileWidth * _width / 2) + tileWidth / 2, -(tileWidth * _height / 2) + tileWidth / 2 - uiHeaderHeight); // the coordinates of the (0, 0) file in unity units
+        boardZeroReference = (-(tileWidth * _width / 2) + tileWidth / 2, -(tileWidth * _height / 2) + tileWidth / 2 + tileSideHeight/2 - uiHeaderHeight/2); // the coordinates of the (0, 0) file in unity units
         fields = new();
 
         for (int x = 0; x < _width; x++) {
             for (int y = 0; y < _height; y++) {
+                if (disabledFields.Contains((x, y))) continue;
                 var spawnedField = Instantiate(_fieldPrefab, GetWorldspacePosition(x, y, 1), Quaternion.identity);
                 spawnedField.transform.localScale = new Vector3(tileWidth, tileWidth);
                 spawnedField.name = $"Field {x} {y}";
                 spawnedField.transform.parent = transform;
 
+                GameObject side = spawnedField.transform.GetChild(0).gameObject;
+                //side.transform.position = GetWorldspacePosition(x, y, 1) - Vector3
+                
                 var isOffset = (x + y) % 2 == 1;
-                spawnedField.Init(isOffset, disabledFields.Contains((x, y)), flagRegion.Contains((x, y)));
+                spawnedField.Init(isOffset, flagRegion.Contains((x, y)));
                 fields.Add(spawnedField);
             }
         }
