@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 5043943797729124077}
   - component: {fileID: 6389096979113351063}
   - component: {fileID: 681249026358007228}
+  - component: {fileID: 5123348519799939888}
   m_Layer: 0
   m_Name: ChessPiece
   m_TagString: Untagged
@@ -105,3 +106,30 @@ MonoBehaviour:
   rook: {fileID: 21300000, guid: 0f5d001ff75ade44aa0e1c60a32ab1b5, type: 3}
   queen: {fileID: 21300000, guid: f342803ed302bf84cbe25c3d06433543, type: 3}
   king: {fileID: 21300000, guid: 96813e44c187c4b4680a1109ef60598f, type: 3}
+--- !u!50 &5123348519799939888
+Rigidbody2D:
+  serializedVersion: 4
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4741302115783638678}
+  m_BodyType: 1
+  m_Simulated: 1
+  m_UseFullKinematicContacts: 0
+  m_UseAutoMass: 0
+  m_Mass: 1
+  m_LinearDrag: 0
+  m_AngularDrag: 0.05
+  m_GravityScale: 1
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_Interpolate: 0
+  m_SleepingMode: 1
+  m_CollisionDetection: 1
+  m_Constraints: 0
