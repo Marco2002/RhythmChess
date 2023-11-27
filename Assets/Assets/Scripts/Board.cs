@@ -1,6 +1,5 @@
 using System.Collections;
 using System.Collections.Generic;
-using Unity.Android.Gradle.Manifest;
 using UnityEngine;
 
 
@@ -92,7 +91,7 @@ public class Board : MonoBehaviour {
     private IEnumerator AnimatedMove(Chessman piece, int x, int y) {
         Vector3 destination = GetWorldspacePosition(x, y);
         while (piece.transform.position != destination) {
-            piece.transform.position = Vector3.MoveTowards(piece.transform.position, destination, 2 * tileWidth * Time.fixedDeltaTime);
+            piece.transform.position = Vector3.MoveTowards(piece.transform.position, destination, 12 * tileWidth * Time.deltaTime);
             // Wait a frame 
             yield return null;
         }

@@ -1,3 +1,4 @@
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UIElements;
@@ -13,6 +14,8 @@ public class Controller : MonoBehaviour {
     [SerializeField] private float cycleLength = 1.5f;
     [SerializeField] private int level = 1;
 
+    [SerializeField] private float moveAnimationTime = .1f;
+
     [SerializeField] private AudioSource audioCountInBeat;
     [SerializeField] private AudioSource audioSnare;
     [SerializeField] private AudioSource audioRide;
@@ -27,7 +30,6 @@ public class Controller : MonoBehaviour {
     private bool playerMoveHandled = false;
     private bool enemyMoveHandled = false;
     private bool gameEnded = false;
-    private bool pastFirstUpdate = false;// for some reason the first update is off the time for the rest of the game and needs to be skipped
     private Direction nextMove = Direction.None;
 
     void Start() {
@@ -40,15 +42,10 @@ public class Controller : MonoBehaviour {
 
     private void Update() {
 
-        if(!pastFirstUpdate) {
-            pastFirstUpdate = true;
-            return;
-        }
         if (numOfCountInBeats <= 4) {
-            
             time = (time + Time.deltaTime);
             if(time > cycleLength/2f) {
-                if (numOfCountInBeats < 4) audioCountInBeat.Play();
+                if (numOfCountInBeats < 4) StartCoroutine(PlaySound(audioCountInBeat));
                 numOfCountInBeats++;
                 time = time % (cycleLength / 2f);
 
@@ -59,6 +56,7 @@ public class Controller : MonoBehaviour {
             if (time <= cycleLength / 2f) {
                 // On Beat - Wait for input
                 if (gameEnded) {
+                    
                     bool playerWon = game.GetWinningSatus();
                     if (playerWon) {
                         Debug.Log("Congratulations, you won!");
@@ -67,9 +65,11 @@ public class Controller : MonoBehaviour {
                     else {
                         ResetLevel();
                     }
+                    StartCoroutine(PlaySound(audioCountInBeat));
+                    numOfCountInBeats = 1;
                 } else {
                     if (!onBeatHandled) {
-                        audioRide.Play();
+                        StartCoroutine(PlaySound(audioRide));
                         waitingForMove = true;
                         game.ShowPossibleMoves();
                         Camera.main.backgroundColor = ColorScheme.primary;
@@ -88,10 +88,10 @@ public class Controller : MonoBehaviour {
                     if (!playerMoveHandled) {
                         swipeDetection.DetectSwipeForCurrentTouch();
                         if (nextMove != Direction.None) {
-                            audioSnare.Play();
+                            StartCoroutine(PlaySound(audioSnare));
                             gameEnded = game.Move(nextMove);
                         } else {
-                            audioHihat.Play();
+                            StartCoroutine(PlaySound(audioHihat));
                         }
                         Camera.main.backgroundColor = ColorScheme.secondary;
                         board.RemoveMoveIndicators();
@@ -104,10 +104,10 @@ public class Controller : MonoBehaviour {
                     string currentFen = fenUtil.PositionToFen(game.GetPosition());
                     ((int x, int y) from, (int x, int y) to) bestMove = moveMatrix.GetValueOrDefault(currentFen);
                     if(bestMove.from != bestMove.to) {
-                        audioSnare.Play();
+                        StartCoroutine(PlaySound(audioSnare));
                         gameEnded = game.MoveEnemy(bestMove.from, bestMove.to) | gameEnded;
                     } else {
-                        audioHihat.Play();
+                        StartCoroutine(PlaySound(audioHihat));
                     }
                     enemyMoveHandled = true;
                     onBeatHandled = false;
@@ -172,6 +172,11 @@ public class Controller : MonoBehaviour {
         this.moveMatrix = levelReader.GetMoveMatrix();
         PrepareGame();
         game.Init(fenUtil.FenToPosition(levelReader.GetFen(), levelReader.GetMaxFile()), levelReader.GetMaxFile(), levelReader.GetMaxRank(), levelReader.GetDisabledFields(), levelReader.GetFlagRegion());
+    }
+
+    private IEnumerator PlaySound(AudioSource sound) {
+        yield return new WaitForSeconds(moveAnimationTime);
+        sound.Play();
     }
 
 }
