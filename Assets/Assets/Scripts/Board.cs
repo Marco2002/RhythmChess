@@ -1,4 +1,6 @@
+using System.Collections;
 using System.Collections.Generic;
+using Unity.Android.Gradle.Manifest;
 using UnityEngine;
 
 
@@ -81,6 +83,19 @@ public class Board : MonoBehaviour {
     public void SetPiece(Chessman piece, int x, int y) {
         piece.transform.position = GetWorldspacePosition(x, y, -1);
         piece.transform.localScale = GetWorldspaceScale(1, 1);
+    }
+
+    public void MovePiece(Chessman piece, int x, int y) {
+        StartCoroutine(AnimatedMove(piece, x, y));
+    }
+
+    private IEnumerator AnimatedMove(Chessman piece, int x, int y) {
+        Vector3 destination = GetWorldspacePosition(x, y);
+        while (piece.transform.position != destination) {
+            piece.transform.position = Vector3.MoveTowards(piece.transform.position, destination, 2 * tileWidth * Time.fixedDeltaTime);
+            // Wait a frame 
+            yield return null;
+        }
     }
 
     public void ShowMoveIndicator(int x, int y) {

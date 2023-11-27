@@ -121,6 +121,7 @@ public class Game : MonoBehaviour {
 
     // moves piece cm to (x,y) and returns true if the move ended the game
     private bool MovePiece(Chessman cm, int x, int y) {
+        (int x, int y) from = (cm.GetX(), cm.GetY());
         // check for win
         if (flagRegion.Contains((x, y)) && cm.name == "player") {
             ended = true;
@@ -132,12 +133,20 @@ public class Game : MonoBehaviour {
                 won = false;
             }
             position[x, y].transform.localScale = new Vector3(0,0,0);
+            position[x, y].SetX(-1);
+            position[x, y].SetY(-1);
         }
-        if (IsPositionOnBoard(cm.GetX(), cm.GetY())) SetPositionEmpty(cm.GetX(), cm.GetY());
+        
         position[x, y] = cm;
         cm.SetX(x);
         cm.SetY(y);
-        board.SetPiece(cm, cm.GetX(), cm.GetY());
+        if (IsPositionOnBoard(from.x, from.y)) {
+            SetPositionEmpty(from.x, from.y);
+            board.MovePiece(cm, x, y);
+        } else {
+            board.SetPiece(cm, x, y);
+        }
+        
         return ended;
     }
 
