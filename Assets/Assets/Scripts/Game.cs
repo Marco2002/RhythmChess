@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
@@ -55,7 +56,7 @@ public class Game : MonoBehaviour {
             }
            
 
-        }
+        }    
         piecesCreated = true;
     }
 
@@ -137,7 +138,6 @@ public class Game : MonoBehaviour {
             position[x, y].SetY(-1);
         }
         
-        position[x, y] = cm;
         cm.SetX(x);
         cm.SetY(y);
         if (IsPositionOnBoard(from.x, from.y)) {
@@ -146,7 +146,8 @@ public class Game : MonoBehaviour {
         } else {
             board.SetPiece(cm, x, y);
         }
-        
+        position[x, y] = cm;
+
         return ended;
     }
 

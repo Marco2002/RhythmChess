@@ -9,10 +9,10 @@ public class Board : MonoBehaviour {
     [SerializeField] private GameObject _moveIndicatorPrefab;
 
     [SerializeField] private int _width, _height;
-    [SerializeField] private float relativeTileHeight;
-    [SerializeField] private float relativeTileSideHeight;
+    [SerializeField] private float _relativeTileHeight;
+    [SerializeField] private float _relativeTileSideHeight;
+    [SerializeField] private float _movementSpeed;
 
-    private new Camera camera;
     private (float zeroReferenceX, float zeroReferenceY ) boardZeroReference;
     private float tileWidth;
     private float tileHeight;
@@ -28,18 +28,17 @@ public class Board : MonoBehaviour {
         }
         _width = width;
         _height = height;
-        camera = Camera.main;
-        float boardWidth = 2 * 0.8f * camera.aspect * camera.orthographicSize;
+        float boardWidth = 2 * 0.8f * Camera.main.aspect * Camera.main.orthographicSize;
         tileWidth = boardWidth / _width;
-        tileHeight = tileWidth * relativeTileHeight;
-        float uiHeaderHeight = 2*0.1f * camera.orthographicSize;
-        float tileSideHeight = relativeTileSideHeight * tileWidth;
-        if(_height * tileHeight + tileSideHeight > camera.orthographicSize*0.7*2) {
+        tileHeight = tileWidth * _relativeTileHeight;
+        float uiHeaderHeight = 2*0.1f * Camera.main.orthographicSize;
+        float tileSideHeight = _relativeTileSideHeight * tileWidth;
+        if(_height * tileHeight + tileSideHeight > Camera.main.orthographicSize*0.7*2) {
             // board is too tall -> tileWidth needs to be set based on the screen height and not screen width
-            tileHeight = 2 * 0.75f * camera.orthographicSize / (_height + relativeTileSideHeight);
+            tileHeight = 2 * 0.75f * Camera.main.orthographicSize / (_height + _relativeTileSideHeight);
             //                                                             ^ added to account for tile side
-            tileWidth = tileHeight / relativeTileHeight;
-            tileSideHeight = relativeTileSideHeight * tileWidth;
+            tileWidth = tileHeight / _relativeTileHeight;
+            tileSideHeight = _relativeTileSideHeight * tileWidth;
         }
         boardZeroReference = (-(tileWidth * _width / 2) + tileWidth / 2, -(tileHeight * _height / 2) + tileHeight / 2 + tileSideHeight/2 - uiHeaderHeight/2); // the coordinates of the (0, 0) file in unity units
         fields = new();
@@ -50,8 +49,8 @@ public class Board : MonoBehaviour {
                 var spawnedField = Instantiate(_fieldPrefab, GetWorldspacePosition(x, y, 1), Quaternion.identity);
                 spawnedField.transform.localScale = new Vector3(tileWidth, tileHeight);
                 // set up of the tile side
-                spawnedField.transform.GetChild(0).transform.localPosition = new Vector3(0, -.5f - (relativeTileSideHeight / 2f), 0);
-                spawnedField.transform.GetChild(0).transform.localScale = new Vector3(1, relativeTileSideHeight);
+                spawnedField.transform.GetChild(0).transform.localPosition = new Vector3(0, -.5f - (_relativeTileSideHeight / 2f), 0);
+                spawnedField.transform.GetChild(0).transform.localScale = new Vector3(1, _relativeTileSideHeight);
                 
                 spawnedField.name = $"Field {x} {y}";
                 spawnedField.transform.parent = transform;
@@ -91,7 +90,7 @@ public class Board : MonoBehaviour {
     private IEnumerator AnimatedMove(Chessman piece, int x, int y) {
         Vector3 destination = GetWorldspacePosition(x, y);
         while (piece.transform.position != destination) {
-            piece.transform.position = Vector3.MoveTowards(piece.transform.position, destination, 12 * tileWidth * Time.deltaTime);
+            piece.transform.position = Vector3.MoveTowards(piece.transform.position, destination, _movementSpeed * tileWidth * Time.deltaTime);
             // Wait a frame 
             yield return null;
         }

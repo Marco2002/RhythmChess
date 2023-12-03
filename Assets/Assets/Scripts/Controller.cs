@@ -14,7 +14,7 @@ public class Controller : MonoBehaviour {
     [SerializeField] private float cycleLength = 1.5f;
     [SerializeField] private int level = 1;
 
-    [SerializeField] private float moveAnimationTime = .1f;
+    [SerializeField] private float _moveAnimationTime;
 
     [SerializeField] private AudioSource audioCountInBeat;
     [SerializeField] private AudioSource audioSnare;
@@ -33,6 +33,7 @@ public class Controller : MonoBehaviour {
     private Direction nextMove = Direction.None;
 
     void Start() {
+        Application.targetFrameRate = 60;
         levelReader.ReadLevelCsv("level"+level);
         UI.setLevel("Level " + level);
         this.moveMatrix = levelReader.GetMoveMatrix();
@@ -175,7 +176,7 @@ public class Controller : MonoBehaviour {
     }
 
     private IEnumerator PlaySound(AudioSource sound) {
-        yield return new WaitForSeconds(moveAnimationTime);
+        yield return new WaitForSeconds(_moveAnimationTime);
         sound.Play();
     }
 

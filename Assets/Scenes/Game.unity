@@ -194,7 +194,7 @@ MonoBehaviour:
   fenUtil: {fileID: 228030542}
   cycleLength: 1.5
   level: 1
-  moveAnimationTime: 0.1
+  _moveAnimationTime: 0
   audioCountInBeat: {fileID: 228030548}
   audioSnare: {fileID: 228030545}
   audioRide: {fileID: 228030546}
@@ -836,8 +836,9 @@ MonoBehaviour:
   _moveIndicatorPrefab: {fileID: 5275631995502244248, guid: 4222c7f4b5804a44bbe78a957eedfb0d, type: 3}
   _width: 8
   _height: 8
-  relativeTileHeight: 1
-  relativeTileSideHeight: 0.3
+  _relativeTileHeight: 1
+  _relativeTileSideHeight: 0.3
+  _movementSpeed: 20
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0
