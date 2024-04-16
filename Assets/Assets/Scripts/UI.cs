@@ -5,12 +5,12 @@ using UnityEngine.UIElements;
 
 public class UI : MonoBehaviour
 {
-    VisualElement root;
+    private VisualElement root;
     private void OnEnable() {
         root = GetComponent<UIDocument>().rootVisualElement;
     }
 
-    public void setLevel(string level) {
+    public void SetLevel(string level) {
         root.Q<Label>("LabelLevel").text = level;
     }
 }

@@ -2,20 +2,23 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 public class Game : MonoBehaviour {
 
+    [SerializeField] private Board _board;
+    
     private int width, height;
     private List<(int x, int y)> disabledFields, flagRegion;
-    List<(string pieceName, int x, int y)> initPosition;
-    bool piecesCreated = false;
-    bool ended = false;
-    bool won = false;
-    private Chessman[,] position;
-    private Chessman player;
+    private List<(string pieceName, int x, int y)> initPosition;
+    private bool piecesCreated = false;
+    private bool ended = false;
+    private bool won = false;
+    private ChessPiece[,] position;
+    private ChessPiece player;
 
-    private List<Chessman> pieces;
-    [SerializeField] private Board board;
+    private List<ChessPiece> pieces;
+    
 
     public void Init(List<(string pieceName, int x, int y)> initPosition, int width, int height, List<(int x, int y)> disabledFields, List<(int x, int y)> flagRegion) {
         if(pieces != null) {
@@ -28,23 +31,23 @@ public class Game : MonoBehaviour {
         this.disabledFields = disabledFields;
         this.flagRegion = flagRegion;
         this.initPosition = initPosition;
-        this.piecesCreated = false;
+        piecesCreated = false;
 
-        pieces = new();
-        board.Init(width, height, disabledFields, flagRegion);
+        pieces = new List<ChessPiece>();
+        _board.Init(width, height, disabledFields, flagRegion);
         SetupLevel();
     }
 
     public void SetupLevel() {
         ended = false;
 
-        position = new Chessman[width, height];
+        position = new ChessPiece[width, height];
         // Init pieces
-        for (int i = 0; i < initPosition.Count(); i++) {
+        for (var i = 0; i < initPosition.Count; i++) {
             var (pieceName, x, y) = initPosition[i];
             // Init Pieces
             if (!piecesCreated) {
-                var piece = board.CreatePiece(pieceName, (int)x, (int)y);
+                var piece = _board.CreatePiece(pieceName, x, y);
                 MovePiece(piece, x, y);
                 pieces.Add(piece);
                 if (pieceName == "player") {
@@ -61,8 +64,8 @@ public class Game : MonoBehaviour {
     }
 
     public List<Direction> GetPossibleMoveDirections() {
-        int x = player.GetX();
-        int y = player.GetY();
+        var x = player.GetX();
+        var y = player.GetY();
         List<Direction> possibleMoves = new();
         // straight moves if no piece is on position
         if (IsPositionOnBoard(x - 1, y) && !disabledFields.Contains((x - 1, y))) possibleMoves.Add(Direction.Left);
@@ -70,65 +73,59 @@ public class Game : MonoBehaviour {
         if (IsPositionOnBoard(x + 1, y) && !disabledFields.Contains((x + 1, y)))  possibleMoves.Add(Direction.Right);
         if (IsPositionOnBoard(x, y + 1) && !disabledFields.Contains((x, y + 1))) possibleMoves.Add(Direction.Up);
         // diagonal moves if a piece is on position
-        if (IsPositionOnBoard(x - 1, y - 1) && position[x - 1, y - 1] != null) possibleMoves.Add(Direction.DownLeft);
-        if (IsPositionOnBoard(x - 1, y + 1) && position[x - 1, y + 1] != null) possibleMoves.Add(Direction.UpLeft);
-        if (IsPositionOnBoard(x + 1, y - 1) && position[x + 1, y - 1] != null) possibleMoves.Add(Direction.DownRight);
-        if (IsPositionOnBoard(x + 1, y + 1) && position[x + 1, y + 1] != null) possibleMoves.Add(Direction.UpRight);
+        if (IsPositionOnBoard(x - 1, y - 1) && position[x - 1, y - 1] is not null) possibleMoves.Add(Direction.DownLeft);
+        if (IsPositionOnBoard(x - 1, y + 1) && position[x - 1, y + 1] is not null) possibleMoves.Add(Direction.UpLeft);
+        if (IsPositionOnBoard(x + 1, y - 1) && position[x + 1, y - 1] is not null) possibleMoves.Add(Direction.DownRight);
+        if (IsPositionOnBoard(x + 1, y + 1) && position[x + 1, y + 1] is not null) possibleMoves.Add(Direction.UpRight);
         return possibleMoves;
     }
 
     public void ShowPossibleMoves() {
-        List<Vector2> possibleMoves = GetPossibleMoves();
+        var possibleMoves = GetPossibleMoves();
         foreach (var move in possibleMoves) {
-            board.ShowMoveIndicator((int)move.x, (int)move.y);
+            _board.ShowMoveIndicator((int)move.x, (int)move.y);
         }
 
     }
 
     // moves the player in the given direction and return true if move finished game
     public bool Move(Direction direction) {
-        switch (direction) {
-            case Direction.Up: return MovePiece(player, player.GetX(), player.GetY() + 1);
-            case Direction.Down: return MovePiece(player, player.GetX(), player.GetY() - 1);
-            case Direction.Left: return MovePiece(player, player.GetX() - 1, player.GetY());
-            case Direction.Right: return MovePiece(player, player.GetX() + 1, player.GetY());
-            case Direction.UpRight: return MovePiece(player, player.GetX() + 1, player.GetY() + 1);
-            case Direction.DownRight: return MovePiece(player, player.GetX() + 1, player.GetY() - 1);
-            case Direction.UpLeft: return MovePiece(player, player.GetX() - 1, player.GetY() + 1);
-            case Direction.DownLeft: return MovePiece(player, player.GetX() - 1, player.GetY() - 1);
-            case Direction.None:
-                return false ;
-        }
-        Debug.LogError("invalid move direction for the method Move in the Game component");
-        return false;
+        return direction switch {
+            Direction.Up => MovePiece(player, player.GetX(), player.GetY() + 1),
+            Direction.Down => MovePiece(player, player.GetX(), player.GetY() - 1),
+            Direction.Left => MovePiece(player, player.GetX() - 1, player.GetY()),
+            Direction.Right => MovePiece(player, player.GetX() + 1, player.GetY()),
+            Direction.UpRight => MovePiece(player, player.GetX() + 1, player.GetY() + 1),
+            Direction.DownRight => MovePiece(player, player.GetX() + 1, player.GetY() - 1),
+            Direction.UpLeft => MovePiece(player, player.GetX() - 1, player.GetY() + 1),
+            Direction.DownLeft => MovePiece(player, player.GetX() - 1, player.GetY() - 1),
+            Direction.None => false,
+            _ => false
+        };
     }
 
-    // moves enemy piece from from.(x,y) to to.(x,y) and returns true if move ended the game
+    // moves enemy piece from.(x,y) to.(x,y) and returns true if move ended the game
     public bool MoveEnemy((int x, int y) from, (int x, int y) to) {
         return MovePiece(position[from.x, from.y], to.x, to.y);
     }
 
-    public Chessman[,] GetPosition() {
+    public ChessPiece[,] GetPosition() {
         return position;
     }
 
-    public bool GetWinningSatus() {
-        if (!ended) Debug.LogWarning("called GetWinningStatus before game ended");
+    public bool GetWinningStatus() {
         return won;
     }
 
-    
-
-
     // moves piece cm to (x,y) and returns true if the move ended the game
-    private bool MovePiece(Chessman cm, int x, int y) {
+    private bool MovePiece(ChessPiece cm, int x, int y) {
         (int x, int y) from = (cm.GetX(), cm.GetY());
         // check for win
         if (flagRegion.Contains((x, y)) && cm.name == "player") {
             ended = true;
             won = true;
         }
-        if (position[x, y] != null) {
+        if (position[x, y] is not null) {
             if(position[x, y].name == "player") { // check for loose
                 ended = true;
                 won = false;
@@ -142,9 +139,9 @@ public class Game : MonoBehaviour {
         cm.SetY(y);
         if (IsPositionOnBoard(from.x, from.y)) {
             SetPositionEmpty(from.x, from.y);
-            board.MovePiece(cm, x, y);
+            _board.MovePiece(cm, x, y);
         } else {
-            board.SetPiece(cm, x, y);
+            _board.SetPiece(cm, x, y);
         }
         position[x, y] = cm;
 
@@ -160,12 +157,12 @@ public class Game : MonoBehaviour {
     }
 
     private List<Vector2> GetPossibleMoves() {
-        List<Direction> possibleMoveDirections = GetPossibleMoveDirections();
+        var possibleMoveDirections = GetPossibleMoveDirections();
 
-        int x = player.GetX();
-        int y = player.GetY();
-        List<Vector2> possibleMoves = new List<Vector2>();
-        foreach (Direction moveDirection in possibleMoveDirections) {
+        var x = player.GetX();
+        var y = player.GetY();
+        var possibleMoves = new List<Vector2>();
+        foreach (var moveDirection in possibleMoveDirections) {
             switch(moveDirection) {
                 case Direction.Left: possibleMoves.Add(new Vector2(x - 1, y)); break;
                 case Direction.Right: possibleMoves.Add(new Vector2(x + 1, y)); break;
@@ -175,6 +172,10 @@ public class Game : MonoBehaviour {
                 case Direction.UpRight: possibleMoves.Add(new Vector2(x + 1, y + 1)); break;
                 case Direction.DownLeft: possibleMoves.Add(new Vector2(x - 1, y - 1)); break;
                 case Direction.DownRight: possibleMoves.Add(new Vector2(x + 1, y - 1)); break;
+                case Direction.None:
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException();
             }
         }
         return possibleMoves;

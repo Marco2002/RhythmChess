@@ -2,14 +2,12 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class FenUtil : MonoBehaviour {
-
-    public static readonly ((int x, int y) from, (int x, int y) to) invalidMove = ((0, 0), (0, 0));
-    public List<(string pieceName, int x, int y)> FenToPosition(string fen, int maxFile) {
-        List<(string pieceName, int x, int y)> position = new List<(string pieceName, int x, int y)>();
-        string[] files = fen.Split('/');
-        for (int y = 0; y < files.Length; y++) {
-            int x = maxFile - 1;
-            for (int i = 0; i < files[y].Length; i++) {
+    public static List<(string pieceName, int x, int y)> FenToPosition(string fen, int maxFile) {
+        List<(string pieceName, int x, int y)> position = new();
+        var files = fen.Split('/');
+        for (var y = 0; y < files.Length; y++) {
+            var x = maxFile - 1;
+            for (var i = 0; i < files[y].Length; i++) {
                 if (char.IsNumber(files[y][i])) {
                     x -= int.Parse(files[y][i].ToString());
                 } else {
@@ -30,13 +28,13 @@ public class FenUtil : MonoBehaviour {
         return position;
     }
 
-    public string PositionToFen(Chessman[,] position) {
-        string fen = "";
+    public static string PositionToFen(ChessPiece[,] position) {
+        var fen = "";
         for(int y = 0; y < position.GetLength(1); y++) {
             fen += "/";
-            int fieldsWithoutPiece = 0;
-            for(int x = position.GetLength(0)-1; x >= 0; x--) {
-                if (position[x, y] == null) fieldsWithoutPiece++;
+            var fieldsWithoutPiece = 0;
+            for(var x = position.GetLength(0)-1; x >= 0; x--) {
+                if (position[x, y] is null) fieldsWithoutPiece++;
                 else {
                     if (fieldsWithoutPiece > 0) fen += fieldsWithoutPiece;
                     switch (position[x, y].name) {

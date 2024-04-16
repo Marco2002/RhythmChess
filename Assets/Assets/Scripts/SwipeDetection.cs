@@ -1,60 +1,65 @@
 using UnityEngine;
-using UnityEngine.InputSystem.XR;
+using UnityEngine.Serialization;
 
 public class SwipeDetection : MonoBehaviour
 {
-    [SerializeField] private InputManager inputManager;
+    [SerializeField] private InputManager _inputManager;
+    [SerializeField] private Controller _controller;
 
-    [SerializeField] private float minimumDistance = .2f;
-    [SerializeField] private float maximumTime = 1f;
+    [SerializeField] private float _minimumDistance = .2f;
+    [SerializeField] private float _maximumTime = 1f;
 
-    private Vector2 startPos;
+    private Vector2 startPosition;
     private float startTime;
-    private Vector2 endPos;
+    private Vector2 endPosition;
     private float endTime;
     private bool inTouch;
 
+    private void Awake() {
+        _controller = gameObject.GetComponent<Controller>();
+    }
+
     public void OnEnable() {
-        inputManager.OnStartTouch += SwipeStart;
-        inputManager.OnEndTouch += SwipeEnd;
+        _inputManager.OnStartTouch += SwipeStart;
+        _inputManager.OnEndTouch += SwipeEnd;
     }
 
     public void OnDisable() {
-        inputManager.OnStartTouch -= SwipeStart;
-        inputManager.OnEndTouch -= SwipeEnd;
+        _inputManager.OnStartTouch -= SwipeStart;
+        _inputManager.OnEndTouch -= SwipeEnd;
     }
 
     private void SwipeStart(Vector2 position, float time) {
-        startPos = position;
+        startPosition = position;
         startTime = time;
         inTouch = true;
     }
 
     private void SwipeEnd(Vector2 position, float time) {
-        endPos = position;
+        endPosition = position;
         endTime = time;
         DetectSwipe();
         inTouch = false;
     }
 
     private void DetectSwipe() {
-        if (Vector3.Distance(startPos, endPos) >= minimumDistance && endTime - startTime < maximumTime) {
-            Debug.DrawLine(startPos, endPos, Color.red, 5f);
-            Vector3 direction = endPos - startPos;
-            Vector2 direction2D = new Vector2(direction.x, direction.y).normalized;
-            gameObject.GetComponent<Controller>().RecordMove(direction2D);
-        }
+        if (!(Vector3.Distance(startPosition, endPosition) >= _minimumDistance) ||
+            !(endTime - startTime < _maximumTime)) return;
+        Debug.DrawLine(startPosition, endPosition, Color.red, 5f);
+        Vector3 direction = endPosition - startPosition;
+        var direction2D = new Vector2(direction.x, direction.y).normalized;
+        gameObject.GetComponent<Controller>().RecordMove(direction2D);
 
     }
  
 
     public void DetectSwipeForCurrentTouch() {
         if (!inTouch) return;
-        Vector2 currentPosition = inputManager.PrimaryPosition();
-        if (Vector3.Distance(startPos, currentPosition) >= minimumDistance) {
-            Vector3 direction = currentPosition - startPos;
-            Vector2 direction2D = new Vector2(direction.x, direction.y).normalized;
-            gameObject.GetComponent<Controller>().RecordMove(direction2D);
+        var currentPosition = _inputManager.PrimaryPosition();
+        if (Vector3.Distance(startPosition, currentPosition) >= _minimumDistance) {
+            Vector3 direction = currentPosition - startPosition;
+            var direction2D = new Vector2(direction.x, direction.y).normalized;
+            _controller.RecordMove(direction2D);
         }
         inTouch = false;
     }

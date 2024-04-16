@@ -1,30 +1,34 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Serialization;
 using UnityEngine.UIElements;
 
 public class Controller : MonoBehaviour {
     // Start is called before the first frame update
-    [SerializeField] private Game game;
-    [SerializeField] private Board board;
-    [SerializeField] private UI UI;
-    [SerializeField] private SwipeDetection swipeDetection;
-    [SerializeField] private CsvLevelReader levelReader;
-    [SerializeField] private FenUtil fenUtil;
-    [SerializeField] private float cycleLength = 1.5f;
-    [SerializeField] private int level = 1;
-
+    [SerializeField] private Game _game;
+    [SerializeField] private Board _board;
+    [SerializeField] private Camera _mainCamera;
+    [SerializeField] private UI _ui;
+    [SerializeField] private SwipeDetection _swipeDetection;
+    [SerializeField] private CsvLevelReader _levelReader;
+    [SerializeField] private FenUtil _fenUtil;
+    
+    [SerializeField] private float _cycleLength = 1.5f;
+    [SerializeField] private int _level = 1;
+    
     [SerializeField] private float _moveAnimationTime;
 
-    [SerializeField] private AudioSource audioCountInBeat;
-    [SerializeField] private AudioSource audioSnare;
-    [SerializeField] private AudioSource audioRide;
-    [SerializeField] private AudioSource audioHihat;
+    [SerializeField] private AudioSource _audioCountInBeat;
+    [SerializeField] private AudioSource _audioSnare;
+    [SerializeField] private AudioSource _audioRide;
+    [SerializeField] private AudioSource _audioHiHat;
 
 
     private Dictionary<string, ((int x, int y) from, (int x, int y) to)> moveMatrix;
     private float time = 0f;
-    private int numOfCountInBeats = 0;
+    private int numberOfCountInBeats = 0;
     private bool waitingForMove = false;
     private bool onBeatHandled = false;
     private bool playerMoveHandled = false;
@@ -32,83 +36,80 @@ public class Controller : MonoBehaviour {
     private bool gameEnded = false;
     private Direction nextMove = Direction.None;
 
-    void Start() {
+    private void Start() {
         Application.targetFrameRate = 60;
-        levelReader.ReadLevelCsv("level"+level);
-        UI.setLevel("Level " + level);
-        this.moveMatrix = levelReader.GetMoveMatrix();
+        _levelReader.ReadLevelCsv("level"+_level);
+        _ui.SetLevel("Level " + _level);
+        moveMatrix = _levelReader.GetMoveMatrix();
         PrepareGame();
-        game.Init(fenUtil.FenToPosition(levelReader.GetFen(), levelReader.GetMaxFile()), levelReader.GetMaxFile(), levelReader.GetMaxRank(), levelReader.GetDisabledFields(), levelReader.GetFlagRegion());
+        _game.Init(FenUtil.FenToPosition(_levelReader.GetFen(), _levelReader.GetMaxFile()), _levelReader.GetMaxFile(), _levelReader.GetMaxRank(), _levelReader.GetDisabledFields(), _levelReader.GetFlagRegion());
     }
 
     private void Update() {
 
-        if (numOfCountInBeats <= 4) {
+        if (numberOfCountInBeats <= 4) {
             time = (time + Time.deltaTime);
-            if(time > cycleLength/2f) {
-                if (numOfCountInBeats < 4) StartCoroutine(PlaySound(audioCountInBeat));
-                numOfCountInBeats++;
-                time = time % (cycleLength / 2f);
-
-            }
+            if (!(time > _cycleLength / 2f)) return;
+            if (numberOfCountInBeats < 4) StartCoroutine(PlaySound(_audioCountInBeat));
+            numberOfCountInBeats++;
+            time = time % (_cycleLength / 2f);
         } else {
-            time = (time + Time.deltaTime) % cycleLength;
+            time = (time + Time.deltaTime) % _cycleLength;
             // game loop
-            if (time <= cycleLength / 2f) {
+            if (time <= _cycleLength / 2f) {
                 // On Beat - Wait for input
                 if (gameEnded) {
                     
-                    bool playerWon = game.GetWinningSatus();
+                    var playerWon = _game.GetWinningStatus();
                     if (playerWon) {
-                        Debug.Log("Congratulations, you won!");
                         LoadNextLevel();
                     }
                     else {
                         ResetLevel();
                     }
-                    StartCoroutine(PlaySound(audioCountInBeat));
-                    numOfCountInBeats = 1;
+                    StartCoroutine(PlaySound(_audioCountInBeat));
+                    numberOfCountInBeats = 1;
                 } else {
                     if (!onBeatHandled) {
-                        StartCoroutine(PlaySound(audioRide));
+                        StartCoroutine(PlaySound(_audioRide));
                         waitingForMove = true;
-                        game.ShowPossibleMoves();
-                        Camera.main.backgroundColor = ColorScheme.primary;
+                        _game.ShowPossibleMoves();
+                        _mainCamera.backgroundColor = ColorScheme.primary;
                         playerMoveHandled = false;
                         enemyMoveHandled = false;
                         onBeatHandled = true;
                     }
                     if (waitingForMove) { // user has not input move yet
-                        swipeDetection.enabled = true;
+                        _swipeDetection.enabled = true;
                     }
                 }
             } else if (!gameEnded) {
                 // Off Beat - Show moves
-                if (time <= cycleLength * .75f) { 
+                if (time <= _cycleLength * .75f) { 
                     // show player move
                     if (!playerMoveHandled) {
-                        swipeDetection.DetectSwipeForCurrentTouch();
+                        _swipeDetection.DetectSwipeForCurrentTouch();
                         if (nextMove != Direction.None) {
-                            StartCoroutine(PlaySound(audioSnare));
-                            gameEnded = game.Move(nextMove);
+                            StartCoroutine(PlaySound(_audioSnare));
+                            gameEnded = _game.Move(nextMove);
                         } else {
-                            StartCoroutine(PlaySound(audioHihat));
+                            StartCoroutine(PlaySound(_audioHiHat));
                         }
-                        Camera.main.backgroundColor = ColorScheme.secondary;
-                        board.RemoveMoveIndicators();
+                        _mainCamera.backgroundColor = ColorScheme.secondary;
+                        _board.RemoveMoveIndicators();
                         nextMove = Direction.None;
-                        swipeDetection.enabled = false;
+                        _swipeDetection.enabled = false;
                     }
                     playerMoveHandled = true;
                 } else if (!enemyMoveHandled) {
                     // showEnemyMove
-                    string currentFen = fenUtil.PositionToFen(game.GetPosition());
-                    ((int x, int y) from, (int x, int y) to) bestMove = moveMatrix.GetValueOrDefault(currentFen);
+                    var currentFen = FenUtil.PositionToFen(_game.GetPosition());
+                    var bestMove = moveMatrix.GetValueOrDefault(currentFen);
                     if(bestMove.from != bestMove.to) {
-                        StartCoroutine(PlaySound(audioSnare));
-                        gameEnded = game.MoveEnemy(bestMove.from, bestMove.to) | gameEnded;
+                        StartCoroutine(PlaySound(_audioSnare));
+                        gameEnded = _game.MoveEnemy(bestMove.from, bestMove.to) | gameEnded;
                     } else {
-                        StartCoroutine(PlaySound(audioHihat));
+                        StartCoroutine(PlaySound(_audioHiHat));
                     }
                     enemyMoveHandled = true;
                     onBeatHandled = false;
@@ -120,7 +121,7 @@ public class Controller : MonoBehaviour {
     }
 
     public void RecordMove(Vector2 direction) {
-        List<Direction> possibleDirections = game.GetPossibleMoveDirections();
+        var possibleDirections = _game.GetPossibleMoveDirections();
         if (Vector2.Dot(new Vector2(1, 1).normalized, direction) > .92 && possibleDirections.Contains(Direction.UpRight)) {
             nextMove = Direction.UpRight;
 
@@ -146,14 +147,14 @@ public class Controller : MonoBehaviour {
         else if (Vector2.Dot(Vector2.right, direction) > .7 && possibleDirections.Contains(Direction.Right)) {
             nextMove = Direction.Right;
         }
-        board.RemoveMoveIndicators();
+        _board.RemoveMoveIndicators();
         waitingForMove = false;
-        swipeDetection.enabled = false;
+        _swipeDetection.enabled = false;
     }
 
     private void PrepareGame() {
         time = 0f;
-        numOfCountInBeats = 0;
+        numberOfCountInBeats = 0;
         onBeatHandled = false;
         playerMoveHandled = false;
         enemyMoveHandled = false;
@@ -162,17 +163,17 @@ public class Controller : MonoBehaviour {
     }
 
     private void ResetLevel() {
-        game.SetupLevel();
+        _game.SetupLevel();
         PrepareGame();
     }
 
     private void LoadNextLevel() {
-        level++;
-        levelReader.ReadLevelCsv("level" + level);
-        UI.setLevel("Level " + level);
-        this.moveMatrix = levelReader.GetMoveMatrix();
+        _level++;
+        _levelReader.ReadLevelCsv("level" + _level);
+        _ui.SetLevel("Level " + _level);
+        this.moveMatrix = _levelReader.GetMoveMatrix();
         PrepareGame();
-        game.Init(fenUtil.FenToPosition(levelReader.GetFen(), levelReader.GetMaxFile()), levelReader.GetMaxFile(), levelReader.GetMaxRank(), levelReader.GetDisabledFields(), levelReader.GetFlagRegion());
+        _game.Init(FenUtil.FenToPosition(_levelReader.GetFen(), _levelReader.GetMaxFile()), _levelReader.GetMaxFile(), _levelReader.GetMaxRank(), _levelReader.GetDisabledFields(), _levelReader.GetFlagRegion());
     }
 
     private IEnumerator PlaySound(AudioSource sound) {

@@ -23,9 +23,10 @@ public class InputManager : MonoBehaviour {
     private void OnDisable() {
         playerControls.Disable();
     }
-    void Start() {
-        playerControls.Touch.PrimaryContact.started += ctx => StartTouchPrimary(ctx);
-        playerControls.Touch.PrimaryContact.canceled += ctx => EndTouchPrimary(ctx);
+
+    private void Start() {
+        playerControls.Touch.PrimaryContact.started += StartTouchPrimary;
+        playerControls.Touch.PrimaryContact.canceled += EndTouchPrimary;
     }
 
     private async void StartTouchPrimary(InputAction.CallbackContext context) {

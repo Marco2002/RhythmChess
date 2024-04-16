@@ -11,7 +11,7 @@ public class Field : MonoBehaviour {
         } else { 
             color = isOffset ? ColorScheme.fieldOffset : ColorScheme.field;
         }
-        Color sideColor = new Color(color.r * .8f, color.g * .8f, color.b * .8f);
+        var sideColor = new Color(color.r * .8f, color.g * .8f, color.b * .8f);
         _renderer.color = color;
         _sideRenderer.color = sideColor;
     }
