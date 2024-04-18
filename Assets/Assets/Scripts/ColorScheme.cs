@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class ColorScheme {
+public abstract class ColorScheme {
     public static Color primary = new Color32(133, 203, 255, 255);
     public static Color secondary = new Color32(255, 135, 133, 255);
     public static Color field = new Color32(235, 229, 80, 255);

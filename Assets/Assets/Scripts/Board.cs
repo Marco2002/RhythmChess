@@ -1,8 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.Serialization;
-
 
 public class Board : MonoBehaviour {
     [SerializeField] private Camera _mainCamera;

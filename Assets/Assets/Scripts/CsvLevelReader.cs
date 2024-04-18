@@ -59,7 +59,7 @@ public class CsvLevelReader : MonoBehaviour {
 
     private (int x, int y) FieldStringToVector2(string fieldData) {
         // field is inversed as perspective is from black
-        var x = maxFile - ((int)fieldData[0] - 96);
+        var x = maxFile - (fieldData[0] - 96);
         var y = maxRank - int.Parse(fieldData[1].ToString());
         return (x, y);
     }

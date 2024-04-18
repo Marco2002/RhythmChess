@@ -1,8 +1,6 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using UnityEngine;
-using UnityEngine.Serialization;
 
 public class Game : MonoBehaviour {
 
@@ -11,9 +9,9 @@ public class Game : MonoBehaviour {
     private int width, height;
     private List<(int x, int y)> disabledFields, flagRegion;
     private List<(string pieceName, int x, int y)> initPosition;
-    private bool piecesCreated = false;
-    private bool ended = false;
-    private bool won = false;
+    private bool piecesCreated;
+    private bool ended;
+    private bool won;
     private ChessPiece[,] position;
     private ChessPiece player;
 
@@ -23,7 +21,7 @@ public class Game : MonoBehaviour {
     public void Init(List<(string pieceName, int x, int y)> initPosition, int width, int height, List<(int x, int y)> disabledFields, List<(int x, int y)> flagRegion) {
         if(pieces != null) {
             foreach(var piece in pieces) {
-                Destroy(piece.gameObject);
+                DestroyImmediate(piece.gameObject);
             }
         }
         this.width = width;

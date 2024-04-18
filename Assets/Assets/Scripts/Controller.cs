@@ -1,9 +1,6 @@
-using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.Serialization;
-using UnityEngine.UIElements;
 
 public class Controller : MonoBehaviour {
     // Start is called before the first frame update
@@ -27,13 +24,13 @@ public class Controller : MonoBehaviour {
 
 
     private Dictionary<string, ((int x, int y) from, (int x, int y) to)> moveMatrix;
-    private float time = 0f;
-    private int numberOfCountInBeats = 0;
-    private bool waitingForMove = false;
-    private bool onBeatHandled = false;
-    private bool playerMoveHandled = false;
-    private bool enemyMoveHandled = false;
-    private bool gameEnded = false;
+    private float time;
+    private int numberOfCountInBeats;
+    private bool waitingForMove;
+    private bool onBeatHandled;
+    private bool playerMoveHandled;
+    private bool enemyMoveHandled;
+    private bool gameEnded;
     private Direction nextMove = Direction.None;
 
     private void Start() {
