@@ -225,7 +225,6 @@ GameObject:
   - component: {fileID: 652580726}
   - component: {fileID: 652580725}
   - component: {fileID: 652580724}
-  - component: {fileID: 652580723}
   - component: {fileID: 652580722}
   - component: {fileID: 652580721}
   - component: {fileID: 652580720}
@@ -625,18 +624,6 @@ AudioSource:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
---- !u!114 &652580723
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 652580718}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 5036f36104c7d2f4092cf7f5104735be, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!114 &652580724
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -689,7 +676,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cbfcfd1b269ba704f985d366b9b5056c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _board: {fileID: 0}
+  _board: {fileID: 1712004155}
 --- !u!114 &652580728
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -708,7 +695,6 @@ MonoBehaviour:
   _ui: {fileID: 995705299}
   _swipeDetection: {fileID: 652580726}
   _levelReader: {fileID: 652580724}
-  _fenUtil: {fileID: 652580723}
   _cycleLength: 1.5
   _level: 1
   _moveAnimationTime: 0

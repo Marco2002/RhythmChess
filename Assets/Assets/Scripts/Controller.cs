@@ -1,5 +1,4 @@
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class Controller : MonoBehaviour {
@@ -9,8 +8,7 @@ public class Controller : MonoBehaviour {
     [SerializeField] private Camera _mainCamera;
     [SerializeField] private UI _ui;
     [SerializeField] private SwipeDetection _swipeDetection;
-    [SerializeField] private CsvLevelReader _levelReader;
-    [SerializeField] private FenUtil _fenUtil;
+    [SerializeField] private LevelReader _levelReader;
     
     [SerializeField] private float _cycleLength = 1.5f;
     [SerializeField] private int _level = 1;
@@ -22,8 +20,6 @@ public class Controller : MonoBehaviour {
     [SerializeField] private AudioSource _audioRide;
     [SerializeField] private AudioSource _audioHiHat;
 
-
-    private Dictionary<string, ((int x, int y) from, (int x, int y) to)> moveMatrix;
     private float time;
     private int numberOfCountInBeats;
     private bool waitingForMove;
@@ -37,9 +33,8 @@ public class Controller : MonoBehaviour {
         Application.targetFrameRate = 60;
         _levelReader.ReadLevelCsv("level"+_level);
         _ui.SetLevel("Level " + _level);
-        moveMatrix = _levelReader.GetMoveMatrix();
         PrepareGame();
-        _game.Init(FenUtil.FenToPosition(_levelReader.GetFen(), _levelReader.GetMaxFile()), _levelReader.GetMaxFile(), _levelReader.GetMaxRank(), _levelReader.GetDisabledFields(), _levelReader.GetFlagRegion());
+        _game.Init(_levelReader.GetStartingPosition(), _levelReader.GetMaxFile(), _levelReader.GetMaxRank(), _levelReader.GetDisabledFields(), _levelReader.GetFlagRegion());
     }
 
     private void Update() {
@@ -100,8 +95,7 @@ public class Controller : MonoBehaviour {
                     playerMoveHandled = true;
                 } else if (!enemyMoveHandled) {
                     // showEnemyMove
-                    var currentFen = FenUtil.PositionToFen(_game.GetPosition());
-                    var bestMove = moveMatrix.GetValueOrDefault(currentFen);
+                    var bestMove = _levelReader.GetBestMove(_game.GetPosition());
                     if(bestMove.from != bestMove.to) {
                         StartCoroutine(PlaySound(_audioSnare));
                         gameEnded = _game.MoveEnemy(bestMove.from, bestMove.to) | gameEnded;
@@ -168,9 +162,8 @@ public class Controller : MonoBehaviour {
         _level++;
         _levelReader.ReadLevelCsv("level" + _level);
         _ui.SetLevel("Level " + _level);
-        this.moveMatrix = _levelReader.GetMoveMatrix();
         PrepareGame();
-        _game.Init(FenUtil.FenToPosition(_levelReader.GetFen(), _levelReader.GetMaxFile()), _levelReader.GetMaxFile(), _levelReader.GetMaxRank(), _levelReader.GetDisabledFields(), _levelReader.GetFlagRegion());
+        _game.Init(_levelReader.GetStartingPosition(), _levelReader.GetMaxFile(), _levelReader.GetMaxRank(), _levelReader.GetDisabledFields(), _levelReader.GetFlagRegion());
     }
 
     private IEnumerator PlaySound(AudioSource sound) {
