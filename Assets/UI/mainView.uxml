@@ -1,8 +1,10 @@
 <ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" editor-extension-mode="False">
     <Style src="project://database/Assets/UI/Stylesheets/base.uss?fileID=7433441132597879392&amp;guid=11961881b49d4ba4fba53d07001d5c3c&amp;type=3#base" />
-    <ui:VisualElement name="VisualElement" style="flex-grow: 1;">
-        <ui:VisualElement name="Header" style="height: 10%; width: 100%; flex-direction: row;">
-            <ui:Label tabindex="-1" text="Label" display-tooltip-when-elided="true" name="LabelLevel" focusable="false" enable-rich-text="false" />
+    <SafeAreaManager>
+        <ui:VisualElement name="VisualElement" style="flex-grow: 1;">
+            <ui:VisualElement name="Header" style="height: 10%; width: 100%; flex-direction: row;">
+                <ui:Label tabindex="-1" text="Label" display-tooltip-when-elided="true" name="LabelLevel" focusable="false" enable-rich-text="false" />
+            </ui:VisualElement>
         </ui:VisualElement>
-    </ui:VisualElement>
+    </SafeAreaManager>
 </ui:UXML>

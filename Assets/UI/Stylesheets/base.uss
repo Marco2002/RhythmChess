@@ -1,5 +1,5 @@
 * {
-    -unity-font-definition: url('project://database/Assets/UI/Fonts/FiraSans-Medium.ttf?fileID=12800000&guid=cb95beb073877084e9574d71b2e46af6&type=3#FiraSans-Medium');
+    -unity-font-definition: url("project://database/Assets/UI/Fonts/FiraSans-Medium.ttf?fileID=12800000&guid=cb95beb073877084e9574d71b2e46af6&type=3#FiraSans-Medium");
 }
 
 #LabelLevel {
@@ -7,6 +7,9 @@
     -unity-font-style: bold;
     color: rgb(255, 255, 255);
     -unity-text-align: upper-center;
-    margin-top: 16px;
     width: 100%;
+    padding-top: 0;
+    padding-right: 0;
+    padding-bottom: 0;
+    padding-left: 0;
 }

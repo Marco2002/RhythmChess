@@ -39,8 +39,14 @@ TagManager:
   - 
   - 
   m_SortingLayers:
+  - name: TileShadow
+    uniqueID: 1338273965
+    locked: 0
   - name: TileSide
     uniqueID: 3281022215
+    locked: 0
+  - name: TileSideDarkening
+    uniqueID: 2678493815
     locked: 0
   - name: Default
     uniqueID: 0
