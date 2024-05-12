@@ -1,4 +1,3 @@
-using System;
 using UnityEngine;
 
 public class Background : MonoBehaviour {
@@ -7,11 +6,11 @@ public class Background : MonoBehaviour {
 
     private SpriteRenderer spriteRenderer;
 
-    private void Start() {
+    private void Awake() {
         spriteRenderer = GetComponent<SpriteRenderer>();
     }
 
-    void Update() {
+    private void Update() {
         transform.Rotate(0, 0, _rotationSpeed * Time.deltaTime);
     }
 

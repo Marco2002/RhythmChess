@@ -56,7 +56,8 @@ public class Board : MonoBehaviour {
                 spawnedField.transform.parent = transform;
                 
                 var isOffset = (x + y) % 2 == 1;
-                spawnedField.Init(isOffset, flagRegion.Contains((x, y)));
+                var isTopTile = y == _height - 1 || disabledFields.Contains((x, y + 1));
+                spawnedField.Init(isOffset, flagRegion.Contains((x, y)), isTopTile);
                 fields.Add(spawnedField);
             }
         }

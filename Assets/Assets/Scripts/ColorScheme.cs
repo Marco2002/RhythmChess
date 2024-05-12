@@ -7,6 +7,6 @@ public abstract class ColorScheme {
     public static Color secondaryOffset = new Color32(196, 72, 105, 255);
     public static Color field = new Color32(6,123,194, 255);
     public static Color fieldOffset = new Color32(236,214,182, 255);
-    public static Color fieldFlag = new Color32(47, 198, 74, 255);
+    public static Color fieldFlag = new Color32(43, 182, 68, 255);
     public static Color fieldFlagOffset = new Color32(47, 198, 74, 255);
 }
