@@ -9,6 +9,7 @@ public class Controller : MonoBehaviour {
     [SerializeField] private UI _ui;
     [SerializeField] private SwipeDetection _swipeDetection;
     [SerializeField] private LevelReader _levelReader;
+    [SerializeField] private Background _background;
     
     [SerializeField] private float _cycleLength = 1.5f;
     [SerializeField] private int _level = 1;
@@ -66,7 +67,7 @@ public class Controller : MonoBehaviour {
                         StartCoroutine(PlaySound(_audioRide));
                         waitingForMove = true;
                         _game.ShowPossibleMoves();
-                        _mainCamera.backgroundColor = ColorScheme.primary;
+                        _background.SetPrimary();
                         playerMoveHandled = false;
                         enemyMoveHandled = false;
                         onBeatHandled = true;
@@ -87,7 +88,7 @@ public class Controller : MonoBehaviour {
                         } else {
                             StartCoroutine(PlaySound(_audioHiHat));
                         }
-                        _mainCamera.backgroundColor = ColorScheme.secondary;
+                        _background.SetSecondary();
                         _board.RemoveMoveIndicators();
                         nextMove = Direction.None;
                         _swipeDetection.enabled = false;
@@ -151,6 +152,7 @@ public class Controller : MonoBehaviour {
         enemyMoveHandled = false;
         waitingForMove = true;
         gameEnded = false;
+        _background.SetPrimary();
     }
 
     private void ResetLevel() {
