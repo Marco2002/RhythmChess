@@ -67,7 +67,7 @@ public class Controller : MonoBehaviour {
                         StartCoroutine(PlaySound(_audioRide));
                         waitingForMove = true;
                         _game.ShowPossibleMoves();
-                        _background.SetPrimary();
+                        SetColoring(Coloring.Primary);
                         playerMoveHandled = false;
                         enemyMoveHandled = false;
                         onBeatHandled = true;
@@ -88,7 +88,7 @@ public class Controller : MonoBehaviour {
                         } else {
                             StartCoroutine(PlaySound(_audioHiHat));
                         }
-                        _background.SetSecondary();
+                        SetColoring(Coloring.Secondary);
                         _board.RemoveMoveIndicators();
                         nextMove = Direction.None;
                         _swipeDetection.enabled = false;
@@ -152,7 +152,7 @@ public class Controller : MonoBehaviour {
         enemyMoveHandled = false;
         waitingForMove = true;
         gameEnded = false;
-        _background.SetPrimary();
+        SetColoring(Coloring.Primary);
     }
 
     private void ResetLevel() {
@@ -173,4 +173,8 @@ public class Controller : MonoBehaviour {
         sound.Play();
     }
 
+    private void SetColoring(Coloring coloring) {
+        _background.SetColoring(coloring);
+        _board.SetColoring(coloring);
+    }
 }

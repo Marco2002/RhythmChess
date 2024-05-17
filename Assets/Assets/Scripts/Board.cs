@@ -112,4 +112,11 @@ public class Board : MonoBehaviour {
         chessPiece.Init();
         return chessPiece;
     }
+
+    public void SetColoring(Coloring coloring) {
+        if (fields == null) return;
+        foreach (var field in fields) {
+            field.SetColoring(coloring);
+        }
+    }
 }

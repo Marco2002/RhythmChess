@@ -5,19 +5,44 @@ public class Field : MonoBehaviour {
     [SerializeField] private SpriteRenderer _sideRenderer;
     [SerializeField] private SpriteRenderer _gradient;
     [SerializeField] private SpriteRenderer _light;
-    public void Init(bool isOffset, bool isFlagRegion, bool isTopTile) {
-        Color color;
-        if (isOffset) {
-            color = isFlagRegion ? ColorScheme.fieldFlagOffset : ColorScheme.fieldOffset;
-            _gradient.color = Color.clear;
-        } else {
-            color = isFlagRegion ? ColorScheme.fieldFlag : ColorScheme.field;
-            if(isFlagRegion) _gradient.color = Color.clear;
-        }
+    
+    private bool isOffset;
+    private bool isFlagRegion;
 
+    public void Init(bool isOffset, bool isFlagRegion, bool isTopTile) {
+        this.isOffset = isOffset;
+        this.isFlagRegion = isFlagRegion;
         if (!isTopTile) _light.color = Color.clear;
-        //var sideColor = new Color(color.r * .8f, color.g * .8f, color.b * .8f);
-        _renderer.color = color;
-        _sideRenderer.color = color;
+        if (isOffset) _gradient.color = Color.clear;
+        
+        if (isFlagRegion) {
+            var color = isOffset ? ColorScheme.fieldFlagOffset : ColorScheme.fieldFlag;
+            _renderer.color = color;
+            _sideRenderer.color = color;
+        } else {
+            SetColoring(Coloring.Primary);
+        }
+    }
+
+    public void SetColoring(Coloring coloring) {
+        if (isFlagRegion) return;
+        
+        if (coloring == Coloring.Primary) {
+            if (isOffset) {
+                _renderer.color = ColorScheme.fieldPrimaryOffset;
+                _sideRenderer.color = ColorScheme.fieldPrimaryOffset;
+            } else {
+                _renderer.color = ColorScheme.fieldPrimary;
+                _sideRenderer.color = ColorScheme.fieldPrimary;
+            }
+        } else {
+            if (isOffset) {
+                _renderer.color = ColorScheme.fieldSecondaryOffset;
+                _sideRenderer.color = ColorScheme.fieldSecondaryOffset;
+            } else {
+                _renderer.color = ColorScheme.fieldSecondary;
+                _sideRenderer.color = ColorScheme.fieldSecondary;
+            }
+        }
     }
 }

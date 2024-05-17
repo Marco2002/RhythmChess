@@ -14,14 +14,8 @@ public class Background : MonoBehaviour {
         transform.Rotate(0, 0, _rotationSpeed * Time.deltaTime);
     }
 
-    public void SetPrimary() {
-        _mainCamera.backgroundColor = ColorScheme.primary;
-        spriteRenderer.color = ColorScheme.primaryOffset;
+    public void SetColoring(Coloring coloring) {
+        _mainCamera.backgroundColor = coloring == Coloring.Primary ? ColorScheme.primary : ColorScheme.secondary;
+        spriteRenderer.color = coloring == Coloring.Primary ? ColorScheme.primaryOffset : ColorScheme.secondaryOffset;
     }
-    
-    public void SetSecondary() {
-        _mainCamera.backgroundColor = ColorScheme.secondary;
-        spriteRenderer.color = ColorScheme.secondaryOffset;
-    }
-
 }
