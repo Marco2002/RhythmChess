@@ -132,7 +132,7 @@ public class LevelReader : MonoBehaviour {
 
     public ((int x, int y) from, (int x, int y) to) GetBestMove(ChessPiece[,] position) {
         var fen = PositionToFen(position);
-        return moveMatrix[fen];
+        return moveMatrix.TryGetValue(fen, out var move) ? move : ((0, 0), (0, 0));
     }
 }
 
