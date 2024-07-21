@@ -2,14 +2,29 @@
     -unity-font-definition: url("project://database/Assets/UI/Fonts/FiraSans-Medium.ttf?fileID=12800000&guid=cb95beb073877084e9574d71b2e46af6&type=3#FiraSans-Medium");
 }
 
-#LabelLevel {
-    font-size: 30px;
+#Body {
+    flex-direction: column;
+}
+
+#Header {
+    flex-direction: row;
+    justify-content: space-between;
+    width: 100%;
+    background-color: rgba(0, 0, 0, 0.2);
+}
+
+#HeaderLabel {
+    font-size: 16px;
     -unity-font-style: bold;
     color: rgb(255, 255, 255);
-    -unity-text-align: upper-center;
-    width: 100%;
-    padding-top: 0;
-    padding-right: 0;
-    padding-bottom: 0;
-    padding-left: 0;
+    -unity-text-align: middle-center;
+}
+
+#Button {
+    padding: 0;
+    margin: 0;
+    background-color: rgba(0, 0, 0, 0);
+    width: 32px;
+    height: 32px;
+    border-width: 0;
 }

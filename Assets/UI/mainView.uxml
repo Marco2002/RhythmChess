@@ -2,8 +2,10 @@
     <Style src="project://database/Assets/UI/Stylesheets/base.uss?fileID=7433441132597879392&amp;guid=11961881b49d4ba4fba53d07001d5c3c&amp;type=3#base" />
     <SafeAreaManager>
         <ui:VisualElement name="VisualElement" style="flex-grow: 1;">
-            <ui:VisualElement name="Header" style="height: 10%; width: 100%; flex-direction: row;">
-                <ui:Label tabindex="-1" text="Label" display-tooltip-when-elided="true" name="LabelLevel" focusable="false" enable-rich-text="false" />
+            <ui:VisualElement name="Header">
+                <ui:Button icon-image="project://database/Assets/UnityDefaultRuntimeTheme.tss?fileID=-2236324273849735119&amp;guid=31c608fa3e0e2f944b6ede3430ecde83&amp;type=3#arrow-left@2x" selectable="false" name="Button" />
+                <ui:Label text="Label" name="HeaderLabel" />
+                <ui:VisualElement name="PlaceholderButton" style="flex-grow: 0; width: 32px;" />
             </ui:VisualElement>
         </ui:VisualElement>
     </SafeAreaManager>

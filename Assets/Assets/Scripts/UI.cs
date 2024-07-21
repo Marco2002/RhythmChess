@@ -9,6 +9,6 @@ public class UI : MonoBehaviour
     }
 
     public void SetLevel(string level) {
-        root.Q<Label>("LabelLevel").text = level;
+        root.Q<Label>("HeaderLabel").text = level;
     }
 }

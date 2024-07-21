@@ -1,0 +1,10 @@
+#LevelMenuGroup {
+    flex-grow: 1;
+    background-color: aqua;
+}
+
+#LevelMenu {
+    background-color: brown;
+    height: 100px;
+    width: 300px;
+}
