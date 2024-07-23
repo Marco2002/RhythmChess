@@ -6,7 +6,7 @@ public class Controller : MonoBehaviour {
     [SerializeField] private Game _game;
     [SerializeField] private Board _board;
     [SerializeField] private Camera _mainCamera;
-    [SerializeField] private UI _ui;
+    [SerializeField] private GameUI _ui;
     [SerializeField] private SwipeDetection _swipeDetection;
     [SerializeField] private LevelReader _levelReader;
     [SerializeField] private Background _background;
@@ -18,11 +18,13 @@ public class Controller : MonoBehaviour {
     private Direction nextMove = Direction.None;
 
     private void Start() {
+        Debug.Log("started loading level");
         Application.targetFrameRate = 60;
         _levelReader.ReadLevelCsv("level"+_level);
         _ui.SetLevel("Level " + _level);
         PrepareGame();
         _game.Init(_levelReader.GetStartingPosition(), _levelReader.GetMaxFile(), _levelReader.GetMaxRank(), _levelReader.GetDisabledFields(), _levelReader.GetFlagRegion());
+        Debug.Log("game initialized");
     }
 
     public void HandleOnBeat() {

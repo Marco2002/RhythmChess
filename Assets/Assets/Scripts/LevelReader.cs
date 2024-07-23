@@ -83,7 +83,7 @@ public class LevelReader : MonoBehaviour {
         return fen.ToArray();
     }
     public void ReadLevelCsv(string levelName) {
-        var data = File.ReadAllBytes("Assets/Assets/Resources/LevelData/" + levelName + ".rcl");
+        var data = File.ReadAllBytes("Assets/Assets/Resources/LevelData/Easy/" + levelName + ".rcl");
         var formatedData = new byte[data.Length * 2];
         int currentIndex;
 
