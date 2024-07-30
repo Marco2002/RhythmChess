@@ -1,0 +1,15 @@
+#LevelSection {
+    flex-grow: 1;
+    margin: 20px;
+}
+
+#LevelRow {
+    flex-direction: row;
+    justify-content: space-between;
+}
+
+#LevelButton {
+    flex-grow: 1;
+    width: 10px;
+    padding: 0;
+}
