@@ -3,6 +3,7 @@ using System.IO;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using UnityEngine.Networking;
 
 
 public class LevelReader : MonoBehaviour {
@@ -83,7 +84,17 @@ public class LevelReader : MonoBehaviour {
         return fen.ToArray();
     }
     public void ReadLevelCsv(string levelName) {
-        var data = File.ReadAllBytes("Assets/Assets/Resources/LevelData/Easy/" + levelName + ".rcl");
+        var path = Path.Combine(Application.streamingAssetsPath, "LevelData/Easy/" + levelName + ".rcl");
+        byte[] data;
+        if (Application.platform == RuntimePlatform.Android) {
+            using var www = UnityWebRequest.Get(path);
+            www.SendWebRequest();
+            while (!www.isDone) { }
+
+            data = www.downloadHandler.data;
+        } else {
+            data = File.ReadAllBytes(path);
+        }
         var formatedData = new byte[data.Length * 2];
         int currentIndex;
 
