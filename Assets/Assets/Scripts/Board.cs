@@ -51,6 +51,11 @@ public class Board : MonoBehaviour {
                 // set up of the tile side
                 spawnedField.transform.GetChild(0).transform.localPosition = new Vector3(0, -.5f - (_relativeTileSideHeight / 2f), 0);
                 spawnedField.transform.GetChild(0).transform.localScale = new Vector3(1, _relativeTileSideHeight);
+                // set up of the tile side shadow
+                spawnedField.transform.GetChild(1).transform.localPosition = new Vector3(0, -.5f - (_relativeTileSideHeight / 2f), 0);
+                spawnedField.transform.GetChild(1).transform.localScale = new Vector3(1, _relativeTileSideHeight);
+                // set up of the tile base shadow
+                spawnedField.transform.GetChild(2).transform.localPosition = new Vector3(0,  -_relativeTileSideHeight, 0);
                 
                 spawnedField.name = $"Field {x} {y}";
                 spawnedField.transform.parent = transform;

@@ -40,7 +40,15 @@ public class Game : MonoBehaviour {
         ended = false;
 
         position = new ChessPiece[width, height];
-        // Init pieces
+        
+        // put player piece to start
+        for (int i = 0; i < initPosition.Count; i++) {
+            if (initPosition[i].pieceName == "player") {
+                (initPosition[0], initPosition[i]) = (initPosition[i], initPosition[0]);
+                break;
+            }
+        }
+        
         for (var i = 0; i < initPosition.Count; i++) {
             var (pieceName, x, y) = initPosition[i];
             // Init Pieces
@@ -48,15 +56,11 @@ public class Game : MonoBehaviour {
                 var piece = _board.CreatePiece(pieceName, x, y);
                 MovePiece(piece, x, y);
                 pieces.Add(piece);
-                if (pieceName == "player") {
-                    player = piece;
-                }
+                if (pieceName == "player") player = piece;
             } else {
                 // if pieces are already created just move them
                 MovePiece(pieces[i], x, y);
             }
-           
-
         }    
         piecesCreated = true;
     }

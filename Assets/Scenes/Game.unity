@@ -716,8 +716,8 @@ MonoBehaviour:
   _moveIndicatorPrefab: {fileID: 5275631995502244248, guid: 4222c7f4b5804a44bbe78a957eedfb0d, type: 3}
   _width: 8
   _height: 8
-  _relativeTileHeight: 1
-  _relativeTileSideHeight: 0.3
+  _relativeTileHeight: 0.85
+  _relativeTileSideHeight: 0.2
   _movementSpeed: 20
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
