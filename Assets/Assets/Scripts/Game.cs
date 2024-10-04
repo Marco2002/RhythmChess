@@ -59,6 +59,8 @@ public class Game : MonoBehaviour {
                 if (pieceName == "player") player = piece;
             } else {
                 // if pieces are already created just move them
+                pieces[i].SetX(-1); // set x and y to -1 so that it doesn't cause conflicts with other pieces
+                pieces[i].SetY(-1);
                 MovePiece(pieces[i], x, y);
             }
         }    
