@@ -34,18 +34,18 @@ public class ChessPiece : MonoBehaviour {
     
     private Dictionary<PieceType, Vector2> leftEyePositions = new() {
         { PieceType.QUEEN, new Vector2(5.1f, 2.3f) },
-        { PieceType.BISHOP, new Vector2(-0.37f, 1.91f) },
+        { PieceType.BISHOP, new Vector2(-0.37f, 1.967f) },
         { PieceType.KNIGHT, new Vector2(-0.613f, 2.158f) },
-        { PieceType.ROOK, new Vector2(-0.45f, 1.74f) },
-        { PieceType.PAWN, new Vector2(-0.485f, 1.5f) }
+        { PieceType.ROOK, new Vector2(-0.45f, 1.797f) },
+        { PieceType.PAWN, new Vector2(-0.485f, 1.557f) }
     };
 
     private Dictionary<PieceType, Vector2> rightEyePositions = new() {
         { PieceType.QUEEN, new Vector2(5.1f, 2.3f) },
-        { PieceType.BISHOP, new Vector2(0.37f, 1.91f) },
+        { PieceType.BISHOP, new Vector2(0.37f, 1.967f) },
         { PieceType.KNIGHT, new Vector2(-0.039f, 1.972f) },
-        { PieceType.ROOK, new Vector2(0.45f, 1.74f) },
-        { PieceType.PAWN, new Vector2(0.485f, 1.5f) }
+        { PieceType.ROOK, new Vector2(0.45f, 1.797f) },
+        { PieceType.PAWN, new Vector2(0.485f, 1.575f) }
     };
     
     public int GetX() { return x; }
