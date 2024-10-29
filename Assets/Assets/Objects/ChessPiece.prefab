@@ -172,7 +172,7 @@ SpriteRenderer:
   m_Size: {x: 2.4, y: 2.4}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
-  m_WasSpriteAssigned: 1
+  m_WasSpriteAssigned: 0
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
 --- !u!114 &4960554714837556927
@@ -194,7 +194,10 @@ MonoBehaviour:
   _bishop: {fileID: 21300000, guid: 205737bc5f0c8194696c101290be08b9, type: 3}
   _rook: {fileID: 21300000, guid: 0f5d001ff75ade44aa0e1c60a32ab1b5, type: 3}
   _queen: {fileID: 21300000, guid: f342803ed302bf84cbe25c3d06433543, type: 3}
-  _king: {fileID: 21300000, guid: 96813e44c187c4b4680a1109ef60598f, type: 3}
+  _eye: {fileID: -112968808170193824, guid: 7f2d5240109474c6f902adc392d4a001, type: 3}
+  _eyeRook: {fileID: 4780797752320519811, guid: 0c13d6de95ba94fc2a4f48f04a736a1c, type: 3}
+  _eyeLeft: {fileID: 6661989244961701396}
+  _eyeRight: {fileID: 2645172345478912823}
 --- !u!1 &6964970930957352838
 GameObject:
   m_ObjectHideFlags: 0
