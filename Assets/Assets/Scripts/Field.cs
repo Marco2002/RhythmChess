@@ -17,12 +17,13 @@ public class Field : MonoBehaviour {
         this.isOffset = isOffset;
         this.isFlagRegion = isFlagRegion;
         if (!isTopTile) _light.color = Color.clear;
-        if (isOffset) _gradient.color = Color.clear;
+        if (isOffset || isFlagRegion) _gradient.color = Color.clear;
         
         if (isFlagRegion) {
             var color = isOffset ? ColorScheme.fieldFlagOffset : ColorScheme.fieldFlag;
             _renderer.color = color;
             _sideRenderer.color = color;
+            // TODO find a solution for two adjacent flag fields (the border looks wired between them
         } else {
             SetColoring(Coloring.Primary);
         }
