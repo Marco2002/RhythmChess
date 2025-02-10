@@ -297,6 +297,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 446d0ecc338816941ba496b6f4f52de1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  transitionSpeed: 0
 --- !u!1 &652580718
 GameObject:
   m_ObjectHideFlags: 0
@@ -711,6 +712,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1ea54da6a048c304dba5c49eacf3efde, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  buttonRectTransform: {fileID: 1135200307}
+  titleTransform: {fileID: 1675378684}
 --- !u!1 &1135200306
 GameObject:
   m_ObjectHideFlags: 0
