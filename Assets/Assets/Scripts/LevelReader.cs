@@ -8,7 +8,7 @@ using UnityEngine.Networking;
 
 public class LevelReader : MonoBehaviour {
 
-    private const byte END_OF_FIELD_SEQUENCE = 15;
+    private const byte END_OF_SEQUENCE = 15;
     private const byte END_OF_FEN = 0;
 
     private static readonly Dictionary<byte, string> FenValueMap = new() {
@@ -24,18 +24,36 @@ public class LevelReader : MonoBehaviour {
     private int maxRank, maxFile;
     private List<(int x, int y)> flagRegion;
     private List<(int x, int y)> disabledFields;
+    private List<((int x, int y), (int x, int y))> solution;
     private Dictionary<byte[], ((int x, int y) from, (int x, int y) to)> moveMatrix;
 
     private static (int x, int y) ReadField(byte[] data, int start) {
         return (data[start], data[start + 1]);
     }
+
+    private static ((int x, int y), (int x, int y)) ReadMove(byte[] data, int start) {
+        var from = ReadField(data, start);
+        var to = ReadField(data, start + 2);
+        return (from, to);
+    }
+    
     private static (List<(int x, int y)> fields, int newIndex) ReadFields(byte[] data, int start) {
         List<(int x, int y)> fields = new();
         int i;
-        for (i = start; data[i] != END_OF_FIELD_SEQUENCE; i += 2) {
+        for (i = start; data[i] != END_OF_SEQUENCE; i += 2) {
             fields.Add(ReadField(data, i));
         }
         return (fields, i+1);
+    }
+
+    private static (List<((int x, int y), (int x, int y))> moves, int newIndex) ReadMoves(byte[] data, int start) {
+        List<((int x, int y), (int x, int y))> moves = new();
+        int i;
+        for (i = start; data[i] != END_OF_SEQUENCE; i += 4) {
+            moves.Add(ReadMove(data, i));
+        }
+
+        return (moves, i+1);
     }
 
     private (List<(string pieceName, int x, int y)> position, int newIndex) ReadFen(byte[] data, int start) {
@@ -44,15 +62,15 @@ public class LevelReader : MonoBehaviour {
         var currentY = 0;
         int i;
         for (i = start; data[i] != END_OF_FEN; i++) {
-            if (currentX <= 0) {
-                currentX = maxFile - 1;
-                currentY++;
-            }
             if (data[i] <= 8) {
                 currentX -= data[i];
             } else {
                 position.Add((FenValueMap[data[i]], currentX, currentY));
                 currentX--;
+            }
+            if (currentX < 0) {
+                currentX = maxFile - 1;
+                currentY++;
             }
         }
         return (position, i+1);
@@ -115,6 +133,9 @@ public class LevelReader : MonoBehaviour {
         
         // disabledFields
         (disabledFields, currentIndex) = ReadFields(formatedData, currentIndex);
+        
+        // solution
+        (solution, currentIndex) = ReadMoves(formatedData, currentIndex);
 
         // moveMatrix
         moveMatrix = new Dictionary<byte[], ((int x, int y) from, (int x, int y) to)>(new ByteArrayComparer());
@@ -128,10 +149,9 @@ public class LevelReader : MonoBehaviour {
             var positionEnd = currentIndex;
             var position = new byte[positionEnd-positionStart];
             Array.Copy(formatedData, positionStart, position, 0, positionEnd - positionStart);
-            var from = ReadField(formatedData, currentIndex);
-            var to = ReadField(formatedData, currentIndex + 2);
+            var move = ReadMove(formatedData, currentIndex);
             currentIndex += 4;
-            moveMatrix.Add(position, (from, to));
+            moveMatrix.Add(position, move);
         }
     }
 
@@ -140,6 +160,8 @@ public class LevelReader : MonoBehaviour {
     public int GetMaxFile() { return maxFile; }
     public List<(int x, int y)> GetFlagRegion() { return flagRegion; }
     public List<(int x, int y)> GetDisabledFields() { return disabledFields; }
+
+    public List<((int x, int y), (int x, int y))> GetSolution() { return solution; }
 
     public ((int x, int y) from, (int x, int y) to) GetBestMove(ChessPiece[,] position) {
         var fen = PositionToFen(position);
