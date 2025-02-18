@@ -16,7 +16,7 @@ public class Controller : MonoBehaviour {
     private Direction nextMove = Direction.None;
 
     private void Start() {
-        Debug.Log("started loading level");
+        Debug.Log("started loading level"); 
         Application.targetFrameRate = 60;
         _levelReader.ReadLevelCsv("level"+_level);
         PrepareGame();
@@ -34,7 +34,6 @@ public class Controller : MonoBehaviour {
                 ResetLevel();
             }
         } else {
-            // StartCoroutine(PlaySound(_audioRide));
             _game.ShowPossibleMoves();
             _swipeDetection.enabled = true;
         }
@@ -91,6 +90,8 @@ public class Controller : MonoBehaviour {
 
     private void PrepareGame() {
         gameEnded = false;
+        _beatManager.enabled = true;
+        _background.enabled = true;
         _beatManager.Reset();
         SetColoring(Coloring.Primary);
     }
@@ -100,8 +101,19 @@ public class Controller : MonoBehaviour {
         PrepareGame();
     }
 
+    public void PauseLevel() {
+        _beatManager.Stop();
+        _beatManager.enabled = false;
+        _background.enabled = false;
+        _board.RemoveMoveIndicators();
+    }
+
     private void LoadNextLevel() {
-        _level++;
+        LoadLevel(_level+1);
+    }
+    
+    public void LoadLevel(int level) {
+        _level = level;
         _levelReader.ReadLevelCsv("level" + _level);
         PrepareGame();
         _game.Init(_levelReader.GetStartingPosition(), _levelReader.GetMaxFile(), _levelReader.GetMaxRank(), _levelReader.GetDisabledFields(), _levelReader.GetFlagRegion());
