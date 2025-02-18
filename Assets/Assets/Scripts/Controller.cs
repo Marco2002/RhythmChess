@@ -9,6 +9,7 @@ public class Controller : MonoBehaviour {
     [SerializeField] private LevelReader _levelReader;
     [SerializeField] private Background _background;
     [SerializeField] private BeatManager _beatManager;
+    [SerializeField] private UIController _uiController;
     
     [SerializeField] private int _level = 1;
     
@@ -16,9 +17,11 @@ public class Controller : MonoBehaviour {
     private Direction nextMove = Direction.None;
 
     private void Start() {
-        Debug.Log("started loading level"); 
+        Debug.Log("started loading level");
         Application.targetFrameRate = 60;
+        _level = PlayerPrefs.GetInt("currentLevel", _level);
         _levelReader.ReadLevelCsv("level"+_level);
+        _uiController.Init(_level);
         PrepareGame();
         _game.Init(_levelReader.GetStartingPosition(), _levelReader.GetMaxFile(), _levelReader.GetMaxRank(), _levelReader.GetDisabledFields(), _levelReader.GetFlagRegion());
         Debug.Log("game initialized");
@@ -28,7 +31,7 @@ public class Controller : MonoBehaviour {
         if (gameEnded) {
             var playerWon = _game.GetWinningStatus();
             if (playerWon) {
-                LoadNextLevel();
+                LevelBeat();
             }
             else {
                 ResetLevel();
@@ -108,13 +111,19 @@ public class Controller : MonoBehaviour {
         _board.RemoveMoveIndicators();
     }
 
-    private void LoadNextLevel() {
-        LoadLevel(_level+1);
+    private void LevelBeat() {
+        _level++;
+        if (_level > PlayerPrefs.GetInt("currentLevel")) {
+            PlayerPrefs.SetInt("currentLevel", _level);
+            PlayerPrefs.Save();
+        }
+        LoadLevel(_level);
     }
     
     public void LoadLevel(int level) {
         _level = level;
         _levelReader.ReadLevelCsv("level" + _level);
+        _uiController.UpdateLevel(_level);
         PrepareGame();
         _game.Init(_levelReader.GetStartingPosition(), _levelReader.GetMaxFile(), _levelReader.GetMaxRank(), _levelReader.GetDisabledFields(), _levelReader.GetFlagRegion());
     }

@@ -599,6 +599,7 @@ MonoBehaviour:
   _levelReader: {fileID: 652580724}
   _background: {fileID: 1526326609}
   _beatManager: {fileID: 652580731}
+  _uiController: {fileID: 817352987}
   _level: 1
 --- !u!4 &652580729
 Transform:
@@ -815,6 +816,7 @@ GameObject:
   - component: {fileID: 817352983}
   - component: {fileID: 817352982}
   - component: {fileID: 817352986}
+  - component: {fileID: 817352987}
   m_Layer: 5
   m_Name: Canvas
   m_TagString: Untagged
@@ -921,6 +923,20 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   buttonRectTransform: {fileID: 1135200307}
   titleTransform: {fileID: 1675378684}
+--- !u!114 &817352987
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 817352981}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aefb9ec0a1eac415bb1aaf059ec25c06, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _levelMenu: {fileID: 1489518460}
+  _levelTitle: {fileID: 1675378685}
 --- !u!1 &1079013234
 GameObject:
   m_ObjectHideFlags: 0
@@ -1011,7 +1027,7 @@ GameObject:
   - component: {fileID: 1135200310}
   - component: {fileID: 1135200308}
   m_Layer: 5
-  m_Name: Button
+  m_Name: Button_Menu
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1288,7 +1304,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 257ba185453a14b1eaa49a4b45a12dbf, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _levelButtonPrefab: {fileID: 6007981695459184380, guid: 1afa762a103a3406fb037d3abd0b2cb9, type: 3}
+  _levelButtonPrefab: {fileID: 6526611942544280288, guid: 1afa762a103a3406fb037d3abd0b2cb9, type: 3}
   _buttonContainer: {fileID: 1969071152}
   _totalLevels: 10
   _controller: {fileID: 652580728}
@@ -1530,7 +1546,7 @@ GameObject:
   - component: {fileID: 1675378686}
   - component: {fileID: 1675378685}
   m_Layer: 5
-  m_Name: Text (TMP)
+  m_Name: Text_Title
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
