@@ -1,3 +1,4 @@
+using System.Text;
 using UnityEngine;
 
 public class Controller : MonoBehaviour {
@@ -15,6 +16,7 @@ public class Controller : MonoBehaviour {
     
     private bool gameEnded;
     private Direction nextMove = Direction.None;
+    private int numberOfMoves = 0;
 
     private void Start() {
         Debug.Log("started loading level");
@@ -31,7 +33,7 @@ public class Controller : MonoBehaviour {
         if (gameEnded) {
             var playerWon = _game.GetWinningStatus();
             if (playerWon) {
-                LevelBeat();
+                BeatLevel();
             }
             else {
                 ResetLevel();
@@ -43,6 +45,7 @@ public class Controller : MonoBehaviour {
     }
 
     public void HandeOffBeat() {
+        numberOfMoves++;
         // show player move
         _swipeDetection.DetectSwipeForCurrentTouch();
         if (nextMove != Direction.None) {
@@ -95,6 +98,7 @@ public class Controller : MonoBehaviour {
         gameEnded = false;
         _beatManager.enabled = true;
         _background.enabled = true;
+        numberOfMoves = 0;
         _beatManager.Reset();
         SetColoring(Coloring.Primary);
     }
@@ -111,7 +115,17 @@ public class Controller : MonoBehaviour {
         _board.RemoveMoveIndicators();
     }
 
-    private void LevelBeat() {
+    private void BeatLevel() {
+        var levelStatus = PlayerPrefs.GetString("levelStatus");
+        var stars = 1;
+        if (numberOfMoves <= _levelReader.GetSolution().Count * 1.5) stars = 2;
+        if (numberOfMoves == _levelReader.GetSolution().Count) stars = 3;
+        if(levelStatus[_level-1] - '0' < stars) {
+            var levelStatusString = new StringBuilder(levelStatus);
+            levelStatusString[_level-1] = stars.ToString()[0];
+            PlayerPrefs.SetString("levelStatus", levelStatusString.ToString());
+            PlayerPrefs.Save();
+        }
         _level++;
         if (_level > PlayerPrefs.GetInt("currentLevel")) {
             PlayerPrefs.SetInt("currentLevel", _level);

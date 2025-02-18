@@ -1306,7 +1306,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _levelButtonPrefab: {fileID: 6526611942544280288, guid: 1afa762a103a3406fb037d3abd0b2cb9, type: 3}
   _buttonContainer: {fileID: 1969071152}
-  _totalLevels: 10
   _controller: {fileID: 652580728}
 --- !u!1001 &1526326606
 PrefabInstance:

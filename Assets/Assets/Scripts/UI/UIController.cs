@@ -7,6 +7,7 @@ public class UIController : MonoBehaviour {
 
     public void Init(int levelNumber) {
         _levelTitle.text = "Level " + levelNumber;
+        _levelMenu.Init();
     }
     
     public void UpdateLevel(int levelNumber) {
