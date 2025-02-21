@@ -17,6 +17,9 @@ public class Controller : MonoBehaviour {
     private bool gameEnded;
     private Direction nextMove = Direction.None;
     private int numberOfMoves;
+    private bool paused;
+    private bool pauseAtNextOnBeat;
+    private bool inOffBeat;
 
     private void Start() {
         Debug.Log("started loading level");
@@ -29,15 +32,24 @@ public class Controller : MonoBehaviour {
         Debug.Log("game initialized");
     }
 
+    private void handleGameEnd() {
+        var playerWon = _game.GetWinningStatus();
+        if (playerWon) {
+            BeatLevel();
+        } else {
+            ResetLevel();
+        }
+    }
+
     public void HandleOnBeat() {
+        inOffBeat = false;
+        if(pauseAtNextOnBeat) {
+            pauseAtNextOnBeat = false;
+            PauseLevel();
+            return;
+        }
         if (gameEnded) {
-            var playerWon = _game.GetWinningStatus();
-            if (playerWon) {
-                BeatLevel();
-            }
-            else {
-                ResetLevel();
-            }
+            handleGameEnd();
         } else {
             _game.ShowPossibleMoves();
             _swipeDetection.enabled = true;
@@ -46,6 +58,7 @@ public class Controller : MonoBehaviour {
 
     public void HandeOffBeat() {
         numberOfMoves++;
+        inOffBeat = true;
         // show player move
         _swipeDetection.DetectSwipeForCurrentTouch();
         if (nextMove != Direction.None) {
@@ -96,23 +109,49 @@ public class Controller : MonoBehaviour {
 
     private void PrepareGame() {
         gameEnded = false;
-        _beatManager.enabled = true;
-        _background.enabled = true;
+        ResumeLevel();
         numberOfMoves = 0;
-        _beatManager.Reset();
-        SetColoring(Coloring.Primary);
     }
 
     private void ResetLevel() {
         _game.SetupLevel();
         PrepareGame();
     }
+    
+    public void TogglePause() {
+        _uiController.ShowPauseFlash(!paused);
+        if (paused) {
+            ResumeLevel();
+        } else {
+            if (inOffBeat) {
+                pauseAtNextOnBeat = true;
+            } else {
+                PauseLevel();
+            }
+        }
+    }
 
     public void PauseLevel() {
+        paused = true;
         _beatManager.Stop();
         _beatManager.enabled = false;
         _background.enabled = false;
         _board.RemoveMoveIndicators();
+        _uiController.Pause();
+    }
+    
+    public void ResumeLevel() {
+        if (gameEnded) {
+            handleGameEnd();
+            return;
+        }
+        paused = false;
+        inOffBeat = false;
+        _beatManager.enabled = true;
+        _background.enabled = true;
+        _beatManager.Reset();
+        _uiController.Resume();
+        SetColoring(Coloring.Primary);
     }
 
     private void BeatLevel() {
