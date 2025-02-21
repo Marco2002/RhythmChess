@@ -16,11 +16,11 @@ public class Controller : MonoBehaviour {
     
     private bool gameEnded;
     private Direction nextMove = Direction.None;
-    private int numberOfMoves = 0;
+    private int numberOfMoves;
 
     private void Start() {
         Debug.Log("started loading level");
-        Application.targetFrameRate = 60;
+        Application.targetFrameRate = 120;
         _level = PlayerPrefs.GetInt("currentLevel", _level);
         _levelReader.ReadLevelCsv("level"+_level);
         _uiController.Init(_level);

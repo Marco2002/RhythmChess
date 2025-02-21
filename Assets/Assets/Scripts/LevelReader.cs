@@ -25,7 +25,7 @@ public class LevelReader : MonoBehaviour {
     private List<(int x, int y)> flagRegion;
     private List<(int x, int y)> disabledFields;
     private List<((int x, int y), (int x, int y))> solution;
-    private Dictionary<byte[], ((int x, int y) from, (int x, int y) to)> moveMatrix;
+    private Dictionary<string, ((int x, int y) from, (int x, int y) to)> moveMatrix;
 
     private static (int x, int y) ReadField(byte[] data, int start) {
         return (data[start], data[start + 1]);
@@ -76,7 +76,7 @@ public class LevelReader : MonoBehaviour {
         return (position, i+1);
     }
 
-    private byte[] PositionToFen(ChessPiece[,] position) {
+    private static string PositionToFen(ChessPiece[,] position) {
         var fen = new List<byte>();
         for(var y = 0; y < position.GetLength(1); y++) {
             byte fieldsWithoutPiece = 0;
@@ -99,7 +99,7 @@ public class LevelReader : MonoBehaviour {
             
         }
         fen.Add(0);
-        return fen.ToArray();
+        return BitConverter.ToString(fen.ToArray());
     }
     public void ReadLevelCsv(string levelName) {
         var path = Path.Combine(Application.streamingAssetsPath, "LevelData/Easy/" + levelName + ".rcl");
@@ -138,7 +138,7 @@ public class LevelReader : MonoBehaviour {
         (solution, currentIndex) = ReadMoves(formatedData, currentIndex);
 
         // moveMatrix
-        moveMatrix = new Dictionary<byte[], ((int x, int y) from, (int x, int y) to)>(new ByteArrayComparer());
+        moveMatrix = new Dictionary<string, ((int x, int y) from, (int x, int y) to)>();
         while (currentIndex < formatedData.Length) {
             var positionStart = currentIndex;
             while (formatedData[currentIndex] != END_OF_FEN) {
@@ -151,7 +151,7 @@ public class LevelReader : MonoBehaviour {
             Array.Copy(formatedData, positionStart, position, 0, positionEnd - positionStart);
             var move = ReadMove(formatedData, currentIndex);
             currentIndex += 4;
-            moveMatrix.Add(position, move);
+            moveMatrix.Add(BitConverter.ToString(position), move);
         }
     }
 
