@@ -82,7 +82,7 @@ public class Board : MonoBehaviour {
     }
 
     public void SetPiece(ChessPiece piece, int x, int y) {
-        piece.transform.position = GetWorldSpacePosition(x, y, -1);
+        piece.transform.position = GetWorldSpacePosition(x, y, y);
         piece.transform.localScale = GetWorldSpaceScale(1, 1);
     }
 
@@ -91,7 +91,7 @@ public class Board : MonoBehaviour {
     }
 
     private IEnumerator AnimatedMove(Component piece, int x, int y) {
-        var destination = GetWorldSpacePosition(x, y);
+        var destination = GetWorldSpacePosition(x, y, y);
         while (piece.transform.position != destination) {
             piece.transform.position = Vector3.MoveTowards(piece.transform.position, destination, _movementSpeed * tileWidth * Time.deltaTime);
             // Wait a frame 
