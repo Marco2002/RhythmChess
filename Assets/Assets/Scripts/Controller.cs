@@ -32,7 +32,7 @@ public class Controller : MonoBehaviour {
         Debug.Log("game initialized");
     }
 
-    private void handleGameEnd() {
+    private void HandleGameEnd() {
         var playerWon = _game.GetWinningStatus();
         if (playerWon) {
             BeatLevel();
@@ -49,7 +49,7 @@ public class Controller : MonoBehaviour {
             return;
         }
         if (gameEnded) {
-            handleGameEnd();
+            HandleGameEnd();
         } else {
             _game.ShowPossibleMoves();
             _swipeDetection.enabled = true;
@@ -142,7 +142,7 @@ public class Controller : MonoBehaviour {
     
     public void ResumeLevel() {
         if (gameEnded) {
-            handleGameEnd();
+            HandleGameEnd();
             return;
         }
         paused = false;
