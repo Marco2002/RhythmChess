@@ -1,13 +1,15 @@
 using System.Collections;
 using TMPro;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class UIController : MonoBehaviour {
     [SerializeField] private LevelMenu _levelMenu;
     [SerializeField] private TMP_Text _levelTitle;
     [SerializeField] private GameObject _fade;
-    [SerializeField] private TMP_Text _pauseButtonLabel;
+    [SerializeField] private Image _pauseButton;
     [SerializeField] private GameObject _pauseFlash;
+    [SerializeField] private Sprite _pauseImage, _resumeImage;
 
     private TMP_Text pauseFlashText;
 
@@ -16,23 +18,23 @@ public class UIController : MonoBehaviour {
     }
     
     public void Init(int levelNumber) {
-        _levelTitle.text = "Level " + levelNumber;
+        _levelTitle.text = "LEVEL " + levelNumber;
         _levelMenu.Init();
     }
     
     public void UpdateLevel(int levelNumber) {
-        _levelTitle.text = "Level " + levelNumber;
+        _levelTitle.text = "LEVEL " + levelNumber;
         _levelMenu.Refresh();
     }
 
     public void Pause() {
         _fade.SetActive(true);
-        _pauseButtonLabel.text = "\uf04b";
+        _pauseButton.sprite = _resumeImage;
     }
     
     public void Resume() {
         _fade.SetActive(false);
-        _pauseButtonLabel.text = "\uf04c";
+        _pauseButton.sprite = _pauseImage;
     }
 
     public void ShowPauseFlash(bool pause) {

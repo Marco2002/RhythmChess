@@ -9,8 +9,6 @@ public class Board : MonoBehaviour {
     [SerializeField] private GameObject _moveIndicatorPrefab;
 
     [SerializeField] private int _width, _height;
-    [SerializeField] private float _relativeTileHeight;
-    [SerializeField] private float _relativeTileSideHeight;
     [SerializeField] private float _movementSpeed;
     
     private (float zeroReferenceX, float zeroReferenceY ) boardZeroReference;
@@ -29,40 +27,35 @@ public class Board : MonoBehaviour {
         _width = width;
         _height = height;
         var boardWidth = 2 * 0.8f * _mainCamera.aspect * _mainCamera.orthographicSize;
-        tileWidth = boardWidth / _width;
-        tileHeight = tileWidth * _relativeTileHeight;
-        var uiHeaderHeight = 2*0.1f * _mainCamera.orthographicSize;
-        var tileSideHeight = _relativeTileSideHeight * tileWidth;
-        if(_height * tileHeight + tileSideHeight > _mainCamera.orthographicSize*0.7*2) {
-            // board is too tall -> tileWidth needs to be set based on the screen height and not screen width
-            tileHeight = 2 * 0.75f * _mainCamera.orthographicSize / (_height + _relativeTileSideHeight);
-            //                                                             ^ added to account for tile side
-            tileWidth = tileHeight / _relativeTileHeight;
-            tileSideHeight = _relativeTileSideHeight * tileWidth;
-        }
-        boardZeroReference = (-(tileWidth * _width / 2) + tileWidth / 2, -(tileHeight * _height / 2) + tileHeight / 2 + tileSideHeight/2 - uiHeaderHeight/2); // the coordinates of the (0, 0) file in unity units
-        fields = new List<Field>();
 
+        var fieldDimensions = new Vector3(1, 0.75f, 1); // manually set to the scale of the _fieldPrefab
+        var relativeTileHeight = fieldDimensions.y / fieldDimensions.x;
+        tileWidth = boardWidth / _width;
+        Debug.Log("desired tile width: " + tileWidth);
+        Debug.Log("actual tile width: " + fieldDimensions.x);
+        tileHeight = relativeTileHeight * tileWidth;
+        Debug.Log("tile height and width: " + tileHeight + " " + tileWidth);
+        var tileScale = tileWidth / fieldDimensions.x;
+        if(_height * tileHeight > _mainCamera.orthographicSize*0.7*2) {
+            // board is too tall -> tileWidth needs to be set based on the screen height and not screen width
+            tileHeight = 2 * 0.75f * _mainCamera.orthographicSize / (_height + relativeTileHeight);
+            //                                                             ^ added to account for tile side
+            tileWidth = tileHeight / relativeTileHeight;
+        }
+        boardZeroReference = (-(tileWidth * _width / 2) + tileWidth / 2, -(tileHeight * _height / 2) + tileHeight / 2); // the coordinates of the (0, 0) file in unity units
+        fields = new List<Field>();
+        
         for (var x = 0; x < _width; x++) {
             for (var y = 0; y < _height; y++) {
                 if (disabledFields.Contains((x, y))) continue;
                 var spawnedField = Instantiate(_fieldPrefab, GetWorldSpacePosition(x, y, 1), Quaternion.identity);
-                spawnedField.transform.localScale = new Vector3(tileWidth, tileHeight);
-                // set up of the tile side
-                spawnedField.transform.GetChild(0).transform.localPosition = new Vector3(0, -.5f - (_relativeTileSideHeight / 2f), 0);
-                spawnedField.transform.GetChild(0).transform.localScale = new Vector3(1, _relativeTileSideHeight);
-                // set up of the tile side shadow
-                spawnedField.transform.GetChild(1).transform.localPosition = new Vector3(0, -.5f - (_relativeTileSideHeight / 2f), 0);
-                spawnedField.transform.GetChild(1).transform.localScale = new Vector3(1, _relativeTileSideHeight);
-                // set up of the tile base shadow
-                spawnedField.transform.GetChild(2).transform.localPosition = new Vector3(0,  -_relativeTileSideHeight, 0);
                 
+                spawnedField.transform.localScale = new Vector3(tileScale, tileScale, 1);
                 spawnedField.name = $"Field {x} {y}";
                 spawnedField.transform.parent = transform;
                 
                 var isOffset = (x + y) % 2 == 1;
-                var isTopTile = y == _height - 1 || disabledFields.Contains((x, y + 1));
-                spawnedField.Init(isOffset, flagRegion.Contains((x, y)), isTopTile);
+                spawnedField.Init(isOffset, flagRegion.Contains((x, y)));
                 fields.Add(spawnedField);
             }
         }
@@ -100,7 +93,7 @@ public class Board : MonoBehaviour {
     }
 
     public void ShowMoveIndicator(int x, int y) {
-        var moveIndicator = Instantiate(_moveIndicatorPrefab, GetWorldSpacePosition(x, y), Quaternion.identity);
+        var moveIndicator = Instantiate(_moveIndicatorPrefab, GetWorldSpacePosition(x, y, -1), Quaternion.identity);
         moveIndicator.transform.parent = transform;
         moveIndicator.transform.localScale = new Vector3(tileWidth * 0.5f, tileWidth * 0.5f);
         moveIndicators.Add(moveIndicator);
@@ -116,12 +109,5 @@ public class Board : MonoBehaviour {
         chessPiece.transform.parent = transform;
         chessPiece.Init();
         return chessPiece;
-    }
-
-    public void SetColoring(Coloring coloring) {
-        if (fields == null) return;
-        foreach (var field in fields) {
-            field.SetColoring(coloring);
-        }
     }
 }

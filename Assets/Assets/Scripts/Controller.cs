@@ -8,7 +8,6 @@ public class Controller : MonoBehaviour {
     [SerializeField] private Camera _mainCamera;
     [SerializeField] private SwipeDetection _swipeDetection;
     [SerializeField] private LevelReader _levelReader;
-    [SerializeField] private Background _background;
     [SerializeField] private BeatManager _beatManager;
     [SerializeField] private UIController _uiController;
     
@@ -135,7 +134,6 @@ public class Controller : MonoBehaviour {
         paused = true;
         _beatManager.Stop();
         _beatManager.enabled = false;
-        _background.enabled = false;
         _board.RemoveMoveIndicators();
         _uiController.Pause();
     }
@@ -148,10 +146,8 @@ public class Controller : MonoBehaviour {
         paused = false;
         inOffBeat = false;
         _beatManager.enabled = true;
-        _background.enabled = true;
         _beatManager.Reset();
         _uiController.Resume();
-        SetColoring(Coloring.Primary);
     }
 
     private void BeatLevel() {
@@ -179,20 +175,5 @@ public class Controller : MonoBehaviour {
         _uiController.UpdateLevel(_level);
         PrepareGame();
         _game.Init(_levelReader.GetStartingPosition(), _levelReader.GetMaxFile(), _levelReader.GetMaxRank(), _levelReader.GetDisabledFields(), _levelReader.GetFlagRegion());
-    }
-
-    private void SetColoring(Coloring coloring) {
-        _background.SetColoring(coloring);
-        _board.SetColoring(coloring);
-    }
-
-    public void SetColoringPrimary() {
-        _background.SetColoring(Coloring.Primary);
-        _board.SetColoring(Coloring.Primary);
-    }
-    
-    public void SetColoringSecondary() {
-        _background.SetColoring(Coloring.Secondary);
-        _board.SetColoring(Coloring.Secondary);
     }
 }
