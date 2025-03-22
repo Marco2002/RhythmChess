@@ -1,77 +1,54 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Tilemaps;
 
 public class Board : MonoBehaviour {
     [SerializeField] private Camera _mainCamera;
-    [SerializeField] private Field _fieldPrefab;
     [SerializeField] private ChessPiece _chessPiecePrefab;
     [SerializeField] private GameObject _moveIndicatorPrefab;
-
-    [SerializeField] private int _width, _height;
+    
     [SerializeField] private float _movementSpeed;
     
-    private (float zeroReferenceX, float zeroReferenceY ) boardZeroReference;
-    private float tileWidth;
-    private float tileHeight;
-    private List<Field> fields;
+    [SerializeField] private Tilemap _tilemap;
+    [SerializeField] private RuleTile _tileLight, _tileDark, _tileGoal;
+    
+    private int _width, _height;
+    private float boardScale;
 
     private readonly List<GameObject> moveIndicators = new();
 
     public void Init(int width, int height, List<(int x, int y)> disabledFields, List<(int x, int y)> flagRegion) {
-        if(fields != null) {
-            foreach(var field in fields) {
-                Destroy(field.gameObject);
-            }
-        }
         _width = width;
         _height = height;
-        var boardWidth = 2 * 0.8f * _mainCamera.aspect * _mainCamera.orthographicSize;
+        _tilemap.ClearAllTiles();
 
-        var fieldDimensions = new Vector3(1, 0.75f, 1); // manually set to the scale of the _fieldPrefab
-        var relativeTileHeight = fieldDimensions.y / fieldDimensions.x;
-        tileWidth = boardWidth / _width;
-        Debug.Log("desired tile width: " + tileWidth);
-        Debug.Log("actual tile width: " + fieldDimensions.x);
-        tileHeight = relativeTileHeight * tileWidth;
-        Debug.Log("tile height and width: " + tileHeight + " " + tileWidth);
-        var tileScale = tileWidth / fieldDimensions.x;
-        if(_height * tileHeight > _mainCamera.orthographicSize*0.7*2) {
-            // board is too tall -> tileWidth needs to be set based on the screen height and not screen width
-            tileHeight = 2 * 0.75f * _mainCamera.orthographicSize / (_height + relativeTileHeight);
-            //                                                             ^ added to account for tile side
-            tileWidth = tileHeight / relativeTileHeight;
-        }
-        boardZeroReference = (-(tileWidth * _width / 2) + tileWidth / 2, -(tileHeight * _height / 2) + tileHeight / 2); // the coordinates of the (0, 0) file in unity units
-        fields = new List<Field>();
+        var boardWidth = 2 * 0.8f * _mainCamera.aspect * _mainCamera.orthographicSize;
+        boardScale = boardWidth / _width;
+        
+        _tilemap.transform.localScale = new Vector3(boardScale, boardScale, 1);
+        _tilemap.transform.position = new Vector3(- _width * boardScale / 2f, -height * boardScale /2f, 0);
         
         for (var x = 0; x < _width; x++) {
             for (var y = 0; y < _height; y++) {
                 if (disabledFields.Contains((x, y))) continue;
-                var spawnedField = Instantiate(_fieldPrefab, GetWorldSpacePosition(x, y, 1), Quaternion.identity);
-                
-                spawnedField.transform.localScale = new Vector3(tileScale, tileScale, 1);
-                spawnedField.name = $"Field {x} {y}";
-                spawnedField.transform.parent = transform;
-                
-                var isOffset = (x + y) % 2 == 1;
-                spawnedField.Init(isOffset, flagRegion.Contains((x, y)));
-                fields.Add(spawnedField);
+                if (flagRegion.Contains((x, y))) _tilemap.SetTile(new Vector3Int(x, y, 0), _tileGoal);
+                else _tilemap.SetTile(new Vector3Int(x, y, 0), (x + y) % 2 == 0 ? _tileLight : _tileDark);
             }
         }
     }
 
     private Vector3 GetWorldSpacePosition(int x, int y, int z = 0) {
-        
-        var worldSpaceX = boardZeroReference.zeroReferenceX + x * tileWidth;
-        var worldSpaceY = boardZeroReference.zeroReferenceY + y * tileHeight;
 
-        return new Vector3(worldSpaceX, worldSpaceY, z);
+        var worldSpaceX = (x + 0.5f) * boardScale;
+        var worldSpaceY = (y + 0.5f) * boardScale * 0.75f;
+
+        return _tilemap.transform.position + new Vector3(worldSpaceX, worldSpaceY, z);
     }
 
     private Vector3 GetWorldSpaceScale(int width, int height) {
 
-        return new Vector3(.4f * tileWidth * width, .4f * tileWidth * height);
+        return new Vector3(.4f * boardScale * width, .4f * boardScale * 0.75f * height);
     }
 
     public void SetPiece(ChessPiece piece, int x, int y) {
@@ -86,7 +63,7 @@ public class Board : MonoBehaviour {
     private IEnumerator AnimatedMove(Component piece, int x, int y) {
         var destination = GetWorldSpacePosition(x, y, y);
         while (piece.transform.position != destination) {
-            piece.transform.position = Vector3.MoveTowards(piece.transform.position, destination, _movementSpeed * tileWidth * Time.deltaTime);
+            piece.transform.position = Vector3.MoveTowards(piece.transform.position, destination, _movementSpeed * boardScale * Time.deltaTime);
             // Wait a frame 
             yield return null;
         }
@@ -95,7 +72,7 @@ public class Board : MonoBehaviour {
     public void ShowMoveIndicator(int x, int y) {
         var moveIndicator = Instantiate(_moveIndicatorPrefab, GetWorldSpacePosition(x, y, -1), Quaternion.identity);
         moveIndicator.transform.parent = transform;
-        moveIndicator.transform.localScale = new Vector3(tileWidth * 0.5f, tileWidth * 0.5f);
+        moveIndicator.transform.localScale = new Vector3(boardScale * 0.5f, boardScale * 0.5f);
         moveIndicators.Add(moveIndicator);
     }
 
