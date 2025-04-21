@@ -1,0 +1,16 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" editor-extension-mode="False">
+    <Style src="project://database/Assets/Assets/UI/components/navbar/navbar.uss?fileID=7433441132597879392&amp;guid=db5ad248eccce40a49ef97973bd2d768&amp;type=3#navbar" />
+    <ui:VisualElement name="Navbar" class="navbar">
+        <ui:Button name="ButtonLevels" icon-image="project://database/Assets/Assets/Sprites/UI/ButtonMenu.png?fileID=2800000&amp;guid=b3c7356d5b9b3458db8ef09bded338b8&amp;type=3#ButtonMenu" class="navbar-button" />
+        <ui:VisualElement name="Content" class="navbar-content">
+            <ui:Label text="LEVEL 12" name="LabelLevel" class="navbar-text navbar-text-level" style="height: 26px;" />
+            <ui:Label text="Move!" name="LabelTitle" class="navbar-text navbar-text-title" style="font-size: 24px; height: 34px;" />
+            <ui:VisualElement name="TimeBar" class="navbar-timebar">
+                <ui:ProgressBar name="ProgressBarLeft" value="22" class="navbar-progress-bar" />
+                <ui:VisualElement name="ProgressBarNode" class="navbar-progress-bar-node" />
+                <ui:ProgressBar name="ProgressBarRight" class="navbar-progress-bar" />
+            </ui:VisualElement>
+        </ui:VisualElement>
+        <ui:Button name="ButtonSettings" icon-image="project://database/Assets/Assets/Sprites/UI/ButtonSettings.png?fileID=2800000&amp;guid=3d89700f98a494f91a91c2e404a9672d&amp;type=3#ButtonSettings" class="navbar-button" />
+    </ui:VisualElement>
+</ui:UXML>

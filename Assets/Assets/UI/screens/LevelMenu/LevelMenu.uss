@@ -1,0 +1,53 @@
+.level-menu-list > * {
+    margin-top: 14px;
+    margin-right: 10px;
+    margin-bottom: 14px;
+    margin-left: 10px;
+    -unity-text-align: upper-center;
+}
+
+.level-menu-close-button {
+    margin-top: 0;
+    margin-right: 0;
+    margin-bottom: 0;
+    margin-left: 0;
+    padding-top: 0;
+    padding-right: 0;
+    padding-bottom: 0;
+    padding-left: 0;
+    width: 28px;
+    height: 28px;
+    background-color: rgba(0, 0, 0, 0);
+}
+
+.level-menu-title {
+    -unity-font-definition: url("project://database/Assets/Fonts/Poppins-Medium.ttf?fileID=12800000&guid=49b43e9712d0444baabd3fc2c2613958&type=3#Poppins-Medium");
+    color: rgb(255, 255, 255);
+    flex-grow: 1;
+    -unity-text-align: middle-center;
+    font-size: 24px;
+}
+
+.level-menu-navbar {
+    flex-direction: row;
+    margin-right: 24px;
+    margin-left: 24px;
+    align-items: center;
+}
+
+.level-menu-list {
+    width: 332px;
+    flex-direction: row;
+    flex-wrap: wrap;
+    align-self: center;
+}
+
+:root {
+    visibility: hidden;
+    background-color: rgb(64, 79, 108);
+}
+
+.level-menu-list-wrapper {
+    overflow: hidden;
+    margin-top: 64px;
+}

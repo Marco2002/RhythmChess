@@ -1,0 +1,51 @@
+:root {
+    height: 100%;
+}
+
+.game-container {
+    justify-content: space-between;
+}
+
+.game-pause-flash {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    right: 0;
+    left: 0;
+    background-size: 70px 70px;
+    display: none;
+}
+
+.game-transition-circle {
+    width: 12px;
+    height: 12px;
+    background-color: rgb(64, 79, 108);
+    border-top-left-radius: 12px;
+    border-top-right-radius: 12px;
+    border-bottom-right-radius: 12px;
+    border-bottom-left-radius: 12px;
+    position: absolute;
+    top: 28px;
+}
+
+.game-pause-button {
+    background-color: rgba(0, 0, 0, 0);
+    width: 64px;
+    height: 64px;
+    padding-top: 0;
+    padding-right: 0;
+    padding-bottom: 0;
+    padding-left: 0;
+    align-self: center;
+    margin-top: 0;
+    margin-right: 16px;
+    margin-bottom: 0;
+    margin-left: 16px;
+}
+
+.game-bottom-navigation {
+    bottom: 32px;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+}
