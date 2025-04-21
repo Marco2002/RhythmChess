@@ -1,3 +1,4 @@
+using System.Linq;
 using System.Text;
 using UnityEngine;
 
@@ -9,9 +10,9 @@ public class Controller : MonoBehaviour {
     [SerializeField] private SwipeDetection _swipeDetection;
     [SerializeField] private LevelReader _levelReader;
     [SerializeField] private BeatManager _beatManager;
-    [SerializeField] private UIController _uiController;
+    [SerializeField] private GameUI _gameUI;
     
-    [SerializeField] private int _level = 1;
+    [SerializeField] private int _level = 0;
     
     private bool gameEnded;
     private Direction nextMove = Direction.None;
@@ -19,16 +20,28 @@ public class Controller : MonoBehaviour {
     private bool paused;
     private bool pauseAtNextOnBeat;
     private bool inOffBeat;
+    private bool playerPrefsInitialized;
 
     private void Start() {
-        Debug.Log("started loading level");
+        if (!playerPrefsInitialized) {
+            InitializePlayerPrefs();
+            playerPrefsInitialized = true;
+        }
         Application.targetFrameRate = 120;
         _level = PlayerPrefs.GetInt("currentLevel", _level);
-        _levelReader.ReadLevelCsv("level"+_level);
-        _uiController.Init(_level);
+        _levelReader.ReadLevelCsv("level"+(_level+1));
+        InitializeUI();
         PrepareGame();
         _game.Init(_levelReader.GetStartingPosition(), _levelReader.GetMaxFile(), _levelReader.GetMaxRank(), _levelReader.GetDisabledFields(), _levelReader.GetFlagRegion());
-        Debug.Log("game initialized");
+    }
+
+    private void InitializeUI() {
+        _gameUI.Init(_level + 1);
+        _gameUI.OnPausePlayButtonClicked += TogglePause;
+        _gameUI.OnLevelMenuOpened += PauseLevel;
+        _gameUI.OnLevelMenuClosed += PrepareGame;
+        _gameUI.OnLevelSelected += LoadLevel;
+        _gameUI.OnLevelReset += ResetLevel;
     }
 
     private void HandleGameEnd() {
@@ -108,6 +121,7 @@ public class Controller : MonoBehaviour {
 
     private void PrepareGame() {
         gameEnded = false;
+        _gameUI.ResetProgress();
         ResumeLevel();
         numberOfMoves = 0;
     }
@@ -118,7 +132,7 @@ public class Controller : MonoBehaviour {
     }
     
     public void TogglePause() {
-        _uiController.ShowPauseFlash(!paused);
+        _gameUI.ShowPauseFlash(!paused);
         if (paused) {
             ResumeLevel();
         } else {
@@ -135,7 +149,7 @@ public class Controller : MonoBehaviour {
         _beatManager.Stop();
         _beatManager.enabled = false;
         _board.RemoveMoveIndicators();
-        _uiController.Pause();
+        _gameUI.Pause();
     }
     
     public void ResumeLevel() {
@@ -147,17 +161,18 @@ public class Controller : MonoBehaviour {
         inOffBeat = false;
         _beatManager.enabled = true;
         _beatManager.Reset();
-        _uiController.Resume();
+        _gameUI.Resume();
     }
 
     private void BeatLevel() {
         var levelStatus = PlayerPrefs.GetString("levelStatus");
+        Debug.Log("level status "+levelStatus);
         var stars = 1;
         if (numberOfMoves <= _levelReader.GetSolution().Count * 1.5) stars = 2;
         if (numberOfMoves == _levelReader.GetSolution().Count) stars = 3;
-        if(levelStatus[_level-1] - '0' < stars) {
+        if(levelStatus[_level] - '0' < stars) {
             var levelStatusString = new StringBuilder(levelStatus);
-            levelStatusString[_level-1] = stars.ToString()[0];
+            levelStatusString[_level] = stars.ToString()[0];
             PlayerPrefs.SetString("levelStatus", levelStatusString.ToString());
             PlayerPrefs.Save();
         }
@@ -171,9 +186,20 @@ public class Controller : MonoBehaviour {
     
     public void LoadLevel(int level) {
         _level = level;
-        _levelReader.ReadLevelCsv("level" + _level);
-        _uiController.UpdateLevel(_level);
+        _levelReader.ReadLevelCsv("level" + (_level + 1));
+        _gameUI.UpdateLevel(_level + 1);
         PrepareGame();
         _game.Init(_levelReader.GetStartingPosition(), _levelReader.GetMaxFile(), _levelReader.GetMaxRank(), _levelReader.GetDisabledFields(), _levelReader.GetFlagRegion());
+    }
+
+    private void InitializePlayerPrefs() {
+        if(!PlayerPrefs.HasKey("levelStatus")) {
+            var defaultStatus = string.Concat(Enumerable.Repeat(0.ToString(), GameConstants.NUMBER_OF_LEVELS));
+            PlayerPrefs.SetString("levelStatus", PlayerPrefs.GetString("levelStatus", defaultStatus));
+        }
+        if(!PlayerPrefs.HasKey("currentLevel")) {
+            PlayerPrefs.SetInt("currentLevel", 0);
+        }
+        PlayerPrefs.Save();
     }
 }

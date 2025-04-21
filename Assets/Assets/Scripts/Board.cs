@@ -15,14 +15,16 @@ public class Board : MonoBehaviour {
     
     private int _width, _height;
     private float boardScale;
-
     private readonly List<GameObject> moveIndicators = new();
 
     public void Init(int width, int height, List<(int x, int y)> disabledFields, List<(int x, int y)> flagRegion) {
         _width = width;
         _height = height;
         _tilemap.ClearAllTiles();
-
+        foreach (Transform shadow in _tilemap.transform) {
+            Destroy(shadow.gameObject);
+        }
+    
         var boardWidth = 2 * 0.8f * _mainCamera.aspect * _mainCamera.orthographicSize;
         boardScale = boardWidth / _width;
         
@@ -34,6 +36,15 @@ public class Board : MonoBehaviour {
                 if (disabledFields.Contains((x, y))) continue;
                 if (flagRegion.Contains((x, y))) _tilemap.SetTile(new Vector3Int(x, y, 0), _tileGoal);
                 else _tilemap.SetTile(new Vector3Int(x, y, 0), (x + y) % 2 == 0 ? _tileLight : _tileDark);
+            }
+        }
+        
+        for (var x = 0; x < _width; x++) {
+            for (var y = 0; y < _height; y++) {
+                var currentTile = _tilemap.GetTile<ChessboardRuleTile>(new Vector3Int(x, y, 0));
+                if (currentTile != null) {
+                    currentTile.AddShadow(new Vector3Int(x, y, 0), _tilemap);
+                }
             }
         }
     }
@@ -48,7 +59,7 @@ public class Board : MonoBehaviour {
 
     private Vector3 GetWorldSpaceScale(int width, int height) {
 
-        return new Vector3(.4f * boardScale * width, .4f * boardScale * 0.75f * height);
+        return new Vector3(.4f * boardScale * width, .4f * boardScale * height);
     }
 
     public void SetPiece(ChessPiece piece, int x, int y) {

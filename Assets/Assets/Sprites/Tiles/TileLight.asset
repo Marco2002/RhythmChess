@@ -185,5 +185,5 @@ MonoBehaviour:
     - {x: 1, y: 0, z: 0}
     - {x: 0, y: 1, z: 0}
     m_RuleTransform: 0
-  shadowSprite: {fileID: 3127161255133390555, guid: 1341b710cea1b4d64b8f6d9ef06958a6, type: 3}
-  shadowSpriteExtended: {fileID: -5696418954093474786, guid: 5d21dee7f1c364549ac0bd7abb94facb, type: 3}
+  _shadowSprite: {fileID: 3127161255133390555, guid: 1341b710cea1b4d64b8f6d9ef06958a6, type: 3}
+  _shadowSpriteExtended: {fileID: -5696418954093474786, guid: 5d21dee7f1c364549ac0bd7abb94facb, type: 3}

@@ -102,7 +102,7 @@ public class LevelReader : MonoBehaviour {
         return BitConverter.ToString(fen.ToArray());
     }
     public void ReadLevelCsv(string levelName) {
-        var path = Path.Combine(Application.streamingAssetsPath, "LevelData/Easy/" + levelName + ".rcl");
+        var path = Path.Combine(Application.streamingAssetsPath, "LevelData/" + levelName + ".rcl");
         byte[] data;
         if (Application.platform == RuntimePlatform.Android) {
             using var www = UnityWebRequest.Get(path);
