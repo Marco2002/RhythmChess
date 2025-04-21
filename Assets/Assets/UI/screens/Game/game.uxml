@@ -7,6 +7,6 @@
     <engine:VisualElement name="BottomNavigation" class="game-bottom-navigation">
         <IconButton icon-glyph="" name="ResetButton" />
         <engine:Button name="PauseButton" icon-image="project://database/Assets/Assets/Sprites/UI/ButtonPause.png?fileID=-2704585380071478335&amp;guid=3b80eda2479034e2e8dcef7862388d8b&amp;type=3#ButtonPause_0" class="game-pause-button" />
-        <IconButton icon-glyph="" name="HintButton" />
+        <IconButton icon-glyph="" name="HintButton" />
     </engine:VisualElement>
 </engine:UXML>
