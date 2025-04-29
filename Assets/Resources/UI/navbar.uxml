@@ -1,7 +1,7 @@
 <ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" editor-extension-mode="False">
-    <Style src="project://database/Assets/Assets/UI/components/navbar/navbar.uss?fileID=7433441132597879392&amp;guid=db5ad248eccce40a49ef97973bd2d768&amp;type=3#navbar" />
+    <Style src="project://database/Assets/UI/components/Navbar/navbar.uss?fileID=7433441132597879392&amp;guid=db5ad248eccce40a49ef97973bd2d768&amp;type=3#navbar" />
     <ui:VisualElement name="Navbar" class="navbar">
-        <ui:Button name="ButtonLevels" icon-image="project://database/Assets/Assets/Sprites/UI/ButtonMenu.png?fileID=2800000&amp;guid=b3c7356d5b9b3458db8ef09bded338b8&amp;type=3#ButtonMenu" class="navbar-button" />
+        <ui:Button name="ButtonLevels" icon-image="project://database/Assets/Assets/Sprites/UI/ButtonMenu.png?fileID=2800000&amp;guid=b3c7356d5b9b3458db8ef09bded338b8&amp;type=3#ButtonMenu" class="navbar-button" style="border-top-width: 0; border-right-width: 0; border-bottom-width: 0; border-left-width: 0;" />
         <ui:VisualElement name="Content" class="navbar-content">
             <ui:Label text="LEVEL 12" name="LabelLevel" class="navbar-text navbar-text-level" style="height: 26px;" />
             <ui:Label text="Move!" name="LabelTitle" class="navbar-text navbar-text-title" style="font-size: 24px; height: 34px;" />
