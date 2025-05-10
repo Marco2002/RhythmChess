@@ -1,0 +1,19 @@
+<engine:UXML xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:engine="UnityEngine.UIElements" xmlns:editor="UnityEditor.UIElements" noNamespaceSchemaLocation="../../../../UIElementsSchema/UIElements.xsd" editor-extension-mode="False">
+    <Style src="project://database/Assets/UI/screens/SettingsPopup/SettingsPopup.uss?fileID=7433441132597879392&amp;guid=d13a9085dca614dce80f4f7dca644353&amp;type=3#SettingsPopup" />
+    <Popup name="SettingsPopup" class="settings-popup" style="display: flex;">
+        <engine:VisualElement name="Header" class="settings-popup-header">
+            <engine:Label text="Settings" name="Title" class="settings-popup-title" />
+            <engine:Button text="" name="ButtonClose" class="settings-popup-button-close" />
+        </engine:VisualElement>
+        <engine:VisualElement name="Divider" class="settings-popup-divider" />
+        <engine:VisualElement name="Content" class="settings-popup-content">
+            <SettingsControl label-text="Sound" icon-glyph="" type="0" name="SettingsControlSound" value="true" class="settings-popup-control" />
+            <engine:VisualElement name="ControlDivider" class="settings-popup-control-divider" />
+            <SettingsControl label-text="Vibration" icon-glyph="" type="0" name="SettingsControlVibration" value="true" />
+            <engine:VisualElement name="ControlDivider" class="settings-popup-control-divider" />
+            <SettingsControl type="1" label-text="Count-in beats" icon-glyph="" name="SettingsControlCountInBeats" value="true" />
+            <engine:VisualElement name="ControlDivider" class="settings-popup-control-divider" />
+            <SettingsControl icon-glyph="?" label-text="How to play" type="2" name="SettingsControlHowToPlay" />
+        </engine:VisualElement>
+    </Popup>
+</engine:UXML>

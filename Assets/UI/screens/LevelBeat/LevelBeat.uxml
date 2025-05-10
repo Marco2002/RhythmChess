@@ -1,0 +1,34 @@
+<engine:UXML xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:engine="UnityEngine.UIElements" xmlns:editor="UnityEditor.UIElements" noNamespaceSchemaLocation="../../../../../UIElementsSchema/UIElements.xsd" editor-extension-mode="False">
+    <Style src="project://database/Assets/UI/screens/LevelBeat/LevelBeat.uss?fileID=7433441132597879392&amp;guid=6114c109b24c64831919ad040493d893&amp;type=3#LevelBeat" />
+    <SafeAreaManager>
+        <engine:VisualElement name="Header" style="flex-grow: 1;">
+            <engine:Label text="Level 12" name="LabelLevel" class="level-beat-label-level" />
+            <engine:Label text="Cleared!" name="LabelCleared" class="level-beat-label-cleared" />
+            <engine:VisualElement name="StarsContainer" class="level-beat-stars-container">
+                <engine:VisualElement name="Star" class="level-beat-star">
+                    <engine:Label text="&#10;" name="LabelStarIcon0" class="level-beat-star-icon" />
+                    <engine:Label name="LabelStarNumber0" class="level-beat-star-number" />
+                </engine:VisualElement>
+                <engine:VisualElement name="Star" class="level-beat-star">
+                    <engine:Label text="&#10;" name="LabelStarIcon1" class="level-beat-star-icon" />
+                    <engine:Label text="12" name="LabelStarNumber1" class="level-beat-star-number" />
+                </engine:VisualElement>
+                <engine:VisualElement name="Star" class="level-beat-star">
+                    <engine:Label text="&#10;" name="LabelStarIcon2" class="level-beat-star-icon level-beat-star-icon-locked" />
+                    <engine:Label text="10" name="LabelStarNumber2" class="level-beat-star-number" />
+                </engine:VisualElement>
+            </engine:VisualElement>
+        </engine:VisualElement>
+    </SafeAreaManager>
+    <engine:VisualElement name="Footer" style="bottom: 0;">
+        <engine:VisualElement name="NumberOfMoves">
+            <engine:Label text="Number of moves:" name="LabelNumberOfMovesText" class="level-beat-number-of-moves-text" />
+            <engine:Label text="12" name="LabelNumberOfMoves" class="level-beat-number-of-moves" />
+        </engine:VisualElement>
+        <engine:VisualElement name="Navigation" class="level-beat-navigation">
+            <IconButton name="ButtonRetry" />
+            <engine:Button text="" name="ButtonNext" class="level-beat-button-next" />
+            <IconButton icon-glyph="" name="ButtonLevelMenu" />
+        </engine:VisualElement>
+    </engine:VisualElement>
+</engine:UXML>

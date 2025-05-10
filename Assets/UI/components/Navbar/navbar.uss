@@ -1,0 +1,108 @@
+.navbar-button {
+    background-color: rgba(0, 0, 0, 0);
+    width: 32px;
+    height: 32px;
+    margin-top: 0;
+    margin-right: 0;
+    margin-bottom: 0;
+    margin-left: 0;
+    padding-top: 0;
+    padding-right: 0;
+    padding-bottom: 0;
+    padding-left: 0;
+    border-top-width: 0;
+    border-right-width: 0;
+    border-bottom-width: 0;
+    border-left-width: 0;
+}
+
+.navbar {
+    flex-direction: row;
+    align-items: center;
+    margin-right: 24px;
+    margin-left: 24px;
+}
+
+.navbar-content {
+    flex-grow: 1;
+    align-items: center;
+}
+
+.navbar-text {
+    -unity-text-align: upper-center;
+    -unity-font-definition: url("project://database/Assets/Fonts/Poppins-Medium.ttf?fileID=12800000&guid=49b43e9712d0444baabd3fc2c2613958&type=3#Poppins-Medium");
+    color: rgb(255, 255, 255);
+    margin-top: 0;
+    margin-right: 0;
+    margin-bottom: 0;
+    margin-left: 0;
+    padding-top: 0;
+    padding-right: 0;
+    padding-bottom: 0;
+    padding-left: 0;
+}
+
+.navbar-progress-bar {
+    width: 84px;
+    margin-top: 0;
+    margin-right: 0;
+    margin-bottom: 0;
+    margin-left: 0;
+    padding-top: 0;
+    padding-right: 0;
+    padding-bottom: 0;
+    padding-left: 0;
+    max-height: 6px;
+}
+
+.navbar-progress-bar-node {
+    background-color: rgb(44, 47, 54);
+    width: 10px;
+    height: 10px;
+    margin-right: 4px;
+    margin-left: 4px;
+}
+
+.navbar-timebar {
+    flex-direction: row;
+    align-items: center;
+}
+
+.unity-progress-bar__progress {
+    margin-top: 0;
+    margin-right: 0;
+    margin-bottom: 0;
+    margin-left: 0;
+    padding-top: 0;
+    padding-right: 0;
+    padding-bottom: 0;
+    padding-left: 0;
+    height: 6px;
+    background-color: rgb(255, 255, 255);
+}
+
+.progress-zero .unity-progress-bar__progress {
+    background-color: rgb(44, 47, 54);
+}
+
+.unity-progress-bar__background {
+    background-color: rgb(44, 47, 54);
+    border-top-width: 0;
+    border-right-width: 0;
+    border-bottom-width: 0;
+    border-left-width: 0;
+    max-height: 6px;
+    overflow: hidden;
+    margin-left: 0;
+}
+
+.navbar-text-title {
+    font-size: 32px;
+    -unity-text-align: upper-left;
+    max-height: 32px;
+}
+
+.navbar-text-level {
+    font-size: 14px;
+    height: 22px;
+}

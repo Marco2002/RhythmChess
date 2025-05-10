@@ -1,0 +1,132 @@
+.level-beat-label-level {
+    -unity-text-align: upper-center;
+    -unity-font-definition: url("project://database/Assets/Fonts/Poppins-Medium.ttf?fileID=12800000&guid=49b43e9712d0444baabd3fc2c2613958&type=3#Poppins-Medium");
+    color: rgb(255, 255, 255);
+    font-size: 20px;
+    height: 22px;
+}
+
+.level-beat-label-cleared {
+    -unity-text-align: upper-center;
+    font-size: 36px;
+    -unity-font-definition: url("project://database/Assets/Fonts/Poppins-Medium.ttf?fileID=12800000&guid=49b43e9712d0444baabd3fc2c2613958&type=3#Poppins-Medium");
+    color: rgb(255, 255, 255);
+}
+
+.level-beat-star-icon {
+    -unity-font-definition: url("project://database/Assets/Fonts/fa-solid-900.ttf?fileID=12800000&guid=a6000a015515b5349bc3abd97406adbc&type=3#fa-solid-900");
+    color: rgb(44, 157, 97);
+    font-size: 64px;
+    width: 64px;
+    height: 64px;
+    margin-top: 0;
+    margin-right: 0;
+    margin-bottom: 0;
+    margin-left: 0;
+    padding-top: 0;
+    padding-right: 0;
+    padding-bottom: 0;
+    padding-left: 0;
+    -unity-text-align: middle-center;
+}
+
+.level-beat-star-number {
+    width: 64px;
+    margin-top: 0;
+    margin-right: 0;
+    margin-bottom: 0;
+    margin-left: 0;
+    padding-top: 0;
+    padding-right: 0;
+    padding-bottom: 0;
+    padding-left: 0;
+    -unity-font-definition: url("project://database/Assets/Fonts/Poppins-Medium.ttf?fileID=12800000&guid=49b43e9712d0444baabd3fc2c2613958&type=3#Poppins-Medium");
+    font-size: 24px;
+    color: rgb(255, 255, 255);
+    -unity-text-align: middle-center;
+}
+
+.level-beat-star {
+    flex-grow: 0;
+    margin-right: 16px;
+    margin-left: 16px;
+}
+
+.level-beat-stars-container {
+    flex-grow: 0;
+    flex-direction: row;
+    flex-shrink: 0;
+    justify-content: center;
+    margin-top: 16px;
+}
+
+.level-beat-number-of-moves-text {
+    margin-top: 0;
+    margin-right: 0;
+    margin-bottom: 0;
+    margin-left: 0;
+    padding-top: 0;
+    padding-right: 0;
+    padding-bottom: 0;
+    padding-left: 0;
+    -unity-font-definition: url("project://database/Assets/Fonts/Poppins-Medium.ttf?fileID=12800000&guid=49b43e9712d0444baabd3fc2c2613958&type=3#Poppins-Medium");
+    color: rgb(255, 255, 255);
+    font-size: 20px;
+    -unity-text-align: upper-center;
+    height: 22px;
+}
+
+.level-beat-number-of-moves {
+    margin-top: 0;
+    margin-right: 0;
+    margin-bottom: 0;
+    margin-left: 0;
+    padding-top: 0;
+    padding-right: 0;
+    padding-bottom: 0;
+    padding-left: 0;
+    -unity-font-definition: url("project://database/Assets/Fonts/Poppins-Medium.ttf?fileID=12800000&guid=49b43e9712d0444baabd3fc2c2613958&type=3#Poppins-Medium");
+    font-size: 36px;
+    color: rgb(255, 255, 255);
+    -unity-text-align: upper-center;
+}
+
+.level-beat-navigation {
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 32px;
+    margin-top: 16px;
+}
+
+.level-beat-star-icon-locked {
+    color: rgba(44, 157, 97, 0);
+    -unity-text-outline-width: 6px;
+    -unity-text-outline-color: rgb(44, 157, 97);
+}
+
+:root {
+    visibility: hidden;
+    height: 100%;
+}
+
+.level-beat-button-next {
+    width: 64px;
+    height: 64px;
+    margin-top: 0;
+    margin-right: 16px;
+    margin-bottom: 0;
+    margin-left: 16px;
+    padding-top: 0;
+    padding-right: 0;
+    padding-bottom: 0;
+    padding-left: 0;
+    background-color: rgba(188, 188, 188, 0);
+    -unity-font-definition: url("project://database/Assets/Fonts/fa-solid-900.ttf?fileID=12800000&guid=a6000a015515b5349bc3abd97406adbc&type=3#fa-solid-900");
+    color: rgb(255, 255, 255);
+    font-size: 64px;
+    border-top-width: 0;
+    border-right-width: 0;
+    border-bottom-width: 0;
+    border-left-width: 0;
+}

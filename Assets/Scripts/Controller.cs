@@ -1,0 +1,228 @@
+using System;
+using System.Linq;
+using System.Text;
+using MoreMountains.Feedbacks;
+using UnityEngine;
+
+public class Controller : MonoBehaviour {
+    // Start is called before the first frame update
+    [SerializeField] private Game _game;
+    [SerializeField] private Board _board;
+    [SerializeField] private Camera _mainCamera;
+    [SerializeField] private SwipeDetection _swipeDetection;
+    [SerializeField] private LevelReader _levelReader;
+    [SerializeField] private BeatManager _beatManager;
+    [SerializeField] private GameUI _gameUI;
+    [SerializeField] private MMF_Player _hapticFeedback;
+    [SerializeField] private AudioSource _audioTrack;
+    [SerializeField] private int _level;
+    
+    private bool gameEnded;
+    private Direction nextMove = Direction.None;
+    private int numberOfMoves;
+    private bool paused;
+    private bool pauseAtNextOnBeat;
+    private bool inOffBeat;
+
+    private void Start() {
+        if(!PlayerPrefs.HasKey("playerPrefsInitialized")) {
+            InitializePlayerPrefs();
+        }
+        Application.targetFrameRate = 120;
+        _hapticFeedback.enabled = PlayerPrefs.GetInt("vibrationEnabled") == 1;
+        _audioTrack.mute = PlayerPrefs.GetInt("soundEnabled") == 0;
+        _level = PlayerPrefs.GetInt("currentLevel", _level);
+        _levelReader.ReadLevelCsv("level"+(_level+1));
+        InitializeUI();
+        PrepareGame();
+        _game.Init(_levelReader.GetStartingPosition(), _levelReader.GetMaxFile(), _levelReader.GetMaxRank(), _levelReader.GetDisabledFields(), _levelReader.GetFlagRegion());
+    }
+
+    private void InitializeUI() {
+        _gameUI.Init(_level);
+        _gameUI.OnPausePlayButtonClicked += TogglePause;
+        _gameUI.OnLevelMenuOpened += PauseLevel;
+        _gameUI.OnLevelMenuClosed += PrepareGame;
+        _gameUI.OnLevelSelected += LoadLevel;
+        _gameUI.OnLevelReset += ResetLevel;
+        _gameUI.OnSettingsPopupOpened += PauseLevel;
+        _gameUI.OnSettingsPopupClosed += ResumeLevel;
+        _gameUI.OnVibrationSettingChanged += (value) => {
+            _hapticFeedback.enabled = value;
+        };
+        _gameUI.OnSoundSettingChanged += (value) => {
+            _audioTrack.mute = !value;
+        };
+    }
+
+    private void HandleGameEnd() {
+        var playerWon = _game.GetWinningStatus();
+        if (playerWon) {
+            BeatLevel();
+        } else {
+            ResetLevel();
+        }
+    }
+
+    public void HandleOffBeat() {
+        inOffBeat = false;
+        if(pauseAtNextOnBeat) {
+            pauseAtNextOnBeat = false;
+            PauseLevel();
+            return;
+        }
+        if (gameEnded) {
+            HandleGameEnd();
+        } else {
+            _game.ShowPossibleMoves();
+        }
+    }
+
+    public void HandleOnBeat() {
+        numberOfMoves++;
+        inOffBeat = true;
+        _gameUI.EnableResetButton();
+        _gameUI.NumberOfMoves++;
+        // show player move
+        _swipeDetection.DetectSwipeForCurrentTouch();
+        if (nextMove != Direction.None) {
+            gameEnded = _game.Move(nextMove);
+        }
+        _board.RemoveMoveIndicators();
+        nextMove = Direction.None;
+        _swipeDetection.enabled = false;
+    }
+
+    public void MoveEnemy() {
+        // showEnemyMove
+        var bestMove = _levelReader.GetBestMove(_game.GetPosition());
+        if(bestMove.from != bestMove.to) {
+            gameEnded = _game.MoveEnemy(bestMove.from, bestMove.to) | gameEnded;
+        }
+        _swipeDetection.enabled = true;
+    }
+
+    public void RecordMove(Vector2 direction) {
+        var possibleDirections = _game.GetPossibleMoveDirections();
+        if (Vector2.Dot(new Vector2(1, 1).normalized, direction) > .92 && possibleDirections.Contains(Direction.UpRight)) {
+            nextMove = Direction.UpRight;
+        }
+        else if (Vector2.Dot(new Vector2(1, -1).normalized, direction) > .92 && possibleDirections.Contains(Direction.DownRight)) {
+            nextMove = Direction.DownRight;
+        }
+        else if (Vector2.Dot(new Vector2(-1, 1).normalized, direction) > .92 && possibleDirections.Contains(Direction.UpLeft)) {
+            nextMove = Direction.UpLeft;
+        }
+        else if (Vector2.Dot(new Vector2(-1, -1).normalized, direction) > .92 && possibleDirections.Contains(Direction.DownLeft)) {
+            nextMove = Direction.DownLeft;
+        }
+        else if (Vector2.Dot(Vector2.up, direction) > .7 && possibleDirections.Contains(Direction.Up)) {
+            nextMove = Direction.Up;
+        }
+        else if (Vector2.Dot(Vector2.down, direction) > .7 && possibleDirections.Contains(Direction.Down)) {
+            nextMove = Direction.Down;
+        }
+        else if (Vector2.Dot(Vector2.left, direction) > .7 && possibleDirections.Contains(Direction.Left)) {
+            nextMove = Direction.Left;
+        }
+        else if (Vector2.Dot(Vector2.right, direction) > .7 && possibleDirections.Contains(Direction.Right)) {
+            nextMove = Direction.Right;
+        }
+        _board.RemoveMoveIndicators();
+        _swipeDetection.enabled = false;
+    }
+
+    private void PrepareGame() {
+        gameEnded = false;
+        _gameUI.ResetProgress();
+        _mainCamera.backgroundColor = new Color32(0x4B, 0x79, 0x76, 0xFF);
+        ResumeLevel();
+        numberOfMoves = 0;
+    }
+
+    private void ResetLevel() {
+        _game.SetupLevel();
+        _board.RemoveMoveIndicators();
+        PrepareGame();
+    }
+    
+    public void TogglePause() {
+        _gameUI.ShowPauseFlash(!paused);
+        if (paused) {
+            ResumeLevel();
+        } else {
+            if (inOffBeat) {
+                pauseAtNextOnBeat = true;
+            } else {
+                PauseLevel();
+            }
+        }
+    }
+
+    public void PauseLevel() {
+        paused = true;
+        _beatManager.Stop();
+        _beatManager.enabled = false;
+        _board.RemoveMoveIndicators();
+        _gameUI.Pause();
+    }
+    
+    public void ResumeLevel() {
+        if (gameEnded) {
+            HandleGameEnd();
+            return;
+        }
+        paused = false;
+        inOffBeat = false;
+        _beatManager.enabled = true;
+        _beatManager.Reset();
+        _gameUI.Resume();
+    }
+
+    private void BeatLevel() {
+        var levelStatus = PlayerPrefs.GetString("levelStatus");
+        var stars = 1;
+        var requiredStarsFor3 = _levelReader.GetSolution().Count;
+        var requiredStarsFor2 = Math.Max(
+            _levelReader.GetSolution().Count + 1,
+            (int) Math.Floor(_levelReader.GetSolution().Count * 1.3));
+        if (numberOfMoves <= requiredStarsFor2) stars = 2;
+        if (numberOfMoves <= requiredStarsFor3) stars = 3;
+        if(levelStatus[_level] - '0' < stars) {
+            var levelStatusString = new StringBuilder(levelStatus);
+            levelStatusString[_level] = stars.ToString()[0];
+            PlayerPrefs.SetString("levelStatus", levelStatusString.ToString());
+            PlayerPrefs.Save();
+        }
+        _level++;
+        if (_level > PlayerPrefs.GetInt("currentLevel")) {
+            PlayerPrefs.SetInt("currentLevel", _level);
+            PlayerPrefs.Save();
+        }
+        _beatManager.Stop();
+        _beatManager.enabled = false;
+        
+        _mainCamera.backgroundColor = new Color32(0x1F, 0x24, 0x27, 0xFF); // #1F2427
+        _gameUI.OpenLevelBeatUI(stars, requiredStarsFor2, requiredStarsFor3, numberOfMoves);
+    }
+    
+    public void LoadLevel(int level) {
+        _level = level;
+        _levelReader.ReadLevelCsv("level" + (_level + 1));
+        _gameUI.Level = _level;
+        PrepareGame();
+        _game.Init(_levelReader.GetStartingPosition(), _levelReader.GetMaxFile(), _levelReader.GetMaxRank(), _levelReader.GetDisabledFields(), _levelReader.GetFlagRegion());
+    }
+
+    private void InitializePlayerPrefs() {
+        var defaultStatus = string.Concat(Enumerable.Repeat(0.ToString(), GameConstants.NUMBER_OF_LEVELS));
+        PlayerPrefs.SetString("levelStatus", PlayerPrefs.GetString("levelStatus", defaultStatus));
+        
+        PlayerPrefs.SetInt("currentLevel", 0);
+        PlayerPrefs.SetInt("soundEnabled", 1);
+        PlayerPrefs.SetInt("vibrationEnabled", 1);
+        PlayerPrefs.SetInt("countInBeats", 4);
+        PlayerPrefs.SetInt("playerPrefsInitialized", 1);
+        PlayerPrefs.Save();
+    }
+}

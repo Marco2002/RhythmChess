@@ -473,14 +473,14 @@ MonoBehaviour:
   _bpm: 80
   _audioSource: {fileID: 652580732}
   _intervals:
-  - _beatOffset: 0
+  - _beatOffset: 2
     _repeat: 2
     _trigger:
       m_PersistentCalls:
         m_Calls:
-        - m_Target: {fileID: 971168932}
-          m_TargetAssemblyTypeName: GameUI, Assembly-CSharp
-          m_MethodName: StartOnBeat
+        - m_Target: {fileID: 652580728}
+          m_TargetAssemblyTypeName: Controller, Assembly-CSharp
+          m_MethodName: HandleOnBeat
           m_Mode: 1
           m_Arguments:
             m_ObjectArgument: {fileID: 0}
@@ -490,9 +490,9 @@ MonoBehaviour:
             m_StringArgument: 
             m_BoolArgument: 0
           m_CallState: 2
-        - m_Target: {fileID: 652580728}
-          m_TargetAssemblyTypeName: Controller, Assembly-CSharp
-          m_MethodName: HandleOnBeat
+        - m_Target: {fileID: 652580733}
+          m_TargetAssemblyTypeName: MoreMountains.Feedbacks.MMF_Player, MoreMountains.Tools
+          m_MethodName: PlayFeedbacks
           m_Mode: 1
           m_Arguments:
             m_ObjectArgument: {fileID: 0}
@@ -521,7 +521,7 @@ MonoBehaviour:
           m_CallState: 2
         - m_Target: {fileID: 652580728}
           m_TargetAssemblyTypeName: Controller, Assembly-CSharp
-          m_MethodName: HandeOffBeat
+          m_MethodName: HandleOffBeat
           m_Mode: 1
           m_Arguments:
             m_ObjectArgument: {fileID: 0}
@@ -531,19 +531,7 @@ MonoBehaviour:
             m_StringArgument: 
             m_BoolArgument: 0
           m_CallState: 2
-        - m_Target: {fileID: 652580733}
-          m_TargetAssemblyTypeName: MoreMountains.Feedbacks.MMF_Player, MoreMountains.Tools
-          m_MethodName: PlayFeedbacks
-          m_Mode: 1
-          m_Arguments:
-            m_ObjectArgument: {fileID: 0}
-            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-            m_IntArgument: 0
-            m_FloatArgument: 0
-            m_StringArgument: 
-            m_BoolArgument: 0
-          m_CallState: 2
-  - _beatOffset: 1.5
+  - _beatOffset: 2.5
     _repeat: 2
     _trigger:
       m_PersistentCalls:
@@ -563,6 +551,23 @@ MonoBehaviour:
         - m_Target: {fileID: 652580733}
           m_TargetAssemblyTypeName: MoreMountains.Feedbacks.MMF_Player, MoreMountains.Tools
           m_MethodName: PlayFeedbacks
+          m_Mode: 1
+          m_Arguments:
+            m_ObjectArgument: {fileID: 0}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+            m_IntArgument: 0
+            m_FloatArgument: 0
+            m_StringArgument: 
+            m_BoolArgument: 0
+          m_CallState: 2
+  - _beatOffset: 0
+    _repeat: 2
+    _trigger:
+      m_PersistentCalls:
+        m_Calls:
+        - m_Target: {fileID: 971168932}
+          m_TargetAssemblyTypeName: GameUI, Assembly-CSharp
+          m_MethodName: StartOnBeat
           m_Mode: 1
           m_Arguments:
             m_ObjectArgument: {fileID: 0}
