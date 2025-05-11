@@ -106,8 +106,8 @@
 }
 
 :root {
-    visibility: hidden;
     height: 100%;
+    visibility: hidden;
 }
 
 .level-beat-button-next {

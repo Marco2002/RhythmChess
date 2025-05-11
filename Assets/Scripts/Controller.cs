@@ -202,7 +202,7 @@ public class Controller : MonoBehaviour {
         _beatManager.Stop();
         _beatManager.enabled = false;
         
-        _mainCamera.backgroundColor = new Color32(0x1F, 0x24, 0x27, 0xFF); // #1F2427
+        // _mainCamera.backgroundColor = new Color32(0x1F, 0x24, 0x27, 0xFF); // #1F2427
         _gameUI.OpenLevelBeatUI(stars, requiredStarsFor2, requiredStarsFor3, numberOfMoves);
     }
     

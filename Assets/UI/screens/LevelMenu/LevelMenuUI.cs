@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using System.Linq;
 using UnityEngine;
 using UnityEngine.UIElements;
@@ -7,8 +8,41 @@ public class LevelMenuUI : MonoBehaviour {
     [SerializeField] private UIDocument _uiDocument;
     private VisualElement _root;
     private LevelButton[] _buttons;
+    private Mask _mask;
     public event Action OnCloseButtonClicked;
     public event Action<int> OnLevelButtonClicked;
+    
+    private IEnumerator AnimateMask(bool reverse = false) {
+       const float duration = 0.5f;
+       var elapsedTime = 0f;
+       const int startingWidth = 20;
+       const int startingTop = 24;
+       const int startingLeft = 30;
+       var targetWidth = _root.resolvedStyle.width + _root.resolvedStyle.height * 2;
+
+       while (elapsedTime < duration) {
+          var lerp = reverse ? Mathf.Lerp(targetWidth, startingWidth, elapsedTime / duration) 
+             : Mathf.Lerp(startingWidth, targetWidth, elapsedTime / duration);
+          _mask.style.width = lerp;
+          _mask.style.height = lerp;
+          _mask.style.top = reverse ? Mathf.Lerp(startingTop - targetWidth/2, startingTop, elapsedTime / duration)
+             : Mathf.Lerp(startingTop, startingTop - targetWidth/2,elapsedTime / duration);
+          _mask.style.left = reverse ? Mathf.Lerp(startingLeft - targetWidth/2, startingLeft, elapsedTime / duration)
+             : Mathf.Lerp(startingLeft, startingLeft - targetWidth/2,elapsedTime / duration);
+          elapsedTime += Time.deltaTime;
+          yield return null;
+       }
+
+       if(reverse) {
+          _root.style.visibility = Visibility.Hidden;
+       } else {
+          _mask.style.left = startingLeft - targetWidth/2;
+          _mask.style.top = startingTop - targetWidth/2;
+          _mask.style.width = targetWidth;
+          _mask.style.height = targetWidth;
+       }
+    }
+    
      private void OnEnable() {
         _root = _uiDocument.rootVisualElement;
         var closeButton = _root.Q<Button>("ButtonClose");
@@ -28,6 +62,8 @@ public class LevelMenuUI : MonoBehaviour {
            };
            levelList.Add(_buttons[i]);
         }
+
+        _mask = _root.Q<Mask>("Mask");
      }
 
      private void Refresh() {
@@ -42,10 +78,11 @@ public class LevelMenuUI : MonoBehaviour {
      
      public void Open() {
         _root.style.visibility = Visibility.Visible;
+        StartCoroutine(AnimateMask());
         Refresh();
      }
      
      public void Close() {
-        _root.style.visibility = Visibility.Hidden;
+        StartCoroutine(AnimateMask(true));
      }
 }
