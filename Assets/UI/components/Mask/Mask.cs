@@ -5,7 +5,6 @@ using UnityEngine.UIElements;
 public partial class Mask : VisualElement {
     private VisualElement _container;
     public Mask() {
-        // Set up the internal container
         _container = new VisualElement();
         _container.name = "mask content";
         hierarchy.Add(_container);

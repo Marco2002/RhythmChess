@@ -7,20 +7,26 @@ public class SettingsPopupUI : MonoBehaviour {
     private Popup _popup;
     private Button _closeButton;
     private SettingsControl _soundControl, _vibrationControl, _countInBeatsControl, _howToPlayControl;
+    private VisualElement _root;
     public event Action OnCloseButtonClicked, OnHowToPlayButtonClicked;
     public event Action<bool> OnSoundSettingsChanged, OnVibrationSettingsChanged;
     public event Action<int> OnCountInBeatsSettingsChanged;
 
     private void OnEnable() {
-        var root = _uiDocument.rootVisualElement;
-        _popup = root.Q<Popup>("SettingsPopup");
-        _closeButton = root.Q<Button>("ButtonClose");
-        _soundControl = root.Q<SettingsControl>("SettingsControlSound");
-        _vibrationControl = root.Q<SettingsControl>("SettingsControlVibration");
-        _countInBeatsControl = root.Q<SettingsControl>("SettingsControlCountInBeats");
-        _howToPlayControl = root.Q<SettingsControl>("SettingsControlHowToPlay");
+        _root = _uiDocument.rootVisualElement;
+        _popup = _root.Q<Popup>("SettingsPopup");
+        _closeButton = _root.Q<Button>("ButtonClose");
+        _soundControl = _root.Q<SettingsControl>("SettingsControlSound");
+        _vibrationControl = _root.Q<SettingsControl>("SettingsControlVibration");
+        _countInBeatsControl = _root.Q<SettingsControl>("SettingsControlCountInBeats");
+        _howToPlayControl = _root.Q<SettingsControl>("SettingsControlHowToPlay");
         
         _closeButton.clicked += () => {
+            Close();
+            OnCloseButtonClicked?.Invoke();
+        };
+        
+        _popup.OnTappedOutside += () => {
             Close();
             OnCloseButtonClicked?.Invoke();
         };
@@ -51,9 +57,12 @@ public class SettingsPopupUI : MonoBehaviour {
 
     public void Open() {
         _popup.Open();
+        _root.style.visibility = Visibility.Visible;
     }
 
     public void Close() {
         _popup.Close();
+        _root.style.visibility = Visibility.Hidden;
+
     }
 }
