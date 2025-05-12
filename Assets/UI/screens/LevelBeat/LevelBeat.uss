@@ -61,7 +61,7 @@
 }
 
 .level-beat-number-of-moves-text {
-    margin-top: 0;
+    margin-top: 8px;
     margin-right: 0;
     margin-bottom: 0;
     margin-left: 0;
@@ -83,7 +83,7 @@
     margin-left: 0;
     padding-top: 0;
     padding-right: 0;
-    padding-bottom: 0;
+    padding-bottom: 4px;
     padding-left: 0;
     -unity-font-definition: url("project://database/Assets/Fonts/Poppins-Medium.ttf?fileID=12800000&guid=49b43e9712d0444baabd3fc2c2613958&type=3#Poppins-Medium");
     font-size: 36px;

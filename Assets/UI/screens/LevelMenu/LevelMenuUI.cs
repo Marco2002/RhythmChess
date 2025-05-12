@@ -5,7 +5,7 @@ using UnityEngine;
 using UnityEngine.UIElements;
 
 public class LevelMenuUI : MonoBehaviour {
-    [SerializeField] private UIDocument _uiDocument;
+    private UIDocument _uiDocument;
     private VisualElement _root;
     private LevelButton[] _buttons;
     private Mask _mask;
@@ -44,7 +44,9 @@ public class LevelMenuUI : MonoBehaviour {
     }
     
      private void OnEnable() {
+        _uiDocument = GetComponent<UIDocument>();
         _root = _uiDocument.rootVisualElement;
+        
         var closeButton = _root.Q<Button>("ButtonClose");
         closeButton.clicked += () => {
            OnCloseButtonClicked?.Invoke();

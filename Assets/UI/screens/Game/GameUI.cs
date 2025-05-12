@@ -82,7 +82,7 @@ public class GameUI : MonoBehaviour {
     }
 
     public void OpenLevelBeatUI(int stars, int requiredStarsFor2, int requiredStarsFor3, int numberOfMoves) {
-        _levelBeatUI.Stars = stars;
+        _levelBeatUI.stars = stars;
         _levelBeatUI.RequiredStars = new[] { requiredStarsFor2, requiredStarsFor3 };
         _levelBeatUI.NumberOfMoves = numberOfMoves;
         root.style.visibility = Visibility.Hidden;

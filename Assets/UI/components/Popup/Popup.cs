@@ -24,7 +24,6 @@ public partial class Popup: VisualElement {
         style.display = DisplayStyle.None;
         
         RegisterCallback<PointerDownEvent>(evt => {
-            Debug.Log("PointerDownEvent" + _container.worldBound.Contains(evt.position));
             if (!_container.worldBound.Contains(evt.position)) {
                 OnTappedOutside?.Invoke();
             }

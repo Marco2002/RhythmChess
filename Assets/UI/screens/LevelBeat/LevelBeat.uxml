@@ -21,7 +21,7 @@
         </engine:VisualElement>
     </SafeAreaManager>
     <engine:VisualElement name="Footer" style="bottom: 0;">
-        <engine:VisualElement name="NumberOfMoves">
+        <engine:VisualElement name="NumberOfMoves" style="background-color: rgba(0, 0, 0, 0.55);">
             <engine:Label text="Number of moves:" name="LabelNumberOfMovesText" class="level-beat-number-of-moves-text" />
             <engine:Label text="12" name="LabelNumberOfMoves" class="level-beat-number-of-moves" />
         </engine:VisualElement>
