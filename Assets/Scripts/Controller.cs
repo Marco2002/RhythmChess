@@ -23,6 +23,7 @@ public class Controller : MonoBehaviour {
     private bool paused;
     private bool pauseAtNextOnBeat;
     private bool inOffBeat;
+    private ((int x, int y) from, (int x, int y) to) nextEnemyMove;
 
     private void Start() {
         if(!PlayerPrefs.HasKey("playerPrefsInitialized")) {
@@ -73,9 +74,10 @@ public class Controller : MonoBehaviour {
         }
         if (gameEnded) {
             HandleGameEnd();
-        } else {
-            _game.ShowPossibleMoves();
+            return;
         }
+        _game.ShowPossibleMoves();
+        
     }
 
     public void HandleOnBeat() {
@@ -86,18 +88,21 @@ public class Controller : MonoBehaviour {
         // show player move
         _swipeDetection.DetectSwipeForCurrentTouch();
         if (nextMove != Direction.None) {
-            gameEnded = _game.Move(nextMove);
+            _game.Move(nextMove);
         }
+        nextEnemyMove = _levelReader.GetBestMove(_game.GetPosition());
         _board.RemoveMoveIndicators();
         nextMove = Direction.None;
         _swipeDetection.enabled = false;
+        
+        if (nextEnemyMove == LevelReader.INVALID_MOVE) {
+            HandleGameEnd();
+        }
     }
 
     public void MoveEnemy() {
-        // showEnemyMove
-        var bestMove = _levelReader.GetBestMove(_game.GetPosition());
-        if(bestMove.from != bestMove.to) {
-            gameEnded = _game.MoveEnemy(bestMove.from, bestMove.to) | gameEnded;
+        if(nextEnemyMove.from != nextEnemyMove.to) {
+            gameEnded = _game.MoveEnemy(nextEnemyMove.from, nextEnemyMove.to) | gameEnded;
         }
         _swipeDetection.enabled = true;
     }

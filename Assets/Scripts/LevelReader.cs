@@ -5,7 +5,8 @@ using System.Linq;
 using UnityEngine;
 using UnityEngine.Networking;
 
-
+using Field = System.ValueTuple<int, int>;
+using Move = System.ValueTuple<System.ValueTuple<int, int>, System.ValueTuple<int, int>>;
 public class LevelReader : MonoBehaviour {
 
     private const byte END_OF_SEQUENCE = 15;
@@ -22,23 +23,24 @@ public class LevelReader : MonoBehaviour {
 
     private List<(string pieceName, int x, int y)> startingPosition;
     private int maxRank, maxFile;
-    private List<(int x, int y)> flagRegion;
-    private List<(int x, int y)> disabledFields;
-    private List<((int x, int y), (int x, int y))> solution;
-    private Dictionary<string, ((int x, int y) from, (int x, int y) to)> moveMatrix;
+    private List<Field> flagRegion;
+    private List<Field> disabledFields;
+    private List<Move> solution;
+    private Dictionary<string, Move> moveMatrix;
+    public static readonly Move INVALID_MOVE = ((-1, -1), (-1, -1));
 
-    private static (int x, int y) ReadField(byte[] data, int start) {
+    private static Field ReadField(byte[] data, int start) {
         return (data[start], data[start + 1]);
     }
 
-    private static ((int x, int y), (int x, int y)) ReadMove(byte[] data, int start) {
+    private static Move ReadMove(byte[] data, int start) {
         var from = ReadField(data, start);
         var to = ReadField(data, start + 2);
         return (from, to);
     }
     
-    private static (List<(int x, int y)> fields, int newIndex) ReadFields(byte[] data, int start) {
-        List<(int x, int y)> fields = new();
+    private static (List<Field> fields, int newIndex) ReadFields(byte[] data, int start) {
+        List<Field> fields = new();
         int i;
         for (i = start; data[i] != END_OF_SEQUENCE; i += 2) {
             fields.Add(ReadField(data, i));
@@ -46,8 +48,8 @@ public class LevelReader : MonoBehaviour {
         return (fields, i+1);
     }
 
-    private static (List<((int x, int y), (int x, int y))> moves, int newIndex) ReadMoves(byte[] data, int start) {
-        List<((int x, int y), (int x, int y))> moves = new();
+    private static (List<Move> moves, int newIndex) ReadMoves(byte[] data, int start) {
+        List<Move> moves = new();
         int i;
         for (i = start; data[i] != END_OF_SEQUENCE; i += 4) {
             moves.Add(ReadMove(data, i));
@@ -138,7 +140,7 @@ public class LevelReader : MonoBehaviour {
         (solution, currentIndex) = ReadMoves(formatedData, currentIndex);
 
         // moveMatrix
-        moveMatrix = new Dictionary<string, ((int x, int y) from, (int x, int y) to)>();
+        moveMatrix = new Dictionary<string, Move>();
         while (currentIndex < formatedData.Length) {
             var positionStart = currentIndex;
             while (formatedData[currentIndex] != END_OF_FEN) {
@@ -158,14 +160,14 @@ public class LevelReader : MonoBehaviour {
     public List<(string pieceName, int x, int y)> GetStartingPosition() { return startingPosition; }
     public int GetMaxRank() { return maxRank; }
     public int GetMaxFile() { return maxFile; }
-    public List<(int x, int y)> GetFlagRegion() { return flagRegion; }
-    public List<(int x, int y)> GetDisabledFields() { return disabledFields; }
+    public List<Field> GetFlagRegion() { return flagRegion; }
+    public List<Field> GetDisabledFields() { return disabledFields; }
 
-    public List<((int x, int y), (int x, int y))> GetSolution() { return solution; }
+    public List<Move> GetSolution() { return solution; }
 
-    public ((int x, int y) from, (int x, int y) to) GetBestMove(ChessPiece[,] position) {
+    public Move GetBestMove(ChessPiece[,] position) {
         var fen = PositionToFen(position);
-        return moveMatrix.TryGetValue(fen, out var move) ? move : ((0, 0), (0, 0));
+        return moveMatrix.GetValueOrDefault(fen, INVALID_MOVE);
     }
 }
 
