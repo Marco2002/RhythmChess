@@ -9,11 +9,41 @@ public class LevelMenuUI : MonoBehaviour {
     private VisualElement _root;
     private LevelButton[] _buttons;
     private Mask _mask;
+    private int _activeLevel;
     public event Action OnCloseButtonClicked;
     public event Action<int> OnLevelButtonClicked;
     
+    void AnimateButtonPulse(int index) {
+       var duration = 400;
+       var targetScale = 1.2f;
+          
+       void Animate(bool expanding) {
+          if (_activeLevel != index) {
+             _buttons[index].style.scale = Vector2.one;
+             return;
+          }
+          
+          var target = expanding ? targetScale : 1f;
+          _buttons[index].experimental.animation
+             .Scale(target, duration)
+             .OnCompleted(() => {
+                Animate(!expanding);
+             }).Start();
+       }
+
+       Animate(true);
+    }
+
+    public int ActiveLevel {
+        get => _activeLevel;
+        set {
+            _activeLevel = value;
+            AnimateButtonPulse(value);
+        }
+    }
+    
     private IEnumerator AnimateMask(bool reverse = false) {
-       const float duration = 0.5f;
+       const float duration = 0.3f;
        var elapsedTime = 0f;
        const int startingWidth = 20;
        const int startingTop = 24;

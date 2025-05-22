@@ -1,8 +1,8 @@
 .level-menu-list > * {
-    margin-top: 14px;
-    margin-right: 10px;
+    margin-top: 16px;
+    margin-right: 12px;
     margin-bottom: 14px;
-    margin-left: 10px;
+    margin-left: 12px;
     -unity-text-align: upper-center;
 }
 
@@ -40,10 +40,10 @@
 }
 
 .level-menu-list {
-    width: 332px;
     flex-direction: row;
     flex-wrap: wrap;
-    align-self: center;
+    align-self: flex-start;
+    flex-basis: 330px;
 }
 
 :root {
@@ -53,4 +53,10 @@
 .level-menu-list-wrapper {
     overflow: hidden;
     margin-top: 64px;
+}
+
+.unity-scroll-view__content-container {
+    flex-direction: row;
+    justify-content: center;
+    align-items: flex-start;
 }

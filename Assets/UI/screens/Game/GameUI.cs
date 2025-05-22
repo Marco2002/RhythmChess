@@ -31,6 +31,7 @@ public class GameUI : MonoBehaviour {
     public int Level {
         set {
             navbar.LevelText = "LEVEL " + (value + 1);
+            _levelMenuUI.ActiveLevel = value;
             _level = value;
         }
     }

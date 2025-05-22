@@ -1,6 +1,6 @@
 Shader "Custom/ShadowShader" {
 	 Properties {
-	     _Color ( "Tint", Color ) = ( 0, 0, 0, 0.2 )
+	     _Color ( "Tint", Color ) = ( 0, 0, 0, 0.15 )
 	 }
 	 
 	 SubShader {

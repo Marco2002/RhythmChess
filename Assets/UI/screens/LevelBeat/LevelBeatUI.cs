@@ -120,7 +120,7 @@ public class LevelBeatUI : MonoBehaviour {
     private IEnumerator CloseAnimation() {
         var startPosition = new Vector3(0, -worldScreenHeight / 2 - 2, 0);
         var targetPosition = new Vector3(0, +worldScreenHeight / 2, 0);
-        float slideDuration = 0.5f;
+        float slideDuration = 0.3f;
         float elapsedTime = 0;
         
         _root.style.visibility = Visibility.Hidden;

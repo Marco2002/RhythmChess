@@ -43,7 +43,7 @@ public class Controller : MonoBehaviour {
         _gameUI.Init(_level);
         _gameUI.OnPausePlayButtonClicked += TogglePause;
         _gameUI.OnLevelMenuOpened += PauseLevel;
-        _gameUI.OnLevelMenuClosed += PrepareGame;
+        _gameUI.OnLevelMenuClosed += ResetLevel;
         _gameUI.OnLevelSelected += LoadLevel;
         _gameUI.OnLevelReset += ResetLevel;
         _gameUI.OnSettingsPopupOpened += PauseLevel;
@@ -56,8 +56,8 @@ public class Controller : MonoBehaviour {
         };
     }
 
-    private void HandleGameEnd() {
-        var playerWon = _game.GetWinningStatus();
+    private void HandleGameEnd(bool won = false) {
+        var playerWon = won || _game.GetWinningStatus();
         if (playerWon) {
             BeatLevel();
         } else {
@@ -96,7 +96,7 @@ public class Controller : MonoBehaviour {
         _swipeDetection.enabled = false;
         
         if (nextEnemyMove == LevelReader.INVALID_MOVE) {
-            HandleGameEnd();
+            HandleGameEnd(true);
         }
     }
 
@@ -145,6 +145,7 @@ public class Controller : MonoBehaviour {
     }
 
     private void ResetLevel() {
+        _beatManager.Pause();
         _game.SetupLevel();
         _board.RemoveMoveIndicators();
         PrepareGame();
@@ -165,21 +166,19 @@ public class Controller : MonoBehaviour {
 
     public void PauseLevel() {
         paused = true;
-        _beatManager.Stop();
-        _beatManager.enabled = false;
+        _beatManager.Pause();
         _board.RemoveMoveIndicators();
         _gameUI.Pause();
     }
-    
-    public void ResumeLevel() {
+
+    private void ResumeLevel() {
         if (gameEnded) {
             HandleGameEnd();
             return;
         }
         paused = false;
         inOffBeat = false;
-        _beatManager.enabled = true;
-        _beatManager.Reset();
+        _beatManager.Play();
         _gameUI.Resume();
     }
 
@@ -203,8 +202,7 @@ public class Controller : MonoBehaviour {
             PlayerPrefs.SetInt("currentLevel", _level);
             PlayerPrefs.Save();
         }
-        _beatManager.Stop();
-        _beatManager.enabled = false;
+        _beatManager.Pause();
         
         _gameUI.OpenLevelBeatUI(stars, requiredStarsFor2, requiredStarsFor3, numberOfMoves);
     }

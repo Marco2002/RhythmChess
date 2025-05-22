@@ -7,30 +7,30 @@
     padding-right: 0;
     padding-bottom: 0;
     padding-left: 0;
-    width: 46px;
-    height: 46px;
     background-color: rgb(255, 255, 255);
     border-top-left-radius: 6px;
     border-top-right-radius: 6px;
     border-bottom-right-radius: 6px;
     border-bottom-left-radius: 6px;
-    border-top-width: 2px;
-    border-right-width: 2px;
-    border-bottom-width: 2px;
-    border-left-width: 2px;
+    border-top-width: 4px;
+    border-right-width: 4px;
+    border-bottom-width: 4px;
+    border-left-width: 4px;
     border-left-color: rgba(0, 0, 0, 0.3);
     border-right-color: rgba(0, 0, 0, 0.3);
     border-top-color: rgba(0, 0, 0, 0.3);
     border-bottom-color: rgba(0, 0, 0, 0.3);
-    font-size: 28px;
+    font-size: 32px;
     -unity-font-definition: url("project://database/Assets/Fonts/Poppins-Medium.ttf?fileID=12800000&guid=49b43e9712d0444baabd3fc2c2613958&type=3#Poppins-Medium");
     overflow: visible;
+    width: 58px;
+    height: 58px;
 }
 
 .level-button-stars {
     position: absolute;
     -unity-font-definition: url("project://database/Assets/Fonts/fa-solid-900.ttf?fileID=12800000&guid=a6000a015515b5349bc3abd97406adbc&type=3#fa-solid-900");
-    font-size: 15px;
+    font-size: 20px;
     -unity-text-align: upper-center;
     width: 60px;
     margin-top: 0;
@@ -41,7 +41,7 @@
     padding-right: 0;
     padding-bottom: 0;
     padding-left: 0;
-    bottom: -8px;
+    bottom: -12px;
     align-self: center;
 }
 
@@ -56,7 +56,7 @@
     padding-right: 0;
     padding-bottom: 0;
     padding-left: 0;
-    font-size: 24px;
+    font-size: 28px;
     display: none;
     align-self: center;
     position: absolute;
@@ -73,18 +73,14 @@
     border-right-width: 0;
     border-bottom-width: 0;
     border-left-width: 0;
-    width: 42px;
-    height: 42px;
+    width: 54px;
+    height: 54px;
     margin-top: 2px;
     margin-right: 2px;
     margin-bottom: 2px;
     margin-left: 2px;
     background-color: rgba(255, 255, 255, 0.2);
     color: rgba(27, 27, 27, 0);
-    min-height: 42px;
-    max-height: 42px;
-    max-width: 42px;
-    min-width: 42px;
 }
 
 .level-button_locked > .level-button-stars {

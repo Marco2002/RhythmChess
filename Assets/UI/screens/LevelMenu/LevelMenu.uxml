@@ -8,8 +8,8 @@
                 <engine:Button icon-image="project://database/Assets/Assets/Sprites/UI/ButtonClose.png?fileID=2800000&amp;guid=c6a74b84425354d6abe1e96bc9e957ef&amp;type=3#ButtonClose" name="ButtonClose" class="level-menu-close-button" style="visibility: hidden;" />
             </engine:VisualElement>
             <engine:VisualElement name="LevelListWrapper" class="level-menu-list-wrapper">
-                <engine:ScrollView vertical-scroller-visibility="Hidden">
-                    <engine:VisualElement name="LevelList" class="level-menu-list" style="flex-grow: 1;" />
+                <engine:ScrollView vertical-scroller-visibility="Hidden" name="ScrollView" style="flex-direction: row;">
+                    <engine:VisualElement name="LevelList" class="level-menu-list" />
                 </engine:ScrollView>
             </engine:VisualElement>
         </Mask>
