@@ -7,7 +7,6 @@ using UnityEngine;
 public class Controller : MonoBehaviour {
     // Start is called before the first frame update
     [SerializeField] private Game _game;
-    [SerializeField] private Board _board;
     [SerializeField] private Camera _mainCamera;
     [SerializeField] private SwipeDetection _swipeDetection;
     [SerializeField] private LevelReader _levelReader;
@@ -91,7 +90,7 @@ public class Controller : MonoBehaviour {
             _game.Move(nextMove);
         }
         nextEnemyMove = _levelReader.GetBestMove(_game.GetPosition());
-        _board.RemoveMoveIndicators();
+        _game.RemoveMoveIndicators();
         nextMove = Direction.None;
         _swipeDetection.enabled = false;
         
@@ -133,7 +132,7 @@ public class Controller : MonoBehaviour {
         else if (Vector2.Dot(Vector2.right, direction) > .7 && possibleDirections.Contains(Direction.Right)) {
             nextMove = Direction.Right;
         }
-        _board.RemoveMoveIndicators();
+        _game.RemoveMoveIndicators();
         _swipeDetection.enabled = false;
     }
 
@@ -147,7 +146,7 @@ public class Controller : MonoBehaviour {
     private void ResetLevel() {
         _beatManager.Pause();
         _game.SetupLevel();
-        _board.RemoveMoveIndicators();
+        _game.RemoveMoveIndicators();
         PrepareGame();
     }
     
@@ -167,7 +166,7 @@ public class Controller : MonoBehaviour {
     public void PauseLevel() {
         paused = true;
         _beatManager.Pause();
-        _board.RemoveMoveIndicators();
+        _game.RemoveMoveIndicators();
         _gameUI.Pause();
     }
 

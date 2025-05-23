@@ -19,6 +19,7 @@ public class ChessPiece : MonoBehaviour {
     private int x = -1;
     private int y = -1;
     private PieceType piecetype;
+    private SpriteRenderer[] outlines;
     
     private Dictionary<PieceType, float> shadowScale = new() {
         { PieceType.QUEEN, 1.0f },
@@ -29,13 +30,29 @@ public class ChessPiece : MonoBehaviour {
         { PieceType.PLAYER, 1.7f }
     };
     
+    public bool OutlineEnabled {
+        get => outlines != null && outlines[0].enabled;
+        set {
+            if (outlines == null) return;
+            foreach (var outlineSpriteRenderer in outlines) {
+                outlineSpriteRenderer.enabled = value;
+            }
+        }
+    }
     public int GetX() { return x; }
     public void SetX(int x) { this.x = x; }
 
     public int GetY() { return y; }
-    public void SetY(int y) { this.y = y; }
 
+    public void SetY(int y) {
+        this.y = y;
+        _spriteRenderer.sortingOrder = -2*y;
+        foreach (var outlineSpriteRenderer in outlines) {
+            outlineSpriteRenderer.sortingOrder = -2*y - 1;
+        }
+    }
     public void Init() {
+        
         piecetype = name switch {
             "pawn" => PieceType.PAWN,
             "knight" => PieceType.KNIGHT,
@@ -46,7 +63,7 @@ public class ChessPiece : MonoBehaviour {
             _ => throw new ArgumentOutOfRangeException()
         };
         
-        _spriteRenderer.sprite = name switch {
+        var sprite = name switch {
             "pawn" => _pawn,
             "knight" => _knight,
             "bishop" => _bishop,
@@ -55,6 +72,16 @@ public class ChessPiece : MonoBehaviour {
             "player" => _player,
             _ => throw new ArgumentOutOfRangeException()
         };
+        
+        var outline = transform.Find("Outline");
+        if (outline != null) {
+            outlines = outline.GetComponentsInChildren<SpriteRenderer>();
+            foreach (var outlineSpriteRenderer in outlines) {
+                outlineSpriteRenderer.sprite = sprite;
+                outlineSpriteRenderer.enabled = false;
+            }
+        }
+        _spriteRenderer.sprite = sprite;
         
         _shadow.transform.localScale = new Vector3(shadowScale[piecetype], shadowScale[piecetype], 1);
     }

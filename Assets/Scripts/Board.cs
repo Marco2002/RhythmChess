@@ -71,7 +71,7 @@ public class Board : MonoBehaviour {
         StartCoroutine(AnimatedMove(piece, x, y));
     }
 
-    private IEnumerator AnimatedMove(Component piece, int x, int y) {
+    private IEnumerator AnimatedMove(ChessPiece piece, int x, int y) {
         var destination = GetWorldSpacePosition(x, y, y);
         while (piece.transform.position != destination) {
             piece.transform.position = Vector3.MoveTowards(piece.transform.position, destination, _movementSpeed * boardScale * Time.deltaTime);
@@ -79,10 +79,23 @@ public class Board : MonoBehaviour {
         }
     }
 
-    public void ShowMoveIndicator(int x, int y) {
+    public void ShowMoveIndicator(int x, int y, Direction direction) {
         var moveIndicator = Instantiate(_moveIndicatorPrefab, GetWorldSpacePosition(x, y, -1), Quaternion.identity);
         moveIndicator.transform.parent = transform;
         moveIndicator.transform.localScale = new Vector3(boardScale * 0.5f, boardScale * 0.5f);
+        
+        var spriteRenderers = moveIndicator.GetComponentsInChildren<SpriteRenderer>();
+        var angle = direction switch {
+            Direction.Right => 0f,
+            Direction.Up => 90f,
+            Direction.Left => 180f,
+            Direction.Down => 270f,
+            _ => 0f
+        };
+        foreach (var spriteRenderer in spriteRenderers) {
+            spriteRenderer.transform.rotation = Quaternion.Euler(0, 0, angle);
+        }
+        
         moveIndicators.Add(moveIndicator);
     }
 

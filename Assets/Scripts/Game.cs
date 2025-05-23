@@ -86,10 +86,20 @@ public class Game : MonoBehaviour {
 
     public void ShowPossibleMoves() {
         var possibleMoves = GetPossibleMoves();
-        foreach (var move in possibleMoves) {
-            _board.ShowMoveIndicator((int)move.x, (int)move.y);
+        foreach (var (move, direction) in possibleMoves) {
+            if (position[(int)move.x, (int)move.y] is null) {
+                _board.ShowMoveIndicator((int)move.x, (int)move.y, direction);
+            } else {
+                position[(int)move.x, (int)move.y].OutlineEnabled = true;
+            }
         }
-
+    }
+    
+    public void RemoveMoveIndicators() {
+        _board.RemoveMoveIndicators();
+        foreach (var piece in pieces) {
+            piece.OutlineEnabled = false;
+        }
     }
 
     // moves the player in the given direction and return true if move finished game
@@ -160,22 +170,22 @@ public class Game : MonoBehaviour {
         return x >= 0 && y >= 0 && x < width && y < height;
     }
 
-    private List<Vector2> GetPossibleMoves() {
+    private List<(Vector2, Direction)> GetPossibleMoves() {
         var possibleMoveDirections = GetPossibleMoveDirections();
 
         var x = player.GetX();
         var y = player.GetY();
-        var possibleMoves = new List<Vector2>();
+        var possibleMoves = new List<(Vector2, Direction)>();
         foreach (var moveDirection in possibleMoveDirections) {
             switch(moveDirection) {
-                case Direction.Left: possibleMoves.Add(new Vector2(x - 1, y)); break;
-                case Direction.Right: possibleMoves.Add(new Vector2(x + 1, y)); break;
-                case Direction.Up: possibleMoves.Add(new Vector2(x, y +1 )); break;
-                case Direction.Down: possibleMoves.Add(new Vector2(x, y - 1)); break;
-                case Direction.UpLeft: possibleMoves.Add(new Vector2(x - 1, y + 1)); break;
-                case Direction.UpRight: possibleMoves.Add(new Vector2(x + 1, y + 1)); break;
-                case Direction.DownLeft: possibleMoves.Add(new Vector2(x - 1, y - 1)); break;
-                case Direction.DownRight: possibleMoves.Add(new Vector2(x + 1, y - 1)); break;
+                case Direction.Left: possibleMoves.Add((new Vector2(x - 1, y), moveDirection)); break;
+                case Direction.Right: possibleMoves.Add((new Vector2(x + 1, y), moveDirection)); break;
+                case Direction.Up: possibleMoves.Add((new Vector2(x, y +1 ), moveDirection)); break;
+                case Direction.Down: possibleMoves.Add((new Vector2(x, y - 1), moveDirection)); break;
+                case Direction.UpLeft: possibleMoves.Add((new Vector2(x - 1, y + 1), moveDirection)); break;
+                case Direction.UpRight: possibleMoves.Add((new Vector2(x + 1, y + 1), moveDirection)); break;
+                case Direction.DownLeft: possibleMoves.Add((new Vector2(x - 1, y - 1), moveDirection)); break;
+                case Direction.DownRight: possibleMoves.Add((new Vector2(x + 1, y - 1), moveDirection)); break;
                 case Direction.None:
                     break;
                 default:
