@@ -16,7 +16,6 @@ public class GameUI : MonoBehaviour {
     private Navbar navbar;
     private VisualElement root, pauseFlash;
     private Button pauseButton;
-    private Coroutine runningProgressAnimation;
     private IconButton resetButton, hintButton;
     private int _level;
     public int NumberOfMoves {
@@ -39,20 +38,13 @@ public class GameUI : MonoBehaviour {
     public void Pause() {
         root.style.backgroundColor = new StyleColor(new Color(0, 0, 0, 0.3f));
         pauseButton.iconImage = Background.FromSprite(_resumeImage);
-        PauseProgress();
-    }
-
-    private void PauseProgress() {
-        if (runningProgressAnimation != null) {
-            StopCoroutine(runningProgressAnimation);
-            runningProgressAnimation = null;
-        }
     }
     
     public void Resume() {
+        navbar.Nodes = PlayerPrefs.GetInt("countInBeats");
+        navbar.NodesEnabled = 0;
         root.style.backgroundColor = StyleKeyword.Null;
         pauseButton.iconImage = Background.FromSprite(_pauseImage);
-        navbar.Progress = 0;
     }
 
     public void ShowPauseFlash(bool pause) {
@@ -60,26 +52,26 @@ public class GameUI : MonoBehaviour {
     }
 
     public void ResetProgress() {
-        IEnumerator SetProgressToZero() {
-            yield return null; // Wait for the next frame
-            navbar.Progress = 0;
-        }
-
+        navbar.Nodes = PlayerPrefs.GetInt("countInBeats");
+        navbar.NodesEnabled = 0;
         NumberOfMoves = 0;
         resetButton.SetEnabled(false);
-        PauseProgress();
-        StartCoroutine(SetProgressToZero());
     }
     public void StartOnBeat() {
-        runningProgressAnimation = StartCoroutine(ProgressAnimation(0, 50, 60f / 80f));
+        if(navbar.Nodes != 1) navbar.Nodes = 1;
+        navbar.NodesEnabled = 0;
     }
 
     public void EnableResetButton() {
         resetButton.SetEnabled(true);
     }
+    
+    public void SetActiveNodes(int nodes) {
+        navbar.NodesEnabled = nodes;
+    }
 
     public void StartOffBeat() {
-        runningProgressAnimation = StartCoroutine(ProgressAnimation(50, 100, 60f / 80f));
+        navbar.NodesEnabled = 1;
     }
 
     public void OpenLevelBeatUI(int stars, int requiredStarsFor2, int requiredStarsFor3, int numberOfMoves) {
@@ -104,16 +96,6 @@ public class GameUI : MonoBehaviour {
         }
 
         pauseFlash.style.display = DisplayStyle.None;
-    }
-    
-    private IEnumerator ProgressAnimation(float from, float to, float duration) {
-        var elapsedTime = 0f;
-
-        while (elapsedTime < duration) {
-            navbar.Progress = Mathf.Lerp(from, to, elapsedTime / duration);
-            elapsedTime += Time.deltaTime;
-            yield return null;
-        }
     }
     
      public void Init(int level) {
@@ -174,6 +156,7 @@ public class GameUI : MonoBehaviour {
             OnSettingsPopupOpened?.Invoke();
             _settingsPopupUI.Open();
         };
+        navbar.Nodes = PlayerPrefs.GetInt("countInBeats");
         
         resetButton.SetEnabled(false);
         resetButton.OnClicked += () => OnLevelReset?.Invoke();

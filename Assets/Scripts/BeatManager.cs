@@ -8,6 +8,7 @@ public class BeatManager : MonoBehaviour {
     [SerializeField] private AudioSource _countInBeat;
     [SerializeField] private Intervals[] _intervals;
     private Coroutine _countInCoroutine;
+    public Action<int> onCountInBeat;
     private AudioLowPassFilter _filter;
     private AudioReverbFilter _reverb;
     private float _currentBeat;
@@ -64,6 +65,7 @@ public class BeatManager : MonoBehaviour {
 
         for (var i = 0; i < PlayerPrefs.GetInt("countInBeats"); i++) {
             _countInBeat.Play();
+            onCountInBeat?.Invoke(i+1);
             yield return new WaitForSeconds(0.75f);
         }
         onComplete?.Invoke();

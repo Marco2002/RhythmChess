@@ -333,7 +333,7 @@ AudioLowPassFilter:
     m_Curve:
     - serializedVersion: 3
       time: 0
-      value: 0.026830377
+      value: 0.013187813
       inSlope: 0
       outSlope: 0
       tangentMode: 0
@@ -669,7 +669,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _game: {fileID: 652580727}
-  _board: {fileID: 1712004155}
   _mainCamera: {fileID: 519420031}
   _swipeDetection: {fileID: 652580726}
   _levelReader: {fileID: 652580724}
@@ -1229,7 +1228,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 971168929}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 079bd1c45a87c4906b4a00cd9e673381, type: 3}
   m_Name: 

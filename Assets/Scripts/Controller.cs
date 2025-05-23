@@ -33,6 +33,8 @@ public class Controller : MonoBehaviour {
         _audioTrack.mute = PlayerPrefs.GetInt("soundEnabled") == 0;
         _level = PlayerPrefs.GetInt("currentLevel", _level);
         _levelReader.ReadLevelCsv("level"+(_level+1));
+
+        _beatManager.onCountInBeat += OnCountInBeat;
         InitializeUI();
         PrepareGame();
         _game.Init(_levelReader.GetStartingPosition(), _levelReader.GetMaxFile(), _levelReader.GetMaxRank(), _levelReader.GetDisabledFields(), _levelReader.GetFlagRegion());
@@ -64,6 +66,9 @@ public class Controller : MonoBehaviour {
         }
     }
 
+    private void OnCountInBeat(int beat) {
+        _gameUI.SetActiveNodes(beat);
+    }
     public void HandleOffBeat() {
         inOffBeat = false;
         if(pauseAtNextOnBeat) {
@@ -76,14 +81,13 @@ public class Controller : MonoBehaviour {
             return;
         }
         _game.ShowPossibleMoves();
-        
+        _gameUI.NumberOfMoves++;
     }
 
     public void HandleOnBeat() {
         numberOfMoves++;
         inOffBeat = true;
         _gameUI.EnableResetButton();
-        _gameUI.NumberOfMoves++;
         // show player move
         _swipeDetection.DetectSwipeForCurrentTouch();
         if (nextMove != Direction.None) {

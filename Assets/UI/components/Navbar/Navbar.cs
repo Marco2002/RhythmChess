@@ -6,9 +6,10 @@ using UnityEngine.UIElements;
 public partial class Navbar : VisualElement {
     private Label labelLevel, labelTitle;
     private Button buttonLevels, buttonSettings;
-    private ProgressBar progressBarLeft, progressBarRight;
-    private VisualElement progressBarNode;
+    private VisualElement nodesContainer;
+    private VisualElement[] nodes;
     private float progress;
+    private int _numberOfEnabledNodes;
     public event Action OnSettingsButtonClicked, OnLevelsButtonClicked;
 
 
@@ -25,16 +26,33 @@ public partial class Navbar : VisualElement {
     }
 
     [UxmlAttribute]
-    public float Progress {
-        get => progress;
+    public int Nodes {
+        get => nodes?.Length ?? 0;
         set {
-            progress = value;
-            progressBarLeft.value = Math.Min(100, value * 2);
-            progressBarRight.value = Math.Max(0, (value - 50) * 2);
-            progressBarNode.style.backgroundColor = new StyleColor(value < 50 ? new Color(44 / 255f, 47 / 255f, 54 / 255f) : Color.white);
-
-            if (progress < 50) progressBarRight.AddToClassList("progress-zero");
-            else progressBarRight.RemoveFromClassList("progress-zero");
+            if (nodes != null) {
+                foreach (var node in nodes) {
+                    nodesContainer.Remove(node);
+                }
+            }
+            nodes = new VisualElement[value];
+            for (var i = 0; i < value; i++) {
+                var node = new VisualElement();
+                node.AddToClassList("navbar-node");
+                nodes[i] = node;
+                nodesContainer.Add(node);
+            }
+        }
+    }
+    
+    [UxmlAttribute]
+    public int NodesEnabled {
+        get => _numberOfEnabledNodes;
+        set {
+            if (value > nodes.Length) return;
+            for (var i = 0; i < nodes.Length; i++) {
+                nodes[i].EnableInClassList("navbar-node-active", i < value);
+            }
+            _numberOfEnabledNodes = value;
         }
     }
 
@@ -42,15 +60,12 @@ public partial class Navbar : VisualElement {
         var visualTree = Resources.Load<VisualTreeAsset>("UI/navbar");
         visualTree.CloneTree(this);
         
-        progressBarLeft = this.Q<ProgressBar>("ProgressBarLeft");
-        progressBarRight = this.Q<ProgressBar>("ProgressBarRight");
-        progressBarNode = this.Q<VisualElement>("ProgressBarNode");
+        nodesContainer = this.Q<VisualElement>("NodesContainer");
         buttonLevels = this.Q<Button>("ButtonLevels");
         buttonSettings = this.Q<Button>("ButtonSettings");
         labelLevel = this.Q<Label>("LabelLevel");
         labelTitle = this.Q<Label>("LabelTitle");
         
-        progressBarNode.style.backgroundColor = new StyleColor(new Color(44 / 255f, 47 / 255f, 54 / 255f));
         buttonLevels.clicked += () => OnLevelsButtonClicked.Invoke();
         buttonSettings.clicked += () => OnSettingsButtonClicked.Invoke();
     }

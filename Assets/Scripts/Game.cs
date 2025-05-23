@@ -86,6 +86,7 @@ public class Game : MonoBehaviour {
 
     public void ShowPossibleMoves() {
         var possibleMoves = GetPossibleMoves();
+        player.OutlineEnabled = true;
         foreach (var (move, direction) in possibleMoves) {
             if (position[(int)move.x, (int)move.y] is null) {
                 _board.ShowMoveIndicator((int)move.x, (int)move.y, direction);
@@ -97,6 +98,7 @@ public class Game : MonoBehaviour {
     
     public void RemoveMoveIndicators() {
         _board.RemoveMoveIndicators();
+        player.OutlineEnabled = false;
         foreach (var piece in pieces) {
             piece.OutlineEnabled = false;
         }
