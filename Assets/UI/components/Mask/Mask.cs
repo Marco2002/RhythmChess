@@ -1,4 +1,3 @@
-using UnityEngine;
 using UnityEngine.UIElements;
 
 [UxmlElement]
@@ -7,20 +6,19 @@ public partial class Mask : VisualElement {
     public Mask() {
         _container = new VisualElement();
         _container.name = "mask content";
+        _container.AddToClassList("mask-content");
+        _container.style.position = Position.Absolute;
+        
         hierarchy.Add(_container);
         style.overflow = Overflow.Hidden;
-        RegisterCallback<GeometryChangedEvent>(OnGeometryChanged);
+    }
+
+    public void Init() {
+        var parentElement = parent;
+        if (parentElement == null || _container.style.width == parentElement.resolvedStyle.width) return;
+        _container.style.width = parentElement.resolvedStyle.width;
+        _container.style.height = parentElement.resolvedStyle.height;
     }
 
     public override VisualElement contentContainer => _container;
-
-    private void OnGeometryChanged(GeometryChangedEvent evt) {
-        var parentElement = parent;
-        if (parentElement != null) {
-            _container.style.width = parentElement.resolvedStyle.width;
-            _container.style.height = parentElement.resolvedStyle.height;
-        }
-        _container.style.marginTop = -resolvedStyle.top;
-        _container.style.marginLeft = -resolvedStyle.left;
-    }
 }

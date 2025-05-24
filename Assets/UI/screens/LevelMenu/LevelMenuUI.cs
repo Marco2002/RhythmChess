@@ -42,35 +42,28 @@ public class LevelMenuUI : MonoBehaviour {
         }
     }
     
-    private IEnumerator AnimateMask(bool reverse = false) {
-       const float duration = 0.3f;
-       var elapsedTime = 0f;
+    private IEnumerator OpenAnimation(bool reverse = false) {
+       _root.style.visibility = Visibility.Visible;
+       _mask.Init();
+       const int duration = 300;
        const int startingWidth = 20;
-       const int startingTop = 24;
-       const int startingLeft = 30;
        var targetWidth = _root.resolvedStyle.width + _root.resolvedStyle.height * 2;
+       var startingTop = 24;
+       var startingLeft = 30;
+       var targetTop = startingTop - (targetWidth-startingWidth) / 2;
+       var targetLeft = startingLeft - (targetWidth-startingWidth) / 2;
+       var size = reverse ? new Vector2(startingWidth, startingWidth) : new Vector2(targetWidth, targetWidth);
+       var position = reverse ? new Vector2(startingLeft, startingTop) : new Vector2(targetLeft, targetTop);
 
-       while (elapsedTime < duration) {
-          var lerp = reverse ? Mathf.Lerp(targetWidth, startingWidth, elapsedTime / duration) 
-             : Mathf.Lerp(startingWidth, targetWidth, elapsedTime / duration);
-          _mask.style.width = lerp;
-          _mask.style.height = lerp;
-          _mask.style.top = reverse ? Mathf.Lerp(startingTop - targetWidth/2, startingTop, elapsedTime / duration)
-             : Mathf.Lerp(startingTop, startingTop - targetWidth/2,elapsedTime / duration);
-          _mask.style.left = reverse ? Mathf.Lerp(startingLeft - targetWidth/2, startingLeft, elapsedTime / duration)
-             : Mathf.Lerp(startingLeft, startingLeft - targetWidth/2,elapsedTime / duration);
-          elapsedTime += Time.deltaTime;
-          yield return null;
-       }
-
-       if(reverse) {
-          _root.style.visibility = Visibility.Hidden;
-       } else {
-          _mask.style.left = startingLeft - targetWidth/2;
-          _mask.style.top = startingTop - targetWidth/2;
-          _mask.style.width = targetWidth;
-          _mask.style.height = targetWidth;
-       }
+       yield return null;
+       
+       _mask.experimental.animation
+          .Size(size, duration)
+          .OnCompleted(() => {
+             if(reverse) _root.style.visibility = Visibility.Hidden;
+          }).Start();
+       _mask.experimental.animation.TopLeft(position, duration).Start();
+       yield return null;
     }
     
      private void OnEnable() {
@@ -96,6 +89,7 @@ public class LevelMenuUI : MonoBehaviour {
         }
 
         _mask = _root.Q<Mask>("Mask");
+        _mask.Init();
      }
 
      private void Refresh() {
@@ -109,12 +103,12 @@ public class LevelMenuUI : MonoBehaviour {
      }
      
      public void Open() {
-        _root.style.visibility = Visibility.Visible;
-        StartCoroutine(AnimateMask());
+        
+        StartCoroutine(OpenAnimation());
         Refresh();
      }
      
      public void Close() {
-        StartCoroutine(AnimateMask(true));
+        StartCoroutine(OpenAnimation(true));
      }
 }

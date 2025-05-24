@@ -1,7 +1,7 @@
 <engine:UXML xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:engine="UnityEngine.UIElements" xmlns:editor="UnityEditor.UIElements" noNamespaceSchemaLocation="../../UIElementsSchema/UIElements.xsd" editor-extension-mode="False">
     <Style src="project://database/Assets/UI/screens/Game/game.uss?fileID=7433441132597879392&amp;guid=29c569733eb9d453288be263d083f9f8&amp;type=3#game" />
     <SafeAreaManager name="SafeAreaManager" class="game-container">
-        <Navbar name="Navbar" level-text="LEVEL 1" title-text="MOVE!" progress="0" style="flex-grow: 1;" />
+        <Navbar name="Navbar" level-text="LEVEL 1" title-text="0" progress="0" nodes="1" style="flex-grow: 1;" />
     </SafeAreaManager>
     <engine:VisualElement name="PauseFlash" class="game-pause-flash" style="background-image: url(&quot;project://database/Assets/Sprites/UI/ButtonPause.png?fileID=2800000&amp;guid=3b80eda2479034e2e8dcef7862388d8b&amp;type=3#ButtonPause&quot;);" />
     <engine:VisualElement name="BottomNavigation" class="game-bottom-navigation">
