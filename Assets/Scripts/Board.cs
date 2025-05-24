@@ -79,6 +79,28 @@ public class Board : MonoBehaviour {
         }
     }
 
+    private IEnumerator BumpAnimation(Transform target, Vector2 direction, float distance = 0.1f, float duration = 0.2f) {
+        var startPos = target.localPosition;
+        var bumpPos = startPos + (Vector3)(direction.normalized * distance);
+        
+        var t = 0f;
+        while (t < 1f) {
+            if(!target) yield break; // check if target is destroyed
+            t += Time.deltaTime / (duration / 2f);
+            target.localPosition = Vector3.Lerp(startPos, bumpPos, t);
+            yield return null;
+        }
+
+        t = 0f;
+        while (t < 1f) {
+            if(!target) yield break; // check if target is destroyed
+            t += Time.deltaTime / (duration / 2f);
+            target.localPosition = Vector3.Lerp(bumpPos, startPos, t);
+            yield return null;
+        }
+        
+    }
+    
     public void ShowMoveIndicator(int x, int y, Direction direction) {
         var moveIndicator = Instantiate(_moveIndicatorPrefab, GetWorldSpacePosition(x, y, -1), Quaternion.identity);
         moveIndicator.transform.parent = transform;
@@ -95,6 +117,15 @@ public class Board : MonoBehaviour {
         foreach (var spriteRenderer in spriteRenderers) {
             spriteRenderer.transform.rotation = Quaternion.Euler(0, 0, angle);
         }
+
+        var bumpDirection = direction switch {
+            Direction.Right => Vector2.right,
+            Direction.Up => Vector2.up,
+            Direction.Left => Vector2.left,
+            Direction.Down => Vector2.down,
+            _ => Vector2.zero
+        };
+        StartCoroutine(BumpAnimation(moveIndicator.transform, bumpDirection));
         
         moveIndicators.Add(moveIndicator);
     }

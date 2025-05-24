@@ -115,7 +115,7 @@ public class GameUI : MonoBehaviour {
         _levelMenuUI.OnLevelButtonClicked += (levelNumber) => OnLevelSelected?.Invoke(levelNumber);
         
         _levelBeatUI.OnRetryButtonClicked += () => {
-            OnLevelReset?.Invoke();
+            OnLevelSelected?.Invoke(_level);
             _levelBeatUI.Close();
             root.style.visibility = Visibility.Visible;
         };

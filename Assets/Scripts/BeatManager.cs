@@ -8,7 +8,7 @@ public class BeatManager : MonoBehaviour {
     [SerializeField] private AudioSource _countInBeat;
     [SerializeField] private Intervals[] _intervals;
     private Coroutine _countInCoroutine;
-    public Action<int> onCountInBeat;
+    public Action<int> OnCountInBeat;
     private AudioLowPassFilter _filter;
     private AudioReverbFilter _reverb;
     private float _currentBeat;
@@ -21,6 +21,11 @@ public class BeatManager : MonoBehaviour {
 
     private bool IsPaused() {
         return _reverb.isActiveAndEnabled;
+    }
+    
+    public void SetSoundEnabled(bool enabled) {
+        _track.mute = !enabled;
+        _countInBeat.mute = !enabled;
     }
 
     private void Update() {
@@ -60,12 +65,13 @@ public class BeatManager : MonoBehaviour {
             var beatsToNextEvenBeat = Mathf.Ceil(_currentBeat / 2f) * 2f - _currentBeat;
             var secondsToNextEven = beatsToNextEvenBeat * (60f / _bpm);
             _nextStartingBeat = (int)Mathf.Ceil(_currentBeat / 2f) * 2 + PlayerPrefs.GetInt("countInBeats");
+            foreach(var interval in _intervals) interval.Reset(_nextStartingBeat);
             yield return new WaitForSeconds(secondsToNextEven);
         }
 
         for (var i = 0; i < PlayerPrefs.GetInt("countInBeats"); i++) {
             _countInBeat.Play();
-            onCountInBeat?.Invoke(i+1);
+            OnCountInBeat?.Invoke(i+1);
             yield return new WaitForSeconds(0.75f);
         }
         onComplete?.Invoke();
@@ -76,8 +82,7 @@ public class BeatManager : MonoBehaviour {
             _reverb.enabled = false;
             _filter.enabled = false;
             _track.volume = 1f;
-
-            foreach(var interval in _intervals) interval.Reset(_nextStartingBeat);
+            
             if (!_track.isPlaying) _track.Play();
         }));
        

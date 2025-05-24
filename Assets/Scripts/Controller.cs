@@ -30,11 +30,11 @@ public class Controller : MonoBehaviour {
         }
         Application.targetFrameRate = 120;
         _hapticFeedback.enabled = PlayerPrefs.GetInt("vibrationEnabled") == 1;
-        _audioTrack.mute = PlayerPrefs.GetInt("soundEnabled") == 0;
+        _beatManager.SetSoundEnabled(PlayerPrefs.GetInt("soundEnabled") == 1); 
         _level = PlayerPrefs.GetInt("currentLevel", _level);
         _levelReader.ReadLevelCsv("level"+(_level+1));
 
-        _beatManager.onCountInBeat += OnCountInBeat;
+        _beatManager.OnCountInBeat += OnCountInBeat;
         InitializeUI();
         PrepareGame();
         _game.Init(_levelReader.GetStartingPosition(), _levelReader.GetMaxFile(), _levelReader.GetMaxRank(), _levelReader.GetDisabledFields(), _levelReader.GetFlagRegion());
@@ -53,7 +53,7 @@ public class Controller : MonoBehaviour {
             _hapticFeedback.enabled = value;
         };
         _gameUI.OnSoundSettingChanged += (value) => {
-            _audioTrack.mute = !value;
+            _beatManager.SetSoundEnabled(value);
         };
     }
 
@@ -67,6 +67,7 @@ public class Controller : MonoBehaviour {
     }
 
     private void OnCountInBeat(int beat) {
+        _hapticFeedback.PlayFeedbacks();
         _gameUI.SetActiveNodes(beat);
     }
     public void HandleOffBeat() {
