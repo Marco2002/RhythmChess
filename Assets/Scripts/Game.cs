@@ -38,7 +38,7 @@ public class Game : MonoBehaviour {
 
     public void SetupLevel() {
         ended = false;
-
+        _board.CancelMoveAnimation();
         position = new ChessPiece[width, height];
         
         // put player piece to start

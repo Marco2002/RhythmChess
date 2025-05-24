@@ -16,6 +16,7 @@ public class Board : MonoBehaviour {
     private int _width, _height;
     private float boardScale;
     private readonly List<GameObject> moveIndicators = new();
+    private Coroutine runningMoveAnimation;
 
     public void Init(int width, int height, List<(int x, int y)> disabledFields, List<(int x, int y)> flagRegion) {
         _width = width;
@@ -68,7 +69,13 @@ public class Board : MonoBehaviour {
     }
 
     public void MovePiece(ChessPiece piece, int x, int y) {
-        StartCoroutine(AnimatedMove(piece, x, y));
+        runningMoveAnimation = StartCoroutine(AnimatedMove(piece, x, y));
+    }
+    
+    public void CancelMoveAnimation() {
+        if (runningMoveAnimation == null) return;
+        StopCoroutine(runningMoveAnimation);
+        runningMoveAnimation = null;
     }
 
     private IEnumerator AnimatedMove(ChessPiece piece, int x, int y) {
@@ -79,7 +86,7 @@ public class Board : MonoBehaviour {
         }
     }
 
-    private IEnumerator BumpAnimation(Transform target, Vector2 direction, float distance = 0.1f, float duration = 0.2f) {
+    private static IEnumerator BumpAnimation(Transform target, Vector2 direction, float distance = 0.1f, float duration = 0.2f) {
         var startPos = target.localPosition;
         var bumpPos = startPos + (Vector3)(direction.normalized * distance);
         
