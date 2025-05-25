@@ -13,8 +13,9 @@ public class Controller : MonoBehaviour {
     [SerializeField] private BeatManager _beatManager;
     [SerializeField] private GameUI _gameUI;
     [SerializeField] private MMF_Player _hapticFeedback;
-    [SerializeField] private AudioSource _audioTrack;
     [SerializeField] private int _level;
+    [SerializeField] private AudioSource _audioBeatLevel;
+    [SerializeField] private AudioListener _audioListener;
     
     private bool gameEnded;
     private Direction nextMove = Direction.None;
@@ -29,8 +30,9 @@ public class Controller : MonoBehaviour {
             InitializePlayerPrefs();
         }
         Application.targetFrameRate = 120;
-        _hapticFeedback.enabled = PlayerPrefs.GetInt("vibrationEnabled") == 1;
-        _beatManager.SetSoundEnabled(PlayerPrefs.GetInt("soundEnabled") == 1); 
+        _hapticFeedback.FeedbacksList[0].Active = PlayerPrefs.GetInt("vibrationEnabled") == 1;
+        
+        _audioListener.enabled = PlayerPrefs.GetInt("soundEnabled") == 1; 
         _level = PlayerPrefs.GetInt("currentLevel", _level);
         _levelReader.ReadLevelCsv("level"+(_level+1));
 
@@ -50,10 +52,10 @@ public class Controller : MonoBehaviour {
         _gameUI.OnSettingsPopupOpened += PauseLevel;
         _gameUI.OnSettingsPopupClosed += ResumeLevel;
         _gameUI.OnVibrationSettingChanged += (value) => {
-            _hapticFeedback.enabled = value;
+            _hapticFeedback.FeedbacksList[0].Active = value;
         };
         _gameUI.OnSoundSettingChanged += (value) => {
-            _beatManager.SetSoundEnabled(value);
+            _audioListener.enabled = value;
         };
     }
 
@@ -154,8 +156,8 @@ public class Controller : MonoBehaviour {
         _game.RemoveMoveIndicators();
         PrepareGame();
     }
-    
-    public void TogglePause() {
+
+    private void TogglePause() {
         _gameUI.ShowPauseFlash(!paused);
         if (paused) {
             ResumeLevel();
@@ -168,7 +170,7 @@ public class Controller : MonoBehaviour {
         }
     }
 
-    public void PauseLevel() {
+    private void PauseLevel() {
         paused = true;
         _beatManager.Pause();
         _game.RemoveMoveIndicators();
@@ -196,8 +198,9 @@ public class Controller : MonoBehaviour {
         if (numberOfMoves <= requiredStarsFor2) stars = 2;
         if (numberOfMoves <= requiredStarsFor3) stars = 3;
         if(levelStatus[_level] - '0' < stars) {
-            var levelStatusString = new StringBuilder(levelStatus);
-            levelStatusString[_level] = stars.ToString()[0];
+            var levelStatusString = new StringBuilder(levelStatus) {
+                [_level] = stars.ToString()[0]
+            };
             PlayerPrefs.SetString("levelStatus", levelStatusString.ToString());
             PlayerPrefs.Save();
         }
@@ -207,11 +210,11 @@ public class Controller : MonoBehaviour {
             PlayerPrefs.Save();
         }
         _beatManager.Pause();
-        
         _gameUI.OpenLevelBeatUI(stars, requiredStarsFor2, requiredStarsFor3, numberOfMoves);
+        _audioBeatLevel.Play();
     }
-    
-    public void LoadLevel(int level) {
+
+    private void LoadLevel(int level) {
         _level = level;
         _levelReader.ReadLevelCsv("level" + (_level + 1));
         _gameUI.Level = _level;

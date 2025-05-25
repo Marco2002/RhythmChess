@@ -5,6 +5,7 @@ using UnityEngine;
 public class Game : MonoBehaviour {
 
     [SerializeField] private Board _board;
+    [SerializeField] private AudioSource _audioCapture, _audioLoseLevel;
     
     private int width, height;
     private List<(int x, int y)> disabledFields, flagRegion;
@@ -42,11 +43,10 @@ public class Game : MonoBehaviour {
         position = new ChessPiece[width, height];
         
         // put player piece to start
-        for (int i = 0; i < initPosition.Count; i++) {
-            if (initPosition[i].pieceName == "player") {
-                (initPosition[0], initPosition[i]) = (initPosition[i], initPosition[0]);
-                break;
-            }
+        for (var i = 0; i < initPosition.Count; i++) {
+            if (initPosition[i].pieceName != "player") continue;
+            (initPosition[0], initPosition[i]) = (initPosition[i], initPosition[0]);
+            break;
         }
         
         for (var i = 0; i < initPosition.Count; i++) {
@@ -143,8 +143,11 @@ public class Game : MonoBehaviour {
         }
         if (position[x, y] is not null) {
             if(position[x, y].name == "player") { // check for loose
+                _audioLoseLevel.Play();
                 ended = true;
                 won = false;
+            } else {
+                _audioCapture.Play();
             }
             position[x, y].transform.localScale = new Vector3(0,0,0);
             position[x, y].SetX(-1);

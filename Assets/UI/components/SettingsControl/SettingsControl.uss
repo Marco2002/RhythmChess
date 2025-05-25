@@ -149,3 +149,9 @@
 .settings-control {
     flex-direction: row;
 }
+
+.settings-control-icon_image {
+    background-image: url("project://database/Assets/Sprites/UI/IconVibration.png?fileID=2800000&guid=e45078827bacd43dc9eeb43efd196311&type=3#IconVibration");
+    -unity-background-scale-mode: scale-to-fit;
+    color: rgba(27, 27, 27, 0);
+}

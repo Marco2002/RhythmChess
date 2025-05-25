@@ -1,7 +1,7 @@
 <engine:UXML xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:engine="UnityEngine.UIElements" xmlns:editor="UnityEditor.UIElements" noNamespaceSchemaLocation="../../../../UIElementsSchema/UIElements.xsd" editor-extension-mode="False">
     <Style src="project://database/Assets/UI/components/SettingsControl/SettingsControl.uss?fileID=7433441132597879392&amp;guid=66239c52e85864de7805fd0d0d879ac6&amp;type=3#SettingsControl" />
     <engine:VisualElement name="SettingsControl" class="settings-control">
-        <engine:Label text="" name="Icon" class="settings-control-icon" />
+        <engine:Label name="Icon" class="settings-control-icon" />
         <engine:Label text="Count-in beats" name="Label" class="settings-control-label" />
         <engine:Toggle value="true" name="Checkbox" class="settings-control-checkbox" />
         <engine:Button text="" name="Button" class="settings-control-button" />

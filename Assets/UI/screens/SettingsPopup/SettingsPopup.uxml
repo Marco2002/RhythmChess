@@ -10,7 +10,7 @@
             <engine:VisualElement name="Content" class="settings-popup-content">
                 <SettingsControl label-text="Sound" icon-glyph="" type="0" name="SettingsControlSound" value="true" class="settings-popup-control" />
                 <engine:VisualElement name="ControlDivider" class="settings-popup-control-divider" />
-                <SettingsControl label-text="Vibration" icon-glyph="" type="0" name="SettingsControlVibration" value="true" />
+                <SettingsControl label-text="Vibration" icon-glyph="" type="0" name="SettingsControlVibration" value="true" use-vibration-image="true" />
                 <engine:VisualElement name="ControlDivider" class="settings-popup-control-divider" />
                 <SettingsControl type="1" label-text="Count-in beats" icon-glyph="" name="SettingsControlCountInBeats" value="true" />
                 <engine:VisualElement name="ControlDivider" class="settings-popup-control-divider" />

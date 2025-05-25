@@ -43,6 +43,18 @@ public partial class SettingsControl: VisualElement {
         get => icon.text;
         set => icon.text = value;
     }
+    
+    [UxmlAttribute]
+    public bool UseVibrationImage {
+        get => icon.ClassListContains("settings-control-icon_image");
+        set {
+            if (value) {
+                icon.AddToClassList("settings-control-icon_image");
+            } else {
+                icon.RemoveFromClassList("settings-control-icon_image");
+            }
+        }
+    }
 
     public SettingsControl() {
         var visualTree = Resources.Load<VisualTreeAsset>("UI/settingsControl");

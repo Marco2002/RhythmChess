@@ -4,8 +4,7 @@ using UnityEngine.Events;
 
 public class BeatManager : MonoBehaviour {
     [SerializeField] private float _bpm;
-    [SerializeField] private AudioSource _track;
-    [SerializeField] private AudioSource _countInBeat;
+    [SerializeField] private AudioSource _track, _countInBeat, _audioStartLevel;
     [SerializeField] private Intervals[] _intervals;
     private Coroutine _countInCoroutine;
     public Action<int> OnCountInBeat;
@@ -21,11 +20,6 @@ public class BeatManager : MonoBehaviour {
 
     private bool IsPaused() {
         return _reverb.isActiveAndEnabled;
-    }
-    
-    public void SetSoundEnabled(bool enabled) {
-        _track.mute = !enabled;
-        _countInBeat.mute = !enabled;
     }
 
     private void Update() {
@@ -74,6 +68,7 @@ public class BeatManager : MonoBehaviour {
             OnCountInBeat?.Invoke(i+1);
             yield return new WaitForSeconds(0.75f);
         }
+        _audioStartLevel.Play();
         onComplete?.Invoke();
     }
 
