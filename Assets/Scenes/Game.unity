@@ -1727,7 +1727,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _mainCamera: {fileID: 519420031}
   _chessPiecePrefab: {fileID: 4960554714837556927, guid: 363fca4f40d99614a86393612312c6f1, type: 3}
-  _moveIndicatorPrefab: {fileID: 5275631995502244248, guid: 4222c7f4b5804a44bbe78a957eedfb0d, type: 3}
+  _moveIndicatorPrefab: {fileID: 8249679116581813648, guid: 4222c7f4b5804a44bbe78a957eedfb0d, type: 3}
   _movementSpeed: 20
   _tilemap: {fileID: 2001708988}
   _tileLight: {fileID: 11400000, guid: ebb563764ca7d4c658e45c8f2709ef4c, type: 2}

@@ -15,10 +15,10 @@ public class Game : MonoBehaviour {
     private bool won;
     private ChessPiece[,] position;
     private ChessPiece player;
-
-    private List<ChessPiece> pieces;
+    private List<ChessPiece> pieces = new();
+    private List<Tappable> activeTappablePieces = new();
     
-
+    public Action<Direction> OnMoveIndicatorTapped;
     public void Init(List<(string pieceName, int x, int y)> initPosition, int width, int height, List<(int x, int y)> disabledFields, List<(int x, int y)> flagRegion) {
         if(pieces != null) {
             foreach(var piece in pieces) {
@@ -34,6 +34,9 @@ public class Game : MonoBehaviour {
 
         pieces = new List<ChessPiece>();
         _board.Init(width, height, disabledFields, flagRegion);
+        _board.OnMoveIndicatorTapped += direction => {
+            OnMoveIndicatorTapped?.Invoke(direction);
+        };
         SetupLevel();
     }
 
@@ -91,7 +94,13 @@ public class Game : MonoBehaviour {
             if (position[(int)move.x, (int)move.y] is null) {
                 _board.ShowMoveIndicator((int)move.x, (int)move.y, direction);
             } else {
-                position[(int)move.x, (int)move.y].OutlineEnabled = true;
+                var targetPiece = position[(int)move.x, (int)move.y];
+                targetPiece.OutlineEnabled = true;
+                var tappable = targetPiece.GetComponent<Tappable>();
+                activeTappablePieces.Add(tappable);
+                tappable.OnTapped += () => {
+                    OnMoveIndicatorTapped?.Invoke(direction);
+                };
             }
         }
     }
@@ -102,6 +111,10 @@ public class Game : MonoBehaviour {
         foreach (var piece in pieces) {
             piece.OutlineEnabled = false;
         }
+        foreach (var tappable in activeTappablePieces) {
+            tappable.OnTapped = null;
+        }
+        activeTappablePieces = new List<Tappable>();
     }
 
     // moves the player in the given direction and return true if move finished game

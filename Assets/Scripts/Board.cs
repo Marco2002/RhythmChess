@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -6,17 +7,17 @@ using UnityEngine.Tilemaps;
 public class Board : MonoBehaviour {
     [SerializeField] private Camera _mainCamera;
     [SerializeField] private ChessPiece _chessPiecePrefab;
-    [SerializeField] private GameObject _moveIndicatorPrefab;
-    
+    [SerializeField] private Tappable _moveIndicatorPrefab;
     [SerializeField] private float _movementSpeed;
-    
     [SerializeField] private Tilemap _tilemap;
     [SerializeField] private RuleTile _tileLight, _tileDark, _tileGoal;
     
     private int _width, _height;
     private float boardScale;
-    private readonly List<GameObject> moveIndicators = new();
+    private readonly List<Tappable> moveIndicators = new();
     private Coroutine runningMoveAnimation;
+    
+    public Action<Direction> OnMoveIndicatorTapped;
 
     public void Init(int width, int height, List<(int x, int y)> disabledFields, List<(int x, int y)> flagRegion) {
         _width = width;
@@ -112,6 +113,9 @@ public class Board : MonoBehaviour {
         var moveIndicator = Instantiate(_moveIndicatorPrefab, GetWorldSpacePosition(x, y, -1), Quaternion.identity);
         moveIndicator.transform.parent = transform;
         moveIndicator.transform.localScale = new Vector3(boardScale * 0.5f, boardScale * 0.5f);
+        moveIndicator.OnTapped += () => {
+            OnMoveIndicatorTapped.Invoke(direction);
+        };
         
         var spriteRenderers = moveIndicator.GetComponentsInChildren<SpriteRenderer>();
         var angle = direction switch {
@@ -138,7 +142,7 @@ public class Board : MonoBehaviour {
     }
 
     public void RemoveMoveIndicators() {
-        moveIndicators.RemoveAll(i => { Destroy(i); return true; }); // destroy all move indicators and remove from list
+        moveIndicators.RemoveAll(i => { Destroy(i.gameObject); return true; }); // destroy all move indicators and remove from list
     }
 
     public ChessPiece CreatePiece(string name, int x, int y) {

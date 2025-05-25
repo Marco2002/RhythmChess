@@ -37,6 +37,20 @@ public class Controller : MonoBehaviour {
         _levelReader.ReadLevelCsv("level"+(_level+1));
 
         _beatManager.OnCountInBeat += OnCountInBeat;
+        _game.OnMoveIndicatorTapped += direction => {
+            var directionVector = direction switch {
+                Direction.Up => Vector2.up,
+                Direction.Down => Vector2.down,
+                Direction.Left => Vector2.left,
+                Direction.Right => Vector2.right,
+                Direction.UpRight => new Vector2(1, 1),
+                Direction.DownRight => new Vector2(1, -1),
+                Direction.UpLeft => new Vector2(-1, 1),
+                Direction.DownLeft => new Vector2(-1, -1),
+                _ => Vector2.zero
+            };
+            RecordMove(directionVector);
+        };
         InitializeUI();
         PrepareGame();
         _game.Init(_levelReader.GetStartingPosition(), _levelReader.GetMaxFile(), _levelReader.GetMaxRank(), _levelReader.GetDisabledFields(), _levelReader.GetFlagRegion());
