@@ -15,7 +15,6 @@ public class Controller : MonoBehaviour {
     [SerializeField] private MMF_Player _hapticFeedback;
     [SerializeField] private int _level;
     [SerializeField] private AudioSource _audioBeatLevel;
-    [SerializeField] private AudioListener _audioListener;
     
     private bool gameEnded;
     private Direction nextMove = Direction.None;
@@ -31,8 +30,8 @@ public class Controller : MonoBehaviour {
         }
         Application.targetFrameRate = 120;
         _hapticFeedback.FeedbacksList[0].Active = PlayerPrefs.GetInt("vibrationEnabled") == 1;
-        
-        _audioListener.enabled = PlayerPrefs.GetInt("soundEnabled") == 1; 
+
+        AudioListener.volume = PlayerPrefs.GetInt("soundEnabled") == 1 ? 1f : 0f;
         _level = PlayerPrefs.GetInt("currentLevel", _level);
         _levelReader.ReadLevelCsv("level"+(_level+1));
 
@@ -69,7 +68,7 @@ public class Controller : MonoBehaviour {
             _hapticFeedback.FeedbacksList[0].Active = value;
         };
         _gameUI.OnSoundSettingChanged += (value) => {
-            _audioListener.enabled = value;
+            AudioListener.volume = value ? 1f : 0f;
         };
     }
 

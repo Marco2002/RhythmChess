@@ -31,21 +31,18 @@ public class SettingsPopupUI : MonoBehaviour {
             OnCloseButtonClicked?.Invoke();
         };
         
-        _soundControl.Value = PlayerPrefs.GetInt("soundEnabled") == 1;
         _soundControl.OnValueChanged += (value) => {
             PlayerPrefs.SetInt("soundEnabled", value ? 1 : 0);
             PlayerPrefs.Save();
             OnSoundSettingsChanged?.Invoke(value);
         };
         
-        _vibrationControl.Value = PlayerPrefs.GetInt("vibrationEnabled") == 1;
         _vibrationControl.OnValueChanged += (value) => {
             PlayerPrefs.SetInt("vibrationEnabled", value ? 1 : 0);
             PlayerPrefs.Save();
             OnVibrationSettingsChanged?.Invoke(value);
         };
         
-        _countInBeatsControl.Value = PlayerPrefs.GetInt("countInBeats") == 4;
         _countInBeatsControl.OnValueChanged += (value) => {
             PlayerPrefs.SetInt("countInBeats", value ? 4 : 2);
             PlayerPrefs.Save();
@@ -53,6 +50,12 @@ public class SettingsPopupUI : MonoBehaviour {
         };
         
         _howToPlayControl.OnButtonClicked += () => OnHowToPlayButtonClicked?.Invoke();
+    }
+
+    public void Init() {
+        _vibrationControl.Value = PlayerPrefs.GetInt("vibrationEnabled") == 1;
+        _countInBeatsControl.Value = PlayerPrefs.GetInt("countInBeats") == 4;
+        _soundControl.Value = PlayerPrefs.GetInt("soundEnabled") == 1;
     }
 
     public void Open() {

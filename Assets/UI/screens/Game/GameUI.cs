@@ -100,6 +100,7 @@ public class GameUI : MonoBehaviour {
     
      public void Init(int level) {
         root = _uiDocument.rootVisualElement;
+        _settingsPopupUI.Init();
         
         pauseButton = root.Q<Button>("PauseButton");
         navbar = root.Q<Navbar>("Navbar");
