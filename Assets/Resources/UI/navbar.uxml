@@ -3,8 +3,8 @@
     <ui:VisualElement name="Navbar" class="navbar">
         <ui:Button name="ButtonLevels" icon-image="project://database/Assets/Assets/Sprites/UI/ButtonMenu.png?fileID=2800000&amp;guid=b3c7356d5b9b3458db8ef09bded338b8&amp;type=3#ButtonMenu" class="navbar-button" style="border-top-width: 0; border-right-width: 0; border-bottom-width: 0; border-left-width: 0;" />
         <ui:VisualElement name="Content" class="navbar-content">
-            <ui:Label text="LEVEL 12" name="LabelLevel" class="navbar-text navbar-text-level" />
-            <ui:Label text="Move!" name="LabelTitle" class="navbar-text navbar-text-title" style="font-size: 24px; height: 34px;" />
+            <ui:Label text="LEVEL" name="LabelLevel" class="navbar-text navbar-text-level" />
+            <ui:Label text="0" name="LabelTitle" class="navbar-text navbar-text-title" style="font-size: 24px; height: 34px;" />
             <ui:VisualElement name="NodesContainer" class="navbar-nodes-container" />
         </ui:VisualElement>
         <ui:Button name="ButtonSettings" icon-image="project://database/Assets/Assets/Sprites/UI/ButtonSettings.png?fileID=2800000&amp;guid=3d89700f98a494f91a91c2e404a9672d&amp;type=3#ButtonSettings" class="navbar-button" />

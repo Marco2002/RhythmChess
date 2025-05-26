@@ -38,6 +38,7 @@ public class LevelMenuUI : MonoBehaviour {
         get => _activeLevel;
         set {
             _activeLevel = value;
+            if (value < 0) return;
             AnimateButtonPulse(value);
         }
     }

@@ -49,3 +49,7 @@
     justify-content: center;
     align-items: center;
 }
+
+.game_tutorial-mode .icon-button {
+    visibility: hidden;
+}

@@ -13,12 +13,12 @@ public class Controller : MonoBehaviour {
     [SerializeField] private BeatManager _beatManager;
     [SerializeField] private GameUI _gameUI;
     [SerializeField] private MMF_Player _hapticFeedback;
-    [SerializeField] private int _level;
     [SerializeField] private AudioSource _audioBeatLevel;
     
     private bool gameEnded;
     private Direction nextMove = Direction.None;
     private int numberOfMoves;
+    private int _level;
     private bool paused;
     private bool pauseAtNextOnBeat;
     private bool inOffBeat;
@@ -57,6 +57,9 @@ public class Controller : MonoBehaviour {
 
     private void InitializeUI() {
         _gameUI.Init(_level);
+        if(_level == -1) {
+            _gameUI.TutorialMode = true;
+        }
         _gameUI.OnPausePlayButtonClicked += TogglePause;
         _gameUI.OnLevelMenuOpened += PauseLevel;
         _gameUI.OnLevelMenuClosed += ResetLevel;
@@ -106,15 +109,16 @@ public class Controller : MonoBehaviour {
         _gameUI.EnableResetButton();
         // show player move
         _swipeDetection.DetectSwipeForCurrentTouch();
+        var rechedFlag = false;
         if (nextMove != Direction.None) {
-            _game.Move(nextMove);
+            rechedFlag = _game.Move(nextMove);
         }
         nextEnemyMove = _levelReader.GetBestMove(_game.GetPosition());
         _game.RemoveMoveIndicators();
         nextMove = Direction.None;
         _swipeDetection.enabled = false;
         
-        if (nextEnemyMove == LevelReader.INVALID_MOVE) {
+        if (rechedFlag || nextEnemyMove == LevelReader.INVALID_MOVE && _level != -1) {
             HandleGameEnd(true);
         }
     }
@@ -202,32 +206,36 @@ public class Controller : MonoBehaviour {
     }
 
     private void BeatLevel() {
-        var levelStatus = PlayerPrefs.GetString("levelStatus");
         var stars = 1;
         var requiredStarsFor3 = _levelReader.GetSolution().Count;
         var requiredStarsFor2 = Math.Max(
             _levelReader.GetSolution().Count + 1,
-            (int) Math.Floor(_levelReader.GetSolution().Count * 1.3));
-        if (numberOfMoves <= requiredStarsFor2) stars = 2;
-        if (numberOfMoves <= requiredStarsFor3) stars = 3;
-        if(levelStatus[_level] - '0' < stars) {
-            var levelStatusString = new StringBuilder(levelStatus) {
-                [_level] = stars.ToString()[0]
-            };
-            PlayerPrefs.SetString("levelStatus", levelStatusString.ToString());
-            PlayerPrefs.Save();
+            (int)Math.Floor(_levelReader.GetSolution().Count * 1.3));
+        if (_level >= 0) {
+            var levelStatus = PlayerPrefs.GetString("levelStatus");
+            if (numberOfMoves <= requiredStarsFor2) stars = 2;
+            if (numberOfMoves <= requiredStarsFor3) stars = 3;
+            if (levelStatus[_level] - '0' < stars) {
+                var levelStatusString = new StringBuilder(levelStatus) {
+                    [_level] = stars.ToString()[0]
+                };
+                PlayerPrefs.SetString("levelStatus", levelStatusString.ToString());
+                PlayerPrefs.Save();
+            }
         }
+        _gameUI.OpenLevelBeatUI(stars, requiredStarsFor2, requiredStarsFor3, numberOfMoves);
         _level++;
         if (_level > PlayerPrefs.GetInt("currentLevel")) {
             PlayerPrefs.SetInt("currentLevel", _level);
             PlayerPrefs.Save();
         }
         _beatManager.Pause();
-        _gameUI.OpenLevelBeatUI(stars, requiredStarsFor2, requiredStarsFor3, numberOfMoves);
+        
         _audioBeatLevel.Play();
     }
 
     private void LoadLevel(int level) {
+        if(level == 0) _gameUI.TutorialMode = false;
         _level = level;
         _levelReader.ReadLevelCsv("level" + (_level + 1));
         _gameUI.Level = _level;
@@ -239,7 +247,7 @@ public class Controller : MonoBehaviour {
         var defaultStatus = string.Concat(Enumerable.Repeat(0.ToString(), GameConstants.NUMBER_OF_LEVELS));
         PlayerPrefs.SetString("levelStatus", PlayerPrefs.GetString("levelStatus", defaultStatus));
         
-        PlayerPrefs.SetInt("currentLevel", 0);
+        PlayerPrefs.SetInt("currentLevel", -1);
         PlayerPrefs.SetInt("soundEnabled", 1);
         PlayerPrefs.SetInt("vibrationEnabled", 1);
         PlayerPrefs.SetInt("countInBeats", 4);

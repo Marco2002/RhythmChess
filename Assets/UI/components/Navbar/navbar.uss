@@ -72,3 +72,11 @@
 .navbar-node-active {
     background-color: rgb(255, 255, 255);
 }
+
+.navbar_tutorial-mode .navbar-button {
+    visibility: hidden;
+}
+
+.navbar_tutorial-mode .navbar-text-level {
+    visibility: hidden;
+}

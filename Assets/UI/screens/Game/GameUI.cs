@@ -34,6 +34,19 @@ public class GameUI : MonoBehaviour {
             _level = value;
         }
     }
+
+    public bool TutorialMode {
+        get => root.ClassListContains("game_tutorial-mode");
+        set {
+            if (value) {
+                root.AddToClassList("game_tutorial-mode");
+            } else {
+                root.RemoveFromClassList("game_tutorial-mode");
+            }
+            _levelBeatUI.TutorialMode = value;
+            navbar.TutorialMode = value;
+        }
+    }
     
     public void Pause() {
         root.style.backgroundColor = new StyleColor(new Color(0, 0, 0, 0.3f));

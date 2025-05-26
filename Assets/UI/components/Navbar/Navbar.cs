@@ -55,6 +55,18 @@ public partial class Navbar : VisualElement {
             _numberOfEnabledNodes = value;
         }
     }
+    
+    [UxmlAttribute]
+    public bool TutorialMode {
+        get => this.ClassListContains("navbar_tutorial-mode");
+        set {
+            if (value) {
+                this.AddToClassList("navbar_tutorial-mode");
+            } else {
+                this.RemoveFromClassList("navbar_tutorial-mode");
+            }
+        }
+    }
 
     public Navbar() {
         var visualTree = Resources.Load<VisualTreeAsset>("UI/navbar");

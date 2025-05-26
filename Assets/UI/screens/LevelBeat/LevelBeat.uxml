@@ -2,7 +2,7 @@
     <Style src="project://database/Assets/UI/screens/LevelBeat/LevelBeat.uss?fileID=7433441132597879392&amp;guid=6114c109b24c64831919ad040493d893&amp;type=3#LevelBeat" />
     <SafeAreaManager>
         <engine:VisualElement name="Header" style="flex-grow: 1;">
-            <engine:Label text="Level 12" name="LabelLevel" class="level-beat-label-level" />
+            <engine:Label text="Level" name="LabelLevel" class="level-beat-label-level" />
             <engine:Label text="Cleared!" name="LabelCleared" class="level-beat-label-cleared" />
             <engine:VisualElement name="StarsContainer" class="level-beat-stars-container">
                 <engine:VisualElement name="Star" class="level-beat-star">
@@ -21,14 +21,14 @@
         </engine:VisualElement>
     </SafeAreaManager>
     <engine:VisualElement name="Footer" style="bottom: 0;">
-        <engine:VisualElement name="NumberOfMoves" style="background-color: rgba(0, 0, 0, 0.55);">
+        <engine:VisualElement name="NumberOfMoves" class="level-beat-number-of-moves-container">
             <engine:Label text="Number of moves:" name="LabelNumberOfMovesText" class="level-beat-number-of-moves-text" />
             <engine:Label text="12" name="LabelNumberOfMoves" class="level-beat-number-of-moves" />
         </engine:VisualElement>
         <engine:VisualElement name="Navigation" class="level-beat-navigation">
-            <IconButton name="ButtonRetry" />
+            <IconButton name="ButtonRetry" class="level-beat-navigation-side-button" />
             <engine:Button text="" name="ButtonNext" class="level-beat-button-next" />
-            <IconButton icon-glyph="" name="ButtonLevelMenu" />
+            <IconButton icon-glyph="" name="ButtonLevelMenu" class="level-beat-navigation-side-button" />
         </engine:VisualElement>
     </engine:VisualElement>
 </engine:UXML>

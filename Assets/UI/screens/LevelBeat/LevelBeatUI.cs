@@ -12,7 +12,7 @@ public class LevelBeatUI : MonoBehaviour {
     
     private VisualElement _root;
     private float worldScreenHeight;
-    private Label _levelLabel, _numberOfMovesLabel;
+    private Label _numberOfMovesLabel;
     private Label[] _starIconLabels, _starNumberLabels;
 
     public int stars = 1;
@@ -27,6 +27,17 @@ public class LevelBeatUI : MonoBehaviour {
     public int NumberOfMoves {
         set {
             _numberOfMovesLabel.text = value.ToString();
+        }
+    }
+    
+    public bool TutorialMode {
+        get => _root.ClassListContains("level-beat_tutorial-mode");
+        set {
+            if (value) {
+                _root.AddToClassList("level-beat_tutorial-mode");
+            } else {
+                _root.RemoveFromClassList("level-beat_tutorial-mode");
+            }
         }
     }
 
@@ -47,7 +58,6 @@ public class LevelBeatUI : MonoBehaviour {
         
         transform.position = new Vector3(0, -worldScreenHeight / 2, 0);
 
-        _levelLabel = _root.Q<Label>("LabelLevel");
         _numberOfMovesLabel = _root.Q<Label>("LabelNumberOfMoves");
         _starNumberLabels = new Label[2];
         _starIconLabels = new Label[3];

@@ -2,7 +2,7 @@
     -unity-text-align: upper-center;
     -unity-font-definition: url("project://database/Assets/Fonts/Poppins-Medium.ttf?fileID=12800000&guid=49b43e9712d0444baabd3fc2c2613958&type=3#Poppins-Medium");
     color: rgb(255, 255, 255);
-    font-size: 20px;
+    font-size: 23px;
     height: 22px;
 }
 
@@ -129,4 +129,20 @@
     border-right-width: 0;
     border-bottom-width: 0;
     border-left-width: 0;
+}
+
+.level-beat_tutorial-mode .level-beat-navigation-side-button {
+    visibility: hidden;
+}
+
+.level-beat-number-of-moves-container {
+    background-color: rgba(0, 0, 0, 0.55);
+}
+
+.level-beat_tutorial-mode .level-beat-number-of-moves-container {
+    visibility: hidden;
+}
+
+.level-beat_tutorial-mode .level-beat-stars-container {
+    visibility: hidden;
 }
