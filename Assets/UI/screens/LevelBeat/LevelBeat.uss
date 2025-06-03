@@ -135,10 +135,6 @@
     visibility: hidden;
 }
 
-.level-beat-number-of-moves-container {
-    background-color: rgba(0, 0, 0, 0.55);
-}
-
 .level-beat_tutorial-mode .level-beat-number-of-moves-container {
     visibility: hidden;
 }

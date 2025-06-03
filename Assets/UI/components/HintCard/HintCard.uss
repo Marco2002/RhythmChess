@@ -1,0 +1,44 @@
+.hide-card {
+    background-color: rgb(255, 255, 255);
+    flex-direction: row;
+    border-top-left-radius: 20px;
+    border-top-right-radius: 20px;
+    border-bottom-right-radius: 20px;
+    border-bottom-left-radius: 20px;
+    height: 90px;
+    align-items: center;
+    padding-top: 16px;
+    padding-right: 16px;
+    padding-bottom: 16px;
+    padding-left: 16px;
+}
+
+.hide-card-image {
+    background-image: url("project://database/Assets/Sprites/Pieces/Rook.png?fileID=2800000&guid=0f5d001ff75ade44aa0e1c60a32ab1b5&type=3#Rook");
+    width: 35px;
+    height: 70px;
+    -unity-background-scale-mode: scale-to-fit;
+    margin-left: 8px;
+    margin-right: 16px;
+    padding-top: 0;
+    padding-right: 0;
+    padding-bottom: 0;
+    padding-left: 0;
+}
+
+.hide-card-label {
+    flex-grow: 1;
+    white-space: normal;
+    flex-basis: 10px;
+    -unity-text-align: middle-center;
+    font-size: 16px;
+    -unity-font-definition: url("project://database/Assets/Fonts/Poppins-Medium.ttf?fileID=12800000&guid=49b43e9712d0444baabd3fc2c2613958&type=3#Poppins-Medium");
+    margin-top: 0;
+    margin-right: 0;
+    margin-bottom: 0;
+    margin-left: 0;
+    padding-top: 0;
+    padding-right: 0;
+    padding-bottom: 0;
+    padding-left: 0;
+}

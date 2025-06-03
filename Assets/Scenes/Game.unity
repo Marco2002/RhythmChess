@@ -681,9 +681,11 @@ MonoBehaviour:
   _beatManager: {fileID: 652580731}
   _gameUI: {fileID: 971168932}
   _hapticFeedback: {fileID: 652580733}
-  _level: 1
   _audioBeatLevel: {fileID: 652580735}
-  _audioListener: {fileID: 519420029}
+  _spritePlayer: {fileID: 21300000, guid: e5ea794fa95b7db48a0f0813406fbaf0, type: 3}
+  _spriteBishop: {fileID: 21300000, guid: 205737bc5f0c8194696c101290be08b9, type: 3}
+  _spriteRook: {fileID: 21300000, guid: 0f5d001ff75ade44aa0e1c60a32ab1b5, type: 3}
+  _spriteLightbulb: {fileID: 21300000, guid: 124cf4b79dcc64e05a6b702b43cd2a7e, type: 3}
 --- !u!4 &652580729
 Transform:
   m_ObjectHideFlags: 0

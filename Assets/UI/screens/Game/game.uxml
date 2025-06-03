@@ -8,5 +8,6 @@
         <IconButton icon-glyph="" name="ResetButton" />
         <engine:Button name="PauseButton" icon-image="project://database/Assets/Assets/Sprites/UI/ButtonPause.png?fileID=-2704585380071478335&amp;guid=3b80eda2479034e2e8dcef7862388d8b&amp;type=3#ButtonPause_0" class="game-pause-button" style="border-top-width: 0; border-right-width: 0; border-bottom-width: 0; border-left-width: 0;" />
         <IconButton icon-glyph="" name="HintButton" />
+        <HintCard name="HintCard" image="project://database/Assets/Sprites/UI/Lightbulb.png?fileID=21300000&amp;guid=124cf4b79dcc64e05a6b702b43cd2a7e&amp;type=3#Lightbulb" class="game-hint-card" />
     </engine:VisualElement>
 </engine:UXML>

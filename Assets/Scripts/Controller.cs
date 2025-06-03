@@ -14,6 +14,7 @@ public class Controller : MonoBehaviour {
     [SerializeField] private GameUI _gameUI;
     [SerializeField] private MMF_Player _hapticFeedback;
     [SerializeField] private AudioSource _audioBeatLevel;
+    [SerializeField] private Sprite _spritePlayer, _spriteBishop, _spriteRook, _spriteLightbulb;
     
     private bool gameEnded;
     private Direction nextMove = Direction.None;
@@ -33,8 +34,7 @@ public class Controller : MonoBehaviour {
 
         AudioListener.volume = PlayerPrefs.GetInt("soundEnabled") == 1 ? 1f : 0f;
         _level = PlayerPrefs.GetInt("currentLevel", _level);
-        _levelReader.ReadLevelCsv("level"+(_level+1));
-
+        
         _beatManager.OnCountInBeat += OnCountInBeat;
         _game.OnMoveIndicatorTapped += direction => {
             var directionVector = direction switch {
@@ -50,10 +50,10 @@ public class Controller : MonoBehaviour {
             };
             RecordMove(directionVector);
         };
+        
         InitializeUI();
-        PrepareGame();
-        _game.Init(_levelReader.GetStartingPosition(), _levelReader.GetMaxFile(), _levelReader.GetMaxRank(), _levelReader.GetDisabledFields(), _levelReader.GetFlagRegion());
-    }
+        LoadLevel(_level);
+   }
 
     private void InitializeUI() {
         _gameUI.Init(_level);
@@ -109,16 +109,16 @@ public class Controller : MonoBehaviour {
         _gameUI.EnableResetButton();
         // show player move
         _swipeDetection.DetectSwipeForCurrentTouch();
-        var rechedFlag = false;
+        var reachedFlag = false;
         if (nextMove != Direction.None) {
-            rechedFlag = _game.Move(nextMove);
+            reachedFlag = _game.Move(nextMove);
         }
         nextEnemyMove = _levelReader.GetBestMove(_game.GetPosition());
         _game.RemoveMoveIndicators();
         nextMove = Direction.None;
         _swipeDetection.enabled = false;
         
-        if (rechedFlag || nextEnemyMove == LevelReader.INVALID_MOVE && _level != -1) {
+        if (reachedFlag || nextEnemyMove == LevelReader.INVALID_MOVE && _level != -1) {
             HandleGameEnd(true);
         }
     }
@@ -235,7 +235,18 @@ public class Controller : MonoBehaviour {
     }
 
     private void LoadLevel(int level) {
-        if(level == 0) _gameUI.TutorialMode = false;
+        _gameUI.HideHintCard();
+        if (level == -1) {
+            _gameUI.ShowHintCard(_spriteLightbulb, "Swipe anywhere or tap arrows to move");
+        } else if (level == 0) {
+            _gameUI.TutorialMode = false;
+        } else if (level == 1 && PlayerPrefs.GetInt("currentLevel") <= 1) {
+            _gameUI.ShowHintCard(_spritePlayer, "You can capture pieces <b>horizontally, vertically and diagonally</b>");
+        } else if (level == 2 && PlayerPrefs.GetInt("currentLevel") <= 2) {
+            _gameUI.ShowHintCard(_spriteBishop, "Bishops can move only <b>one square diagonally</b> at a time");
+        } else if (level == 5 && PlayerPrefs.GetInt("currentLevel") <= 5) {
+            _gameUI.ShowHintCard(_spriteRook, "Rooks can move only <b>one square horizontally or vertically</b> at a time");
+        }
         _level = level;
         _levelReader.ReadLevelCsv("level" + (_level + 1));
         _gameUI.Level = _level;

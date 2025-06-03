@@ -1,0 +1,7 @@
+<engine:UXML xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:engine="UnityEngine.UIElements" xmlns:editor="UnityEditor.UIElements" noNamespaceSchemaLocation="../../../../UIElementsSchema/UIElements.xsd" editor-extension-mode="False">
+    <Style src="project://database/Assets/UI/components/HintCard/HintCard.uss?fileID=7433441132597879392&amp;guid=3874e9c485e574bd7bfd9bf127c0d1bc&amp;type=3#HintCard" />
+    <engine:VisualElement name="HideCard" class="hide-card">
+        <engine:VisualElement name="Image" class="hide-card-image" />
+        <engine:Label text="Bishops can move only one square diagonally at a time" name="Label" class="hide-card-label" style="margin-right: 16px;" />
+    </engine:VisualElement>
+</engine:UXML>

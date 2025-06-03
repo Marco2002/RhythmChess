@@ -17,6 +17,7 @@ public class GameUI : MonoBehaviour {
     private VisualElement root, pauseFlash;
     private Button pauseButton;
     private IconButton resetButton, hintButton;
+    private HintCard hintCard;
     private int _level;
     public int NumberOfMoves {
         get => _numberOfMoves;
@@ -95,6 +96,16 @@ public class GameUI : MonoBehaviour {
         _levelBeatUI.Open();
     }
     
+    public void ShowHintCard(Sprite image, string hint) {
+        hintCard.Label = hint;
+        hintCard.Image = image;
+        hintCard.AddToClassList("game-hint-card_active");
+    }
+    
+    public void HideHintCard() {
+        hintCard.RemoveFromClassList("game-hint-card_active");
+    }
+    
     private IEnumerator PauseFlashAnimation(bool pause) {
         pauseFlash.style.backgroundImage = Background.FromSprite(pause ? _pauseImage : _resumeImage);
         pauseFlash.style.display = DisplayStyle.Flex;
@@ -120,6 +131,7 @@ public class GameUI : MonoBehaviour {
         pauseFlash = root.Q<VisualElement>("PauseFlash");
         resetButton = root.Q<IconButton>("ResetButton");
         hintButton = root.Q<IconButton>("HintButton");
+        hintCard = root.Q<HintCard>("HintCard");
 
         Level = level;
         NumberOfMoves = 0;

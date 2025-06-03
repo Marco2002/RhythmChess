@@ -82,6 +82,8 @@ public class ChessPiece : MonoBehaviour {
             }
         }
         _spriteRenderer.sprite = sprite;
+        var _collider = GetComponent<CapsuleCollider2D>();
+        _collider.enabled = name != "player";
         
         _shadow.transform.localScale = new Vector3(shadowScale[piecetype], shadowScale[piecetype], 1);
     }

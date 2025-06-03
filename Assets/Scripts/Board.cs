@@ -13,6 +13,7 @@ public class Board : MonoBehaviour {
     [SerializeField] private RuleTile _tileLight, _tileDark, _tileGoal;
     
     private int _width, _height;
+    private float verticalOffset;
     private float boardScale;
     private readonly List<Tappable> moveIndicators = new();
     private Coroutine runningMoveAnimation;
@@ -22,16 +23,23 @@ public class Board : MonoBehaviour {
     public void Init(int width, int height, List<(int x, int y)> disabledFields, List<(int x, int y)> flagRegion) {
         _width = width;
         _height = height;
+        verticalOffset = _mainCamera.orthographicSize * 0.1f;
         _tilemap.ClearAllTiles();
         foreach (Transform shadow in _tilemap.transform) {
             Destroy(shadow.gameObject);
         }
     
+        var maxBoardHeight = _mainCamera.orthographicSize * 2f * 0.5f; // 50% of screen height
         var boardWidth = 2 * 0.8f * _mainCamera.aspect * _mainCamera.orthographicSize;
+        var boardHeight = _height;
         boardScale = boardWidth / _width;
+        var scaledBoardHeight = boardScale * boardHeight;
+        if (scaledBoardHeight > maxBoardHeight) {
+            boardScale = maxBoardHeight / boardHeight;
+        }
         
         _tilemap.transform.localScale = new Vector3(boardScale, boardScale, 1);
-        _tilemap.transform.position = new Vector3(- _width * boardScale / 2f, -height * boardScale /2f, 0);
+        _tilemap.transform.position = new Vector3(- _width * boardScale / 2f, -height * boardScale /2f + verticalOffset, 0);
         
         for (var x = 0; x < _width; x++) {
             for (var y = 0; y < _height; y++) {
