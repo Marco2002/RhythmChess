@@ -65,7 +65,7 @@ public partial class SettingsControl: VisualElement {
         radioGroup = this.Q<RadioButtonGroup>("RadioButtonGroup");
         button = this.Q<Button>("Button");
         icon = this.Q<Label>("Icon");
-
+        
         button.clicked += () => OnButtonClicked?.Invoke();
         checkbox.RegisterValueChangedCallback((changeEvent) => {
             OnValueChanged?.Invoke(changeEvent.newValue);

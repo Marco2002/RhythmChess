@@ -15,6 +15,7 @@ public class Controller : MonoBehaviour {
     [SerializeField] private MMF_Player _hapticFeedback;
     [SerializeField] private AudioSource _audioBeatLevel;
     [SerializeField] private Sprite _spritePlayer, _spriteBishop, _spriteRook, _spriteLightbulb;
+    [SerializeField] private AnalyticsManager _analyticsManager;
     
     private bool gameEnded;
     private Direction nextMove = Direction.None;
@@ -24,6 +25,9 @@ public class Controller : MonoBehaviour {
     private bool pauseAtNextOnBeat;
     private bool inOffBeat;
     private ((int x, int y) from, (int x, int y) to) nextEnemyMove;
+    
+    // only used for analytics
+    private int numberOfTries;
 
     private void Start() {
         if(!PlayerPrefs.HasKey("playerPrefsInitialized")) {
@@ -52,7 +56,7 @@ public class Controller : MonoBehaviour {
         };
         
         InitializeUI();
-        LoadLevel(_level);
+        if (PlayerPrefs.GetInt("analyticsConsent", -1) != -1) LoadLevel(_level);
    }
 
     private void InitializeUI() {
@@ -72,6 +76,14 @@ public class Controller : MonoBehaviour {
         };
         _gameUI.OnSoundSettingChanged += (value) => {
             AudioListener.volume = value ? 1f : 0f;
+        };
+        
+        _gameUI.OnAnalyticsConsentChanged += (status) => {
+            if(status)
+                _analyticsManager.AllowAnalytics();
+            else 
+                _analyticsManager.DeclineAnalytics();
+            LoadLevel(_level);
         };
     }
 
@@ -165,6 +177,7 @@ public class Controller : MonoBehaviour {
         _gameUI.ResetProgress();
         ResumeLevel();
         numberOfMoves = 0;
+        numberOfTries++;
     }
 
     private void ResetLevel() {
@@ -225,12 +238,14 @@ public class Controller : MonoBehaviour {
         }
         _gameUI.OpenLevelBeatUI(stars, requiredStarsFor2, requiredStarsFor3, numberOfMoves);
         _level++;
+        var firstTime = false;
         if (_level > PlayerPrefs.GetInt("currentLevel")) {
+            firstTime = true;
             PlayerPrefs.SetInt("currentLevel", _level);
             PlayerPrefs.Save();
         }
+        _analyticsManager.BeatLevelEvent(_level-1, stars, numberOfTries, firstTime);
         _beatManager.Pause();
-        
         _audioBeatLevel.Play();
     }
 
@@ -244,12 +259,13 @@ public class Controller : MonoBehaviour {
             _gameUI.ShowHintCard(_spritePlayer, "You can capture pieces <b>horizontally, vertically and diagonally</b>");
         } else if (level == 2 && PlayerPrefs.GetInt("currentLevel") <= 2) {
             _gameUI.ShowHintCard(_spriteBishop, "Bishops can move only <b>one square diagonally</b> at a time");
-        } else if (level == 5 && PlayerPrefs.GetInt("currentLevel") <= 5) {
+        } else if (level == 4 && PlayerPrefs.GetInt("currentLevel") <= 4) {
             _gameUI.ShowHintCard(_spriteRook, "Rooks can move only <b>one square horizontally or vertically</b> at a time");
         }
         _level = level;
         _levelReader.ReadLevelCsv("level" + (_level + 1));
         _gameUI.Level = _level;
+        numberOfTries = 0;
         PrepareGame();
         _game.Init(_levelReader.GetStartingPosition(), _levelReader.GetMaxFile(), _levelReader.GetMaxRank(), _levelReader.GetDisabledFields(), _levelReader.GetFlagRegion());
     }
@@ -263,6 +279,7 @@ public class Controller : MonoBehaviour {
         PlayerPrefs.SetInt("vibrationEnabled", 1);
         PlayerPrefs.SetInt("countInBeats", 4);
         PlayerPrefs.SetInt("playerPrefsInitialized", 1);
+        PlayerPrefs.SetInt("analyticsConsent", -1);
         PlayerPrefs.Save();
     }
 }

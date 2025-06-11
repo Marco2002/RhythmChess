@@ -2,9 +2,8 @@ using System;
 using UnityEngine;
 using UnityEngine.UIElements;
 
-public class SafeAreaManager : VisualElement {
-    public new class UxmlFactory : UxmlFactory<SafeAreaManager, UxmlTraits> {
-    }
+[UxmlElement]
+public partial class SafeAreaManager : VisualElement {
 
     public SafeAreaManager() {
         style.flexGrow = 1;

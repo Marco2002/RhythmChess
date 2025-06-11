@@ -5,23 +5,23 @@ using UnityEngine.UIElements;
 public class SettingsPopupUI : MonoBehaviour {
     [SerializeField] private UIDocument _uiDocument;
     private Popup _popup;
-    private Button _closeButton;
-    private SettingsControl _soundControl, _vibrationControl, _countInBeatsControl, _howToPlayControl;
+    private SettingsControl _soundControl, _vibrationControl, _countInBeatsControl;
     private VisualElement _root;
-    public event Action OnCloseButtonClicked, OnHowToPlayButtonClicked;
+    public event Action OnCloseButtonClicked, OnTutorialClicked, OnPrivacyPolicyClicked;
     public event Action<bool> OnSoundSettingsChanged, OnVibrationSettingsChanged;
     public event Action<int> OnCountInBeatsSettingsChanged;
 
     private void OnEnable() {
         _root = _uiDocument.rootVisualElement;
         _popup = _root.Q<Popup>("SettingsPopup");
-        _closeButton = _root.Q<Button>("ButtonClose");
+        var closeButton = _root.Q<Button>("ButtonClose");
         _soundControl = _root.Q<SettingsControl>("SettingsControlSound");
         _vibrationControl = _root.Q<SettingsControl>("SettingsControlVibration");
         _countInBeatsControl = _root.Q<SettingsControl>("SettingsControlCountInBeats");
-        _howToPlayControl = _root.Q<SettingsControl>("SettingsControlHowToPlay");
+        var howToPlayControl = _root.Q<SettingsControl>("SettingsControlHowToPlay");
+        var privacyPolicyControl = _root.Q<SettingsControl>("SettingsControlPrivacyPolicy");
         
-        _closeButton.clicked += () => {
+        closeButton.clicked += () => {
             Close();
             OnCloseButtonClicked?.Invoke();
         };
@@ -49,7 +49,8 @@ public class SettingsPopupUI : MonoBehaviour {
             OnCountInBeatsSettingsChanged?.Invoke(value ? 4 : 2);
         };
         
-        _howToPlayControl.OnButtonClicked += () => OnHowToPlayButtonClicked?.Invoke();
+        howToPlayControl.OnButtonClicked += () => OnTutorialClicked?.Invoke();
+        privacyPolicyControl.OnButtonClicked += () => OnPrivacyPolicyClicked?.Invoke();
     }
 
     public void Init() {
@@ -66,6 +67,5 @@ public class SettingsPopupUI : MonoBehaviour {
     public void Close() {
         _popup.Close();
         _root.style.visibility = Visibility.Hidden;
-
     }
 }

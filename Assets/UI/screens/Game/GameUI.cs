@@ -9,10 +9,12 @@ public class GameUI : MonoBehaviour {
     [SerializeField] private LevelMenuUI _levelMenuUI;
     [SerializeField] private LevelBeatUI _levelBeatUI;
     [SerializeField] private SettingsPopupUI _settingsPopupUI;
+    [SerializeField] private AnalyticsConsentUI _analyticsConsentUIPrefab;
+    [SerializeField] private HowToPlayPopupUI _howToPlayPopupPrefab;
     public event Action OnPausePlayButtonClicked, OnLevelMenuOpened, OnLevelMenuClosed, OnLevelReset,
         OnSettingsPopupOpened, OnSettingsPopupClosed;
     public event Action<int> OnLevelSelected, OnCountInBeatsSettingsChanged;
-    public event Action<bool> OnVibrationSettingChanged, OnSoundSettingChanged;
+    public event Action<bool> OnVibrationSettingChanged, OnSoundSettingChanged, OnAnalyticsConsentChanged;
     private Navbar navbar;
     private VisualElement root, pauseFlash;
     private Button pauseButton;
@@ -122,6 +124,22 @@ public class GameUI : MonoBehaviour {
         pauseFlash.style.display = DisplayStyle.None;
     }
     
+    private void OpenAnalyticsConsentUI() {
+        var analyticsConsentUI = Instantiate(_analyticsConsentUIPrefab, Vector3.zero, Quaternion.identity);
+        analyticsConsentUI.Init();
+        analyticsConsentUI.OnConsentDeclined += () => {
+            _settingsPopupUI.Close();
+            OnAnalyticsConsentChanged?.Invoke(false);
+            Destroy(analyticsConsentUI.gameObject);
+        };
+        
+        analyticsConsentUI.OnConsentAccepted += () => {
+            _settingsPopupUI.Close();
+            OnAnalyticsConsentChanged?.Invoke(true);
+            Destroy(analyticsConsentUI.gameObject);
+        };
+    }
+    
      public void Init(int level) {
         root = _uiDocument.rootVisualElement;
         _settingsPopupUI.Init();
@@ -172,6 +190,17 @@ public class GameUI : MonoBehaviour {
         _settingsPopupUI.OnCountInBeatsSettingsChanged += (value) => {
             OnCountInBeatsSettingsChanged?.Invoke(value);
         };
+        _settingsPopupUI.OnPrivacyPolicyClicked += OpenAnalyticsConsentUI;
+        _settingsPopupUI.OnTutorialClicked += () => {
+            _settingsPopupUI.Close();
+            var htpPopup = Instantiate(_howToPlayPopupPrefab, Vector3.zero, Quaternion.identity);
+            htpPopup.Init();
+            htpPopup.Open();
+            htpPopup.OnCloseButtonClicked += () => {
+                Destroy(htpPopup.gameObject);
+                OnLevelMenuClosed?.Invoke();
+            };
+        };
         
         navbar.OnLevelsButtonClicked += () => {
             OnLevelMenuOpened?.Invoke();
@@ -187,7 +216,9 @@ public class GameUI : MonoBehaviour {
         resetButton.SetEnabled(false);
         resetButton.OnClicked += () => OnLevelReset?.Invoke();
         
-        // navbar.OnSettingsButtonClicked += () => OnSettingsButtonClicked.Invoke();
+        if(PlayerPrefs.GetInt("analyticsConsent") == -1) {
+            OpenAnalyticsConsentUI();
+        }
         pauseButton.clicked += () => OnPausePlayButtonClicked?.Invoke();
      }
 }

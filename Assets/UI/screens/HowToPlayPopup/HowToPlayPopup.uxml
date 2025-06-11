@@ -1,0 +1,18 @@
+<engine:UXML xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:engine="UnityEngine.UIElements" xmlns:editor="UnityEditor.UIElements" noNamespaceSchemaLocation="../../../../UIElementsSchema/UIElements.xsd" editor-extension-mode="False">
+    <Style src="project://database/Assets/UI/screens/HowToPlayPopup/HowToPlayPopup.uss?fileID=7433441132597879392&amp;guid=4d914b6e8261a4dda966f8c137df4cdb&amp;type=3#HowToPlayPopup" />
+    <Popup name="HtpPopup" style="visibility: visible; display: flex;">
+        <engine:VisualElement name="HtpPopupInner" class="htp-popup" style="flex-grow: 0;">
+            <engine:VisualElement name="Header" class="htp-popup-header">
+                <engine:Label text="How to play" name="Title" class="htp-popup-title" />
+                <engine:Button text="" name="ButtonClose" class="htp-popup-button-close" />
+            </engine:VisualElement>
+            <engine:VisualElement name="Divider" class="htp-popup-divider" />
+            <engine:VisualElement name="Content" class="htp-popup-content">
+                <HintCard image="project://database/Assets/Sprites/UI/Lightbulb.png?fileID=21300000&amp;guid=124cf4b79dcc64e05a6b702b43cd2a7e&amp;type=3#Lightbulb" label="Reach a green field or capture all enemy pieces to win." />
+                <HintCard image="project://database/Assets/Sprites/Pieces/Player.png?fileID=21300000&amp;guid=e5ea794fa95b7db48a0f0813406fbaf0&amp;type=3#Player" label="You can capture pieces &lt;b&gt;horizontally, vertically and diagonally&lt;/b&gt;" />
+                <HintCard image="project://database/Assets/Sprites/Pieces/Bishop.png?fileID=21300000&amp;guid=205737bc5f0c8194696c101290be08b9&amp;type=3#Bishop" label="Bishops can move only &lt;b&gt;one square diagonally&lt;/b&gt; at a time" />
+                <HintCard image="project://database/Assets/Sprites/Pieces/Rook.png?fileID=21300000&amp;guid=0f5d001ff75ade44aa0e1c60a32ab1b5&amp;type=3#Rook" label="Rooks can move only &lt;b&gt;one square horizontally or vertically&lt;/b&gt; at a time" />
+            </engine:VisualElement>
+        </engine:VisualElement>
+    </Popup>
+</engine:UXML>

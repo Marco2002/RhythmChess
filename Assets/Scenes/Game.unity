@@ -600,6 +600,7 @@ GameObject:
   - component: {fileID: 652580736}
   - component: {fileID: 652580737}
   - component: {fileID: 652580738}
+  - component: {fileID: 652580739}
   m_Layer: 0
   m_Name: Controller
   m_TagString: Untagged
@@ -686,6 +687,7 @@ MonoBehaviour:
   _spriteBishop: {fileID: 21300000, guid: 205737bc5f0c8194696c101290be08b9, type: 3}
   _spriteRook: {fileID: 21300000, guid: 0f5d001ff75ade44aa0e1c60a32ab1b5, type: 3}
   _spriteLightbulb: {fileID: 21300000, guid: 124cf4b79dcc64e05a6b702b43cd2a7e, type: 3}
+  _analyticsManager: {fileID: 652580739}
 --- !u!4 &652580729
 Transform:
   m_ObjectHideFlags: 0
@@ -1502,6 +1504,18 @@ AudioSource:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
+--- !u!114 &652580739
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 652580718}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 94c1b1b975c164610b74fe85313cf9f1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &883621311
 GameObject:
   m_ObjectHideFlags: 0
@@ -1637,6 +1651,8 @@ MonoBehaviour:
   _levelMenuUI: {fileID: 1962691629}
   _levelBeatUI: {fileID: 441267562}
   _settingsPopupUI: {fileID: 883621314}
+  _analyticsConsentUIPrefab: {fileID: 8618976610223483749, guid: 2960adaf2c9a94dfaa68a5d62b07128c, type: 3}
+  _howToPlayPopupPrefab: {fileID: 8140012016977930886, guid: df8570a871da2410cac3d91bccca9330, type: 3}
 --- !u!1 &1686254626
 GameObject:
   m_ObjectHideFlags: 0
